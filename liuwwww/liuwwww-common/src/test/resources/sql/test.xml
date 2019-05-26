@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<testQuery>
+		<sql>select * from sys_staff_log where 1=1</sql>
+	</testQuery>
+	<testQuery2>
+		<sql>select * from sys_staff_log where action_code like ? and ip=? </sql>
+	</testQuery2>
+</sqls>

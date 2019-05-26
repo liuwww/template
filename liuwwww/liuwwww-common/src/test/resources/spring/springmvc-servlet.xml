@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.2.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+	<mvc:annotation-driven />
+	
+	<!-- 注册静态资源处理 -->
+	<mvc:default-servlet-handler/>
+	<!-- 必须，指明controller所在的package -->
+    <context:component-scan base-package="com.liuwww.module.*.controller"></context:component-scan>
+    <!-- URL Mapping -->
+	<bean
+		class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping">
+		<property name="caseSensitive" value="true" />
+		<property name="order" value="2"></property>
+		<property name="defaultHandler">
+			<bean class="org.springframework.web.servlet.mvc.UrlFilenameViewController"></bean>
+		</property>
+	</bean>
+	<!-- Method Mapping -->
+	<bean id="methodNameResolver"
+		class="org.springframework.web.servlet.mvc.multiaction.InternalPathMethodNameResolver"/>
+		
+	<!-- 对模型视图添加前后缀 -->  
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/content/jsp/" p:suffix=".jsp"/>
+	
+		
+	<!-- 文件上传支持Bean -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="2048000" /><!-- 最大2M -->
+	</bean>		
+</beans>
