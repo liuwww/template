@@ -7,8 +7,12 @@
   <properties>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<springframework.version>4.2.9.RELEASE</springframework.version>
+	<fastjson.version>1.2.47</fastjson.version>
   </properties>
-  
+  <modules>
+  	<module>liuwwww-common</module>
+  	<module>liuwwww-jdbc</module>
+  </modules>
   <dependencyManagement>
 		<dependencies>
 			<dependency>
