@@ -201,7 +201,7 @@ public class DataService implements IDataService
                 {
                     if (val == null)
                     {
-                        val = dmap.get(c.getName());
+                        val = dmap.get(c.getColumnName());
                     }
 
                 }
@@ -320,7 +320,7 @@ public class DataService implements IDataService
                 {
                     if (val == null)
                     {
-                        val = dmap.get(c.getName());
+                        val = dmap.get(c.getColumnName());
                     }
 
                 }

@@ -148,25 +148,76 @@ public class DbContext
     @Bean
     public IDataDao getDataDao()
     {
-        return new DataDao();
+        if (this.dataDao == null)
+        {
+            synchronized (this)
+            {
+                if (this.dataDao == null)
+                {
+                    dataDao = new DataDao();
+                }
+            }
+
+        }
+        return this.dataDao;
     }
 
     @Bean
     public IQueryDao getQueryDao()
     {
-        return new QueryDao();
+        if (this.queryDao == null)
+        {
+            synchronized (this)
+            {
+                if (this.queryDao == null)
+                {
+
+                    this.queryDao = new QueryDao();
+                }
+            }
+        }
+        return this.queryDao;
     }
 
     @Bean
     public IDataService getDataService()
     {
-        return new DataService();
+        if (this.dataService == null)
+        {
+            synchronized (this)
+            {
+                if (this.dataService == null)
+                {
+                    this.dataService = new DataService();
+                }
+            }
+
+        }
+        return this.dataService;
     }
 
     @Bean
     public IQueryService getQueryService()
     {
-        return new QueryService();
+        if (this.queryService == null)
+        {
+            synchronized (this)
+            {
+                if (this.queryService == null)
+                {
+                    this.queryService = new QueryService();
+                }
+            }
+        }
+        return this.queryService;
     }
+
+    private IDataDao dataDao;
+
+    private IQueryDao queryDao;
+
+    private IDataService dataService;
+
+    private IQueryService queryService;
 
 }

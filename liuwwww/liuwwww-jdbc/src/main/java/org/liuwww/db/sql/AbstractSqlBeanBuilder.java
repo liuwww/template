@@ -175,7 +175,7 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
         sql = sql.delete(sql.length() - 1, sql.length());
         sql.append(") ");
         sql.append("values(");
-        subsql = subsql.delete(subsql.length(), subsql.length());
+        subsql = subsql.delete(subsql.length() - 1, subsql.length());
         sql.append(subsql);
         sql.append(")");
         return sql.toString();
