@@ -58,7 +58,7 @@ public class DefaultTableMetaContext implements TableMetaContext
         {
             if (debug)
             {
-                logger.debug("开始加载数据源" + (n++) + "数据库表元数据……");
+                logger.debug("开始加载数据源" + (n) + "数据库表元数据……");
             }
 
             String includeTabels = getIncludeTables(ds);
@@ -88,7 +88,7 @@ public class DefaultTableMetaContext implements TableMetaContext
         for (String key : prop.keySet())
         {
             String[] keys = key.split("\\.");
-            if (keys.length == 2 && keys[1] == "includeTables")
+            if (keys.length == 2 && "includeTables".equals(keys[1]))
             {
                 try
                 {
@@ -100,6 +100,7 @@ public class DefaultTableMetaContext implements TableMetaContext
                 }
                 catch (BeansException e)
                 {
+                    e.printStackTrace();
                 }
             }
         }
@@ -116,7 +117,7 @@ public class DefaultTableMetaContext implements TableMetaContext
         for (String key : prop.keySet())
         {
             String[] keys = key.split("\\.");
-            if (keys.length == 2 && keys[1] == "excludeTables")
+            if (keys.length == 2 && "excludeTables".equals(keys[1]))
             {
                 try
                 {
