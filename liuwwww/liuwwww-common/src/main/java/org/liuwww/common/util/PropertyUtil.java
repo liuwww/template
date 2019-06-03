@@ -98,7 +98,7 @@ public class PropertyUtil
             List<Object> list = config.getList(tag);
             if (list.size() > 1)
             {
-                return listToString(list);
+                return StringUtil.join(list, ",");
             }
             else
             {
@@ -112,17 +112,6 @@ public class PropertyUtil
     public static String tryGetProp(String fileName, String tag)
     {
         return getProp(fileName, tag, true);
-    }
-
-    private static String listToString(List<Object> list)
-    {
-        StringBuilder sql = new StringBuilder();
-        for (Object obj : list)
-        {
-            sql.append(obj).append(",");
-        }
-        sql = sql.delete(sql.length() - 1, sql.length());
-        return sql.toString();
     }
 
     public static Map<String, String> getPropMap(String fileName)
@@ -140,7 +129,16 @@ public class PropertyUtil
             while (it.hasNext())
             {
                 String key = it.next();
-                map.put(key, config.getString(key));
+                List<Object> list = config.getList(key);
+                if (list.size() > 0)
+                {
+                    map.put(key, StringUtil.join(list, ","));
+                }
+                else
+                {
+                    map.put(key, config.getString(key));
+                }
+
             }
             return map;
         }
