@@ -13,6 +13,8 @@ import org.liuwww.db.query.conditon.QueryBeanConditions;
 import org.liuwww.db.sql.DefaultSqlBean;
 import org.liuwww.db.sql.SqlBean;
 
+import com.alibaba.druid.sql.PagerUtils;
+
 import org.liuwww.common.execption.SysException;
 import org.liuwww.common.util.DbNameConverter;
 
@@ -50,6 +52,12 @@ public class DefaultQueryBean extends DefaultSqlBean implements QueryBean, SqlBe
 
     protected SqlBean assemblySqlBean()
     {
+        return assemblySqlBean(0);
+    }
+
+    protected SqlBean assemblySqlBean(int maxNum)
+    {
+
         StringBuilder sql = new StringBuilder(this.sql);
         StringBuilder orderBy = this.orderBy;
         if (conditions.size() > 0)
@@ -84,7 +92,13 @@ public class DefaultQueryBean extends DefaultSqlBean implements QueryBean, SqlBe
                 params.addAll(cparams);
             }
         }
-        return new DefaultSqlBean(sql, params, orderBy, dbType, tables, jdbcTemplate);
+        CharSequence sql_ = sql;
+        if (maxNum > 0)
+        {
+            sql_ = PagerUtils.limit(sql.toString(), dbType.toString(), 0, maxNum);
+        }
+        return new DefaultSqlBean(sql_, params, orderBy, dbType, tables, jdbcTemplate);
+
     }
 
     public IQueryDao getQueryDao()
@@ -111,7 +125,7 @@ public class DefaultQueryBean extends DefaultSqlBean implements QueryBean, SqlBe
     @Override
     public <T> List<T> getBeanList(Class<T> clazz)
     {
-        return getQueryDao().getBeanList(assemblySqlBean(), clazz);
+        return getBeanList(clazz, 0);
     }
 
     @Override
@@ -123,7 +137,7 @@ public class DefaultQueryBean extends DefaultSqlBean implements QueryBean, SqlBe
     @Override
     public List<Map<String, Object>> getMapList()
     {
-        return getQueryDao().getList(assemblySqlBean());
+        return getMapList(0);
     }
 
     @Override
@@ -206,6 +220,18 @@ public class DefaultQueryBean extends DefaultSqlBean implements QueryBean, SqlBe
     public SqlBean getSqlBean()
     {
         return this;
+    }
+
+    @Override
+    public <T> List<T> getBeanList(Class<T> clazz, int maxNum)
+    {
+        return getQueryDao().getBeanList(assemblySqlBean(maxNum), clazz);
+    }
+
+    @Override
+    public List<Map<String, Object>> getMapList(int maxNum)
+    {
+        return getQueryDao().getList(assemblySqlBean(maxNum));
     }
 
 }

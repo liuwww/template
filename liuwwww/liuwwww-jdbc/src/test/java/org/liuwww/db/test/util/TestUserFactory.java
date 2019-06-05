@@ -1,4 +1,4 @@
-package org.liuwww.db.test.mysql;
+package org.liuwww.db.test.util;
 
 import java.util.ArrayList;
 import java.util.Collections;

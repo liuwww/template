@@ -13,9 +13,13 @@ public interface QueryBean
 
     public <T> List<T> getBeanList(Class<T> clazz);
 
+    public <T> List<T> getBeanList(Class<T> clazz, int maxNum);
+
     public Map<String, Object> getMap();
 
     public List<Map<String, Object>> getMapList();
+
+    public List<Map<String, Object>> getMapList(int maxNum);
 
     public Page getPage(Page page);
 
