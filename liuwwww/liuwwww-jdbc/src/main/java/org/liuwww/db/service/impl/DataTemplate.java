@@ -11,7 +11,7 @@ import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.dao.IDataDao;
 import org.liuwww.db.query.Entity;
-import org.liuwww.db.service.IDataService;
+import org.liuwww.db.service.IDataTemplate;
 import org.liuwww.db.sql.Column;
 import org.liuwww.db.sql.Row;
 import org.liuwww.db.sql.RowUtil;
@@ -27,9 +27,9 @@ import org.liuwww.common.execption.SysException;
 import org.liuwww.common.util.EntryUtil;
 import org.liuwww.common.util.StringUtil;
 
-public class DataService implements IDataService
+public class DataTemplate implements IDataTemplate
 {
-    private Logger logger = LoggerFactory.getLogger(DataService.class);
+    private Logger logger = LoggerFactory.getLogger(DataTemplate.class);
 
     @Autowired
     private IDataDao dataDao;

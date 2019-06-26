@@ -12,7 +12,7 @@ import org.liuwww.common.util.DbNameConverter;
 import org.liuwww.common.util.StringUtil;
 import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
-import org.liuwww.db.service.IQueryService;
+import org.liuwww.db.service.IQueryTemplate;
 import org.liuwww.db.sql.Row;
 import org.liuwww.db.test.entity.TestUser;
 import org.liuwww.db.test.entity.TestUser2;
@@ -26,7 +26,7 @@ import com.alibaba.fastjson.JSONObject;
 public class DataCompareUtil
 {
     @Autowired
-    private IQueryService queryService;
+    private IQueryTemplate queryService;
 
     public void testInsertSuccess4Map(List<Row> rl)
     {

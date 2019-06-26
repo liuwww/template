@@ -118,7 +118,6 @@ public class UpdateTest extends AbstractTest
                 e.printStackTrace();
                 throw e;
             }
-
         }
 
     }

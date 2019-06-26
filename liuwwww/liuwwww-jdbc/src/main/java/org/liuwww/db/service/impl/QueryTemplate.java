@@ -11,14 +11,14 @@ import org.liuwww.db.page.Page;
 import org.liuwww.db.query.DefaultQueryBeanFactory;
 import org.liuwww.db.query.Entity;
 import org.liuwww.db.query.QueryBeanFactory;
-import org.liuwww.db.service.IQueryService;
+import org.liuwww.db.service.IQueryTemplate;
 import org.liuwww.db.sql.SqlBean;
 import org.liuwww.db.sql.SqlBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.liuwww.common.execption.BusinessExecption;
 
-public class QueryService extends DefaultQueryBeanFactory implements IQueryService, QueryBeanFactory
+public class QueryTemplate extends DefaultQueryBeanFactory implements IQueryTemplate, QueryBeanFactory
 {
     @Autowired
     private IQueryDao queryDao;

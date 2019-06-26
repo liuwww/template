@@ -113,7 +113,7 @@
     <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator" lazy-init="default"
           autowire="default">
         <property name="beanNames">
-            <value>*Service,*Test</value>
+            <value>*Service,*Test,DataTemplate</value>
         </property>
         <property name="interceptorNames">
             <list>

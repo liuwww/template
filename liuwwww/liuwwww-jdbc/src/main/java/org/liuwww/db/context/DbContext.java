@@ -9,10 +9,10 @@ import org.liuwww.db.dao.IDataDao;
 import org.liuwww.db.dao.IQueryDao;
 import org.liuwww.db.dao.impl.DataDao;
 import org.liuwww.db.dao.impl.QueryDao;
-import org.liuwww.db.service.IDataService;
-import org.liuwww.db.service.IQueryService;
-import org.liuwww.db.service.impl.DataService;
-import org.liuwww.db.service.impl.QueryService;
+import org.liuwww.db.service.IDataTemplate;
+import org.liuwww.db.service.IQueryTemplate;
+import org.liuwww.db.service.impl.DataTemplate;
+import org.liuwww.db.service.impl.QueryTemplate;
 import org.liuwww.db.sql.DbType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -180,7 +180,7 @@ public class DbContext
     }
 
     @Bean
-    public IDataService getDataService()
+    public IDataTemplate getDataService()
     {
         if (this.dataService == null)
         {
@@ -188,7 +188,7 @@ public class DbContext
             {
                 if (this.dataService == null)
                 {
-                    this.dataService = new DataService();
+                    this.dataService = new DataTemplate();
                 }
             }
 
@@ -197,7 +197,7 @@ public class DbContext
     }
 
     @Bean
-    public IQueryService getQueryService()
+    public IQueryTemplate getQueryService()
     {
         if (this.queryService == null)
         {
@@ -205,7 +205,7 @@ public class DbContext
             {
                 if (this.queryService == null)
                 {
-                    this.queryService = new QueryService();
+                    this.queryService = new QueryTemplate();
                 }
             }
         }
@@ -216,8 +216,8 @@ public class DbContext
 
     private IQueryDao queryDao;
 
-    private IDataService dataService;
+    private IDataTemplate dataService;
 
-    private IQueryService queryService;
+    private IQueryTemplate queryService;
 
 }

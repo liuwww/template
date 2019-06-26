@@ -11,9 +11,9 @@ import org.liuwww.db.query.QueryBeanFactory;
 /**
  * 普通通用查询service 接口<br/>
  * 通过读取指定配置的sql与给定的条件重组sql语句，然后查询出所需的数据
- * @author lwww 2017年4月27日下午3:02:32
+ * @author liuwww 2017年4月27日下午3:02:32
  */
-public interface IQueryService extends QueryBeanFactory
+public interface IQueryTemplate extends QueryBeanFactory
 {
 
     /**

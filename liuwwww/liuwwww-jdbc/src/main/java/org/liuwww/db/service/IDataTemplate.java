@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.liuwww.common.execption.SysException;
 
-public interface IDataService
+public interface IDataTemplate
 {
     /**
      * @Desc:插入单条数据

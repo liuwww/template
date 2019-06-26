@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.runner.RunWith;
-import org.liuwww.db.service.IDataService;
-import org.liuwww.db.service.IQueryService;
+import org.liuwww.db.service.IDataTemplate;
+import org.liuwww.db.service.IQueryTemplate;
 import org.liuwww.db.test.entity.TestUser;
 import org.liuwww.db.test.entity.TestUser2;
 import org.liuwww.db.test.util.DataCompareUtil;
@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public abstract class AbstractTest
 {
     @Autowired
-    protected IDataService dataService;
+    protected IDataTemplate dataService;
 
     @Autowired
     protected DataCompareUtil dataCompareUtil;
@@ -36,7 +36,7 @@ public abstract class AbstractTest
     protected JdbcTemplate jdbcTemplate2;
 
     @Autowired
-    protected IQueryService queryService;
+    protected IQueryTemplate queryService;
 
     protected TestUser queryTestUser()
     {
