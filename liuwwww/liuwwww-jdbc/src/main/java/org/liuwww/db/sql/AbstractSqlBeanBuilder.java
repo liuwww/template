@@ -14,13 +14,15 @@ import org.liuwww.db.condition.OneCondition;
 import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.query.Entity;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.liuwww.common.execption.SysException;
 import org.liuwww.common.util.EntryUtil;
 import org.liuwww.common.util.StringUtil;
 
 public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
 {
+    protected static Logger logger = LoggerFactory.getLogger(AbstractSqlBeanBuilder.class);
 
     @Override
     public SqlBean buildQuery(Table table)
@@ -35,13 +37,26 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
         StringBuffer sql = new StringBuffer("select ");
         if (table.getFieldList().size() == 0)
         {
-            sql.append("* ");
+            for (Column c : tmd.getColumnList())
+            {
+                sql.append(c.getColumnName()).append(",");
+            }
+            sql.deleteCharAt(sql.length() - 1);
         }
         else
         {
             for (Field f : table.getFieldList())
             {
-                sql.append(f.getField());
+                Column c = tmd.getColumn(f.getField());
+                if (c != null)
+                {
+                    sql.append(c.getColumnName());
+                }
+                else
+                {// 这种情况 通常是字段写错了
+                 // sql.append(f.getField());
+                    logger.warn("table or view {} 没有字段：{}", tmd.getTableName(), f.getField());
+                }
                 if (StringUtils.isNotBlank(f.getAlias()))
                 {
                     sql.append(" as ").append(f.getAlias());
@@ -83,7 +98,12 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
             sql.append(" ");
         }
 
-        SqlBean sqlBean = new DefaultSqlBean(sql.toString(), params.toArray(), table.getJdbcTemplate());
+        SqlBean sqlBean = new DefaultSqlBean(sql.toString(), params.toArray(), null, tmd.getDbType(),
+                table.getJdbcTemplate());
+        sqlBean.setTableMetaData(table.getTableMetaData());
+        sqlBean.setTables(new String[]
+        { table.getName() });
+
         return sqlBean;
     }
 
@@ -122,7 +142,7 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
                 }
             }
         }
-        return new DefaultSqlBean(sql, paramList, null, DbType.MYSQL, new String[]
+        return new DefaultSqlBean(sql, paramList, null, tmd.getDbType(), new String[]
         { entity.tableName() }, null);
 
     }
@@ -422,16 +442,28 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
     @Override
     public String buildConditonSqlFragment(OneCondition c, DbType dbType)
     {
-        if (c.getOpe() != CompareOpe.notNull)
-        {
-            return new StringBuilder(c.getCondtionRel().getVal()).append("  ").append(c.getField()).append(" ")
-                    .append(c.getOpe().getVal()).append(" ? ").toString();
-        }
-        else
+        CompareOpe ope = c.getOpe();
+        if (ope == CompareOpe.notNull)
         {
             return new StringBuilder(c.getCondtionRel().getVal()).append("  ").append(c.getField())
                     .append(" is not null ").toString();
         }
+        else if (ope == CompareOpe.emptyStr)
+        {
+            return new StringBuilder(c.getCondtionRel().getVal()).append("  ").append(c.getField()).append("='' ")
+                    .toString();
+        }
+        else if (ope == CompareOpe.isNull)
+        {
+            return new StringBuilder(c.getCondtionRel().getVal()).append("  ").append(c.getField()).append(" is null ")
+                    .toString();
+        }
+        else
+        {
+            return new StringBuilder(c.getCondtionRel().getVal()).append("  ").append(c.getField()).append(" ")
+                    .append(c.getOpe().getVal()).append(" ? ").toString();
+        }
+
     }
 
     @Override

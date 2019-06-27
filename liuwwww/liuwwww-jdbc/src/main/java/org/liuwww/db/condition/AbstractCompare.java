@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.liuwww.common.util.StringUtil;
 import org.liuwww.db.condition.Condition.ConditionRel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
     @Override
     public T addCondition(Condition condition)
     {
-        conditionList.add(condition);
+        addTheCondition(condition);
         return getTarget();
     }
 
@@ -69,11 +70,62 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         String column = getColumn(field);
         if (column != null)
         {
-            addCondition(new OneCondition(column, ope, val, rel));
+            conditionList.add(new OneCondition(column, ope, val, rel));
         }
         else
         {
-            logger.debug("无匹配的查询字段：{}", field);
+            logger.warn("无匹配的查询字段：{}", field);
+        }
+    }
+
+    protected void addTheCondition(Condition condition)
+    {
+        if (condition instanceof OneCondition)
+        {
+            OneCondition one = (OneCondition) condition;
+            addConditon(one.field, one.ope, one.getVal(), one.rel);
+        }
+        else if (condition instanceof GroupCondition)
+        {
+            GroupCondition group = (GroupCondition) condition;
+            checkGroupCondition(group);
+            conditionList.add(group);
+        }
+        else
+        {
+            conditionList.add(condition);
+            // throw new SysException("未做处理:" + condition.getClass().getName());
+        }
+    }
+
+    protected void checkGroupCondition(GroupCondition group)
+    {
+        Iterator<Condition> it = group.iterator();
+        while (it.hasNext())
+        {
+            Condition c = it.next();
+            if (c instanceof OneCondition)
+            {
+                OneCondition one = (OneCondition) c;
+                String column = getColumn(one.field);
+                if (column != null)
+                {
+                    one.field = column;
+                }
+                else
+                {
+                    it.remove();
+                    logger.warn("无匹配的查询字段：{}", one.field);
+                }
+            }
+            else if (c instanceof GroupCondition)
+            {
+                checkGroupCondition((GroupCondition) c);
+            }
+            else
+            {
+                logger.warn("未处理的Condition类型{}", c.getClass().getName());
+            }
         }
     }
 
@@ -231,6 +283,7 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
      *
      * @see org.liuwww.db.condition.Compare#addParamMap(java.util.Map)
      */
+    @SuppressWarnings("rawtypes")
     @Override
     public T addParamMap(Map paramMap)
     {
@@ -268,4 +321,72 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
     {
         return (T) this;
     }
+
+    @Override
+    public T likeAuto(String field, Object val)
+    {
+        return likeAuto(field, val, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T likeAuto(String field, Object val, ConditionRel rel)
+    {
+        if (val != null && StringUtil.isNotBlank(val.toString()))
+        {
+            addConditon(field, CompareOpe.like, "%" + val + "%", rel);
+        }
+        return (T) this;
+    }
+
+    @Override
+    public T likeR(String field, Object val)
+    {
+        return likeR(field, val, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T likeR(String field, Object val, ConditionRel rel)
+    {
+        if (val != null && StringUtil.isNotBlank(val.toString()))
+        {
+            addConditon(field, CompareOpe.like, val + "%", rel);
+        }
+        return (T) this;
+    }
+
+    @Override
+    public T likeL(String field, Object val)
+    {
+        return likeL(field, val, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T likeL(String field, Object val, ConditionRel rel)
+    {
+        if (val != null && StringUtil.isNotBlank(val.toString()))
+        {
+            addConditon(field, CompareOpe.like, "%" + val, rel);
+        }
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T emptyStr(String field)
+    {
+        addConditon(field, CompareOpe.emptyStr, null, null);
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T emptyStr(String field, ConditionRel rel)
+    {
+        addConditon(field, CompareOpe.emptyStr, null, rel);
+        return (T) this;
+    }
+
 }

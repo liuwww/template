@@ -19,7 +19,7 @@ public class UpdateTest extends AbstractTest
         user.setField2(getRandomStr());
         user.setField3(getRandomStr());
         user.setField4(getRandomStr());
-        dataService.update(user);
+        dataTemplate.update(user);
         dataCompareUtil.testSucccess(user);
     }
 
@@ -31,8 +31,8 @@ public class UpdateTest extends AbstractTest
         map.put("field3", getRandomStr());
         map.put("field4", getRandomStr());
         map.put("field5", getRandomStr());
-        dataService.update("test_user", map);
-        Map<String, Object> map2 = queryService.getMap("test_user", (Serializable) map.get("userId"));
+        dataTemplate.update("test_user", map);
+        Map<String, Object> map2 = queryTemplate.getMap("test_user", (Serializable) map.get("userId"));
         dataCompareUtil.testMapEqual(map, map2);
     }
 
@@ -47,7 +47,7 @@ public class UpdateTest extends AbstractTest
             u.setField4(getRandomStr());
             u.setField5(getRandomStr());
         }
-        dataService.update(list);
+        dataTemplate.update(list);
         dataCompareUtil.testSuccess(list);
     }
 
@@ -62,7 +62,7 @@ public class UpdateTest extends AbstractTest
             map.put("field4", getRandomStr());
             map.put("field5", getRandomStr());
         }
-        dataService.update("test_user", list);
+        dataTemplate.update("test_user", list);
         dataCompareUtil.testMapListSuccess(list, "test_user", null);
     }
 
@@ -74,7 +74,7 @@ public class UpdateTest extends AbstractTest
             u.setField1("t1");
             u.setField2("t2");
         }
-        dataService.update(list);
+        dataTemplate.update(list);
         Map<String, Object> valMap = new HashMap<String, Object>();
         String ufieldVal = "testrows";
         valMap.put("field1", ufieldVal);
@@ -82,14 +82,14 @@ public class UpdateTest extends AbstractTest
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("field1", "t1");
         paramMap.put("field2", "t2");
-        dataService.updateRows("test_user", valMap, paramMap);
+        dataTemplate.updateRows("test_user", valMap, paramMap);
 
-        int n1 = queryService.createQueryBean("test_user").getCompare().eq("field1", "t1").eq("field2", "t2")
+        long n1 = queryTemplate.createQueryBean("test_user").getCompare().eq("field1", "t1").eq("field2", "t2")
                 .getQueryBean().getCount();
         Assert.assertEquals(n1, 0);
 
-        int n2 = queryService.createQueryBean("test_user").getCompare().eq("field1", ufieldVal).eq("field2", ufieldVal)
-                .getQueryBean().getCount();
+        long n2 = queryTemplate.createQueryBean("test_user").getCompare().eq("field1", ufieldVal)
+                .eq("field2", ufieldVal).getQueryBean().getCount();
         Assert.assertEquals(n2, 10);
     }
 

@@ -17,7 +17,7 @@ public class InsertTest extends AbstractTest
         try
         {
             TestUser user = TestUserFactory.createEntity();
-            dataService.insert(user);
+            dataTemplate.insert(user);
             Assert.assertNotNull(user.getUserCode());
             dataCompareUtil.testSucccess(user);
         }
@@ -34,7 +34,7 @@ public class InsertTest extends AbstractTest
         try
         {
             Map<String, Object> user = TestUserFactory.createMap();
-            Row row = dataService.insert("test_user", user);
+            Row row = dataTemplate.insert("test_user", user);
             dataCompareUtil.testInsertSucccess(row);
         }
         catch (Throwable e)
@@ -50,7 +50,7 @@ public class InsertTest extends AbstractTest
         try
         {
             List<TestUser> list = TestUserFactory.createEntityList(10);
-            dataService.insert(list);
+            dataTemplate.insert(list);
             dataCompareUtil.testSuccess(list);
         }
         catch (Throwable e)
@@ -64,7 +64,7 @@ public class InsertTest extends AbstractTest
     public void testInsertMapList()
     {
         List<Map<String, Object>> list = TestUserFactory.createMapList(10);
-        List<Row> rl = dataService.insert("test_user", list);
+        List<Row> rl = dataTemplate.insert("test_user", list);
         dataCompareUtil.testInsertSuccess4Map(rl);
     }
 

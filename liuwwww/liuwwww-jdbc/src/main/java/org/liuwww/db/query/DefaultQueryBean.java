@@ -178,7 +178,7 @@ public class DefaultQueryBean extends DefaultSqlBean implements QueryBean, SqlBe
     }
 
     @Override
-    public int getCount()
+    public long getCount()
     {
         return getQueryDao().getCount(assemblySqlBean());
     }

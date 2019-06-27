@@ -145,8 +145,8 @@ public class DbContext
         return tmd;
     }
 
-    @Bean
-    public IDataDao getDataDao()
+    @Bean(name = "#jDataDao")
+    private IDataDao dataDao()
     {
         if (this.dataDao == null)
         {
@@ -157,13 +157,12 @@ public class DbContext
                     dataDao = new DataDao();
                 }
             }
-
         }
         return this.dataDao;
     }
 
-    @Bean
-    public IQueryDao getQueryDao()
+    @Bean(name = "#jQueryDao")
+    private IQueryDao queryDao()
     {
         if (this.queryDao == null)
         {
@@ -179,45 +178,45 @@ public class DbContext
         return this.queryDao;
     }
 
-    @Bean
-    public IDataTemplate getDataService()
+    @Bean(name = "#jDataTemplate")
+    private IDataTemplate dataTemplate()
     {
-        if (this.dataService == null)
+        if (this.dataTemplate == null)
         {
             synchronized (this)
             {
-                if (this.dataService == null)
+                if (this.dataTemplate == null)
                 {
-                    this.dataService = new DataTemplate();
+                    this.dataTemplate = new DataTemplate();
                 }
             }
 
         }
-        return this.dataService;
+        return this.dataTemplate;
     }
 
-    @Bean
-    public IQueryTemplate getQueryService()
+    @Bean(name = "#jQueryTemplate")
+    private IQueryTemplate queryTemplate()
     {
-        if (this.queryService == null)
+        if (this.queryTemplate == null)
         {
             synchronized (this)
             {
-                if (this.queryService == null)
+                if (this.queryTemplate == null)
                 {
-                    this.queryService = new QueryTemplate();
+                    this.queryTemplate = new QueryTemplate();
                 }
             }
         }
-        return this.queryService;
+        return this.queryTemplate;
     }
 
     private IDataDao dataDao;
 
     private IQueryDao queryDao;
 
-    private IDataTemplate dataService;
+    private IDataTemplate dataTemplate;
 
-    private IQueryTemplate queryService;
+    private IQueryTemplate queryTemplate;
 
 }

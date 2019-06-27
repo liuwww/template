@@ -35,7 +35,7 @@ public interface IQueryTemplate extends QueryBeanFactory
     public <T> T getBean(Entity<T> entity);
 
     /**
-     * @Desc:分页查询
+     * @Desc:分页查询，rows中的范型类型为entity类型
      * @Date 2017年5月25日下午5:54:12
      * @author liuwww
      * @param entity
@@ -45,7 +45,7 @@ public interface IQueryTemplate extends QueryBeanFactory
     public <T> Page getPage(Entity<T> entity, Page page);
 
     /**
-     * @Desc:按照表或视图分页查询
+     * @Desc:按照表或视图分页查询，rows中的范型类型为map类型
      * @Date 2017年6月5日下午2:28:44
      * @author liuwww
      * @param tableName 表或者视图名称
@@ -73,7 +73,7 @@ public interface IQueryTemplate extends QueryBeanFactory
      * @param paramMap
      * @return
      */
-    public List<Map<String, Object>> getList(String tableName, Map<String, Object> paramMap);
+    public List<Map<String, Object>> getMapList(String tableName, Map<String, Object> paramMap);
 
     /**
      * @Desc:查询个数
@@ -82,7 +82,7 @@ public interface IQueryTemplate extends QueryBeanFactory
      * @param entity
      * @return
      */
-    public <T> int getCount(Entity<T> entity);
+    public <T> long getCount(Entity<T> entity);
 
     /**
      * @Desc:通过id查询
@@ -102,6 +102,6 @@ public interface IQueryTemplate extends QueryBeanFactory
      * @param id
      * @param clazz
      */
-    public <T> T getEntity(String tableName, Serializable id, Class<T> clazz);
+    public <T> T getBean(String tableName, Serializable id, Class<T> clazz);
 
 }

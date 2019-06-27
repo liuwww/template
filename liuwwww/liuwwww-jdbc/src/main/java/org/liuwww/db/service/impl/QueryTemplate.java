@@ -50,7 +50,7 @@ public class QueryTemplate extends DefaultQueryBeanFactory implements IQueryTemp
     }
 
     @Override
-    public <T> int getCount(Entity<T> entity)
+    public <T> long getCount(Entity<T> entity)
     {
         SqlBean bean = SqlBeanUtil.getSqlBean(entity, null);
         checkSqlBeanJdbcTemplate(entity.tableName(), null, bean);
@@ -85,7 +85,7 @@ public class QueryTemplate extends DefaultQueryBeanFactory implements IQueryTemp
     }
 
     @Override
-    public List<Map<String, Object>> getList(String tableName, Map<String, Object> paramMap)
+    public List<Map<String, Object>> getMapList(String tableName, Map<String, Object> paramMap)
     {
         SqlBean bean = SqlBeanUtil.getSqlBean(tableName, paramMap);
         checkSqlBeanJdbcTemplate(tableName, null, bean);
@@ -107,7 +107,7 @@ public class QueryTemplate extends DefaultQueryBeanFactory implements IQueryTemp
     }
 
     @Override
-    public <T> T getEntity(String tableName, Serializable id, Class<T> clazz)
+    public <T> T getBean(String tableName, Serializable id, Class<T> clazz)
     {
         TableMetaData tmd = getTableMetaData(tableName);
         String idName = tmd.getIdColumn().getColumnName();

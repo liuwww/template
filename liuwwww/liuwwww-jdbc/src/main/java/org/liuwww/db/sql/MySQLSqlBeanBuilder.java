@@ -33,13 +33,27 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
         StringBuffer sql = new StringBuffer("select ");
         if (table.getFieldList().size() == 0)
         {
-            sql.append("* ");
+            for (Column c : tmd.getColumnList())
+            {
+                sql.append("`").append(c.getColumnName()).append("`,");
+            }
+            sql.deleteCharAt(sql.length() - 1);
         }
         else
         {
             for (Field f : table.getFieldList())
             {
-                sql.append('`').append(f.getField()).append('`');
+                Column c = tmd.getColumn(f.getField());
+                if (c != null)
+                {
+                    sql.append('`').append(c.getColumnName()).append('`');
+                }
+                else
+                {
+                    // sql.append('`').append(f.getField()).append('`');
+                    logger.warn("table or view {} 没有字段：{}", tmd.getTableName(), f.getField());
+                }
+
                 if (StringUtils.isNotBlank(f.getAlias()))
                 {
                     sql.append(" as ").append('`').append(f.getAlias()).append('`');
@@ -84,6 +98,8 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
         SqlBean sqlBean = new DefaultSqlBean(sql.toString(), params.toArray(), null, tmd.getDbType(),
                 table.getJdbcTemplate());
         sqlBean.setTableMetaData(table.getTableMetaData());
+        sqlBean.setTables(new String[]
+        { table.getName() });
         return sqlBean;
     }
 
@@ -183,16 +199,29 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
     @Override
     public String buildConditonSqlFragment(OneCondition c, DbType dbType)
     {
-        if (c.getOpe() != CompareOpe.notNull)
+
+        CompareOpe ope = c.getOpe();
+        if (ope == CompareOpe.notNull)
+        {
+            return new StringBuilder(c.getCondtionRel().getVal()).append("  `").append(c.getField())
+                    .append("` is not null ").toString();
+        }
+        else if (ope == CompareOpe.emptyStr)
+        {
+            return new StringBuilder(c.getCondtionRel().getVal()).append("  `").append(c.getField()).append("`='' ")
+                    .toString();
+        }
+        else if (ope == CompareOpe.isNull)
+        {
+            return new StringBuilder(c.getCondtionRel().getVal()).append("  `").append(c.getField())
+                    .append("` is null ").toString();
+        }
+        else
         {
             return new StringBuilder(c.getCondtionRel().getVal()).append("  `").append(c.getField()).append("` ")
                     .append(c.getOpe().getVal()).append(" ? ").toString();
         }
-        else
-        {
-            return new StringBuilder(c.getCondtionRel().getVal()).append("  ").append(c.getField())
-                    .append(" is not null ").toString();
-        }
+
     }
 
     @Override

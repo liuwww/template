@@ -48,7 +48,7 @@ public class SqlBeanUtil
         return getSqlBuilder(table.getTableMetaData().getDbType()).buildQuery(table);
     }
 
-    private static JdbcTemplate getDefaultJdbcTemplate()
+    public static JdbcTemplate getDefaultJdbcTemplate()
     {
         List<JdbcTemplate> list = BeanUtil.getBeanList(JdbcTemplate.class);
         if (list.size() > 0)

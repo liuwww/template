@@ -94,6 +94,7 @@ public class DefaultDataSourceContext implements DataSourceContext
             DatabaseMetaData md = conn.getMetaData();
             String catalog = conn.getCatalog();
             String dbName = md.getDatabaseProductName();
+            this.dbType = DbType.valueOf(dbName.toUpperCase());
             String schema = getDbCatalog(md.getUserName(), dbName);
             ResultSet rs = md.getTables(conn.getCatalog(), schema, null, new String[]
             { "TABLE", "VIEW" });
@@ -109,7 +110,7 @@ public class DefaultDataSourceContext implements DataSourceContext
                     logger.debug("开始加载表[{}]元数据……", tableName);
                 }
                 TableMetaData tmd = new TableMetaData();
-                tmd.setDbType(DbType.valueOf(dbName.toUpperCase()));
+                tmd.setDbType(this.dbType);
                 tmd.setDataSource(dataSource);
                 String tableType = rs.getString("TABLE_TYPE");
                 tmd.setTableType(tableType);

@@ -44,7 +44,7 @@ public interface QueryBean
 
     public QueryBeanCompare getCompare();
 
-    public int getCount();
+    public long getCount();
 
     public SqlBean getSqlBean();
 }

@@ -19,7 +19,7 @@ public class Update4MutiDs extends AbstractTest
         user.setField2(getRandomStr());
         user.setField3(getRandomStr());
         user.setField4(getRandomStr());
-        dataService.update(user, jdbcTemplate1);
+        dataTemplate.update(user, jdbcTemplate1);
         dataCompareUtil.testInsertSucccess(user, jdbcTemplate1);
     }
 
@@ -37,8 +37,8 @@ public class Update4MutiDs extends AbstractTest
         map.put("field3", getRandomStr());
         map.put("field4", getRandomStr());
         map.put("field5", getRandomStr());
-        dataService.update("test_user2", map, jdbcTemplate);
-        Map<String, Object> map2 = queryService.createQueryBean("test_user2", jdbcTemplate).getCompare()
+        dataTemplate.update("test_user2", map, jdbcTemplate);
+        Map<String, Object> map2 = queryTemplate.createQueryBean("test_user2", jdbcTemplate).getCompare()
                 .eq("userId", map.get("userId")).getQueryBean().getMap();
         dataCompareUtil.testMapEqual(map, map2);
     }
@@ -60,7 +60,7 @@ public class Update4MutiDs extends AbstractTest
             u.setField4(getRandomStr());
             u.setField5(getRandomStr());
         }
-        dataService.update(list, jdbcTemplate);
+        dataTemplate.update(list, jdbcTemplate);
         dataCompareUtil.testInsertSuccess(list, jdbcTemplate);
     }
 
@@ -81,7 +81,7 @@ public class Update4MutiDs extends AbstractTest
             map.put("field4", getRandomStr());
             map.put("field5", getRandomStr());
         }
-        dataService.update("test_user2", list, jdbcTemplate);
+        dataTemplate.update("test_user2", list, jdbcTemplate);
         dataCompareUtil.testMapListSuccess(list, "test_user2", jdbcTemplate);
     }
 
@@ -99,7 +99,7 @@ public class Update4MutiDs extends AbstractTest
             u.setField1("t1");
             u.setField2("t2");
         }
-        dataService.update(list, jdbcTemplate);
+        dataTemplate.update(list, jdbcTemplate);
         Map<String, Object> valMap = new HashMap<String, Object>();
         String ufieldVal = "testrows";
         valMap.put("field1", ufieldVal);
@@ -107,13 +107,13 @@ public class Update4MutiDs extends AbstractTest
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("field1", "t1");
         paramMap.put("field2", "t2");
-        dataService.updateRows("test_user2", valMap, paramMap, jdbcTemplate);
+        dataTemplate.updateRows("test_user2", valMap, paramMap, jdbcTemplate);
 
-        int n1 = queryService.createQueryBean("test_user2", jdbcTemplate).getCompare().eq("field1", "t1")
+        long n1 = queryTemplate.createQueryBean("test_user2", jdbcTemplate).getCompare().eq("field1", "t1")
                 .eq("field2", "t2").getQueryBean().getCount();
         Assert.assertEquals(n1, 0);
 
-        int n2 = queryService.createQueryBean("test_user2", jdbcTemplate).getCompare().eq("field1", ufieldVal)
+        long n2 = queryTemplate.createQueryBean("test_user2", jdbcTemplate).getCompare().eq("field1", ufieldVal)
                 .eq("field2", ufieldVal).getQueryBean().getCount();
         Assert.assertEquals(n2, 10);
     }

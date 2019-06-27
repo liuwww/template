@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public abstract class AbstractTest
 {
     @Autowired
-    protected IDataTemplate dataService;
+    protected IDataTemplate dataTemplate;
 
     @Autowired
     protected DataCompareUtil dataCompareUtil;
@@ -36,46 +36,46 @@ public abstract class AbstractTest
     protected JdbcTemplate jdbcTemplate2;
 
     @Autowired
-    protected IQueryTemplate queryService;
+    protected IQueryTemplate queryTemplate;
 
     protected TestUser queryTestUser()
     {
-        return queryService.createQueryBean("test_user").getBeanList(TestUser.class, 1).get(0);
+        return queryTemplate.createQueryBean("test_user").getBeanList(TestUser.class, 1).get(0);
     }
 
     protected Map<String, Object> queryTestUser1Map()
     {
-        return queryService.createQueryBean("test_user").getMapList(1).get(0);
+        return queryTemplate.createQueryBean("test_user").getMapList(1).get(0);
     }
 
     protected TestUser2 queryTestUser2(JdbcTemplate jdbcTemplate)
     {
-        return queryService.createQueryBean("test_user2", jdbcTemplate).getBeanList(TestUser2.class, 1).get(0);
+        return queryTemplate.createQueryBean("test_user2", jdbcTemplate).getBeanList(TestUser2.class, 1).get(0);
     }
 
     protected Map<String, Object> queryTestUser2Map(JdbcTemplate jdbcTemplate)
     {
-        return queryService.createQueryBean("test_user2", jdbcTemplate).getMapList(1).get(0);
+        return queryTemplate.createQueryBean("test_user2", jdbcTemplate).getMapList(1).get(0);
     }
 
     protected List<TestUser> queryTestUserList(int n)
     {
-        return queryService.createQueryBean("test_user").getBeanList(TestUser.class, n);
+        return queryTemplate.createQueryBean("test_user").getBeanList(TestUser.class, n);
     }
 
     protected List<TestUser2> queryTestUser2List(int n, JdbcTemplate jdbcTemplate)
     {
-        return queryService.createQueryBean("test_user2", jdbcTemplate).getBeanList(TestUser2.class, n);
+        return queryTemplate.createQueryBean("test_user2", jdbcTemplate).getBeanList(TestUser2.class, n);
     }
 
     protected List<Map<String, Object>> queryTestUserMapList(int n)
     {
-        return queryService.createQueryBean("test_user").getMapList(n);
+        return queryTemplate.createQueryBean("test_user").getMapList(n);
     }
 
     protected List<Map<String, Object>> queryTestUser2MapList(int n, JdbcTemplate jdbcTemplate)
     {
-        return queryService.createQueryBean("test_user2", jdbcTemplate).getMapList(n);
+        return queryTemplate.createQueryBean("test_user2", jdbcTemplate).getMapList(n);
     }
 
     protected String getRandomStr()

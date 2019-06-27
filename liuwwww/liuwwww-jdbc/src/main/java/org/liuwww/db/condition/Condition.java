@@ -1,5 +1,6 @@
 package org.liuwww.db.condition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +26,10 @@ public interface Condition
         }
     }
 
-    public class Param
+    public class Param implements Serializable
     {
+        private static final long serialVersionUID = 1L;
+
         private List<Object> valList;
 
         public List<Object> getValList()
@@ -46,7 +49,7 @@ public interface Condition
 
         public Param(Object val)
         {
-            this.valList = new ArrayList<Object>(0);
+            this.valList = new ArrayList<Object>(1);
             this.valList.add(val);
         }
 
@@ -64,6 +67,19 @@ public interface Condition
                 }
             }
             return false;
+        }
+
+        @Override
+        public String toString()
+        {
+            if (valList == null)
+            {
+                return null;
+            }
+            else
+            {
+                return valList.toString();
+            }
         }
 
     }

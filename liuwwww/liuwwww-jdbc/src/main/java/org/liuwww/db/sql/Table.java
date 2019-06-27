@@ -88,14 +88,22 @@ public class Table extends AbstractCompare<Table>
         tmd = DbContext.getTableMetaData(this.name, this.jdbcTemplate);
     }
 
-    public void addField(String field, String alias)
+    public Table addField(String field, String alias)
     {
         fieldList.add(new Field(field, alias));
+        return this;
     }
 
-    public void addField(Field field)
+    public Table addField(String field)
+    {
+        fieldList.add(new Field(field));
+        return this;
+    }
+
+    public Table addField(Field field)
     {
         fieldList.add(field);
+        return this;
     }
 
     public List<Field> getFieldList()

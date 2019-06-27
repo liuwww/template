@@ -5,9 +5,13 @@ import java.util.List;
 
 import org.liuwww.db.sql.DbType;
 import org.liuwww.db.sql.SqlBeanUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OneCondition implements Condition
 {
+    protected static Logger logger = LoggerFactory.getLogger(OneCondition.class);
+
     protected String field;
 
     protected CompareOpe ope;
@@ -25,10 +29,6 @@ public class OneCondition implements Condition
         this.ope = ope;
         this.rel = ConditionRel.AND;
         this.val = new Param(val);
-        if (CompareOpe.like.equals(ope) && this.val.isValid())
-        {
-            this.val.getValList().set(0, "%" + val + "%");
-        }
     }
 
     public static OneCondition getTheCondition(String field, CompareOpe ope, Object val)
@@ -59,6 +59,11 @@ public class OneCondition implements Condition
         return field;
     }
 
+    protected void setField(String field)
+    {
+        this.field = field;
+    }
+
     public CompareOpe getOpe()
     {
         return ope;
@@ -73,13 +78,12 @@ public class OneCondition implements Condition
     public String getSqlFragment(DbType dbType)
     {
         return SqlBeanUtil.getConditonSqlFragment(this, dbType);
-
     }
 
     @Override
     public List<Object> getParamList()
     {
-        if (ope == CompareOpe.notNull)
+        if (ope.defaultEffective())
         {
             return Collections.emptyList();
         }
@@ -89,7 +93,15 @@ public class OneCondition implements Condition
     @Override
     public boolean isValid()
     {
-        if (ope != CompareOpe.notNull)
+        if (ope.defaultEffective())
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("conditon：{}:{} 是否有效：{}", this.field, this.ope.getVal(), true);
+            }
+            return true;
+        }
+        else
         {
             if (this.isValid == null)
             {
@@ -102,11 +114,12 @@ public class OneCondition implements Condition
                     this.isValid = this.val.isValid();
                 }
             }
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("conditon：{}:{},值：{},是否有效：{}", this.field, this.ope.getVal(), this.getVal(),
+                        this.isValid.booleanValue());
+            }
             return this.isValid.booleanValue();
-        }
-        else
-        {
-            return true;
         }
     }
 

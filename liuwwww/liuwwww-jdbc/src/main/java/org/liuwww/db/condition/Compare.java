@@ -135,7 +135,7 @@ public interface Compare<T extends Compare<T>> extends Iterable<Condition>
     T like(String field, Object val);
 
     /**
-     * @Desc: like
+     * @Desc: like,
      * @Date 2017年7月7日上午11:10:20
      * @author liuwww
      * @param field
@@ -144,6 +144,69 @@ public interface Compare<T extends Compare<T>> extends Iterable<Condition>
      * @param rel and或者or
      */
     T like(String field, Object val, ConditionRel rel);
+
+    /**
+     * @desc:like 自动在val两边加上%
+     * @Date:2019年6月26日下午10:43:06
+     * @author liuwww
+     * @param field
+     * @param val
+     * @return
+     */
+    T likeAuto(String field, Object val);
+
+    /**
+     * @desc: like 自动在val两边加上%
+     * @Date:2019年6月26日下午10:44:24
+     * @author liuwww
+     * @param field
+     * @param val
+     * @param rel
+     * @return
+     */
+    T likeAuto(String field, Object val, ConditionRel rel);
+
+    /**
+     * @desc: like 自动在右边加上%
+     * @Date:2019年6月26日下午10:45:00
+     * @author liuwww
+     * @param field
+     * @param val
+     * @return
+     */
+    T likeR(String field, Object val);
+
+    /**
+     * @desc:like 自动在右边加上%
+     * @Date:2019年6月26日下午10:46:02
+     * @author liuwww
+     * @param field
+     * @param val
+     * @param rel
+     * @return
+     */
+    T likeR(String field, Object val, ConditionRel rel);
+
+    /**
+     * @desc: like 自动在左边加上%
+     * @Date:2019年6月26日下午10:46:30
+     * @author liuwww
+     * @param field
+     * @param val
+     * @return
+     */
+    T likeL(String field, Object val);
+
+    /**
+     * @desc: like 自动在左边加上%
+     * @Date:2019年6月26日下午10:47:08
+     * @author liuwww
+     * @param field
+     * @param val
+     * @param rel
+     * @return
+     */
+    T likeL(String field, Object val, ConditionRel rel);
 
     /**
      * @Desc:返回condition的个数
@@ -168,7 +231,7 @@ public interface Compare<T extends Compare<T>> extends Iterable<Condition>
      * @param paramMap
      * @return
      */
-    T addParamMap(Map<String, Object> tttt);
+    T addParamMap(Map<String, Object> paramMap);
 
     /**
      * @Desc:字段不为null
@@ -187,5 +250,24 @@ public interface Compare<T extends Compare<T>> extends Iterable<Condition>
      * @return
      */
     T notNull(String field, ConditionRel rel);
+
+    /**
+     * @desc:字段为空字符串
+     * @Date:2019年6月26日下午10:47:55
+     * @author liuwww
+     * @param field
+     * @return
+     */
+    T emptyStr(String field);
+
+    /**
+     * @desc: 字段为空字符串
+     * @Date:2019年6月26日下午10:48:32
+     * @author liuwww
+     * @param field
+     * @param rel
+     * @return
+     */
+    T emptyStr(String field, ConditionRel rel);
 
 }

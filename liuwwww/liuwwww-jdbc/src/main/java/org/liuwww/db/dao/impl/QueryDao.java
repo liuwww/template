@@ -116,14 +116,16 @@ public class QueryDao implements IQueryDao
         {
             String sql = bean.getSql();
             String dbType = bean.getDbType().toString();
-            String querySql = PagerUtils.limit(sql, dbType, pageInfo.getStartRow(), pageInfo.getPageSize());
-            logger.debug("query sql:{},params:{}", querySql, bean.getParams());
+            String querySql = PagerUtils.limit(sql, dbType, pageInfo.getStartRow() - 1, pageInfo.getPageSize());
+
             List<T> list = bean.getJdbcTemplate().query(querySql, bean.getParams(),
                     new BeanPropertyRowMapper<T>(clazz));
+            logger.debug("query sql:{},params:{}", querySql, bean.getParams());
             pageInfo.setRows(list);
-            Number count = bean.getJdbcTemplate().queryForObject(PagerUtils.count(sql, dbType), bean.getParams(),
-                    Number.class);
-            pageInfo.setTotal(count.intValue());
+            String totalSql = PagerUtils.count(sql, dbType);
+            Number count = bean.getJdbcTemplate().queryForObject(totalSql, bean.getParams(), Number.class);
+            logger.debug("totalSql sql:{},params:{}", totalSql, bean.getParams());
+            pageInfo.setTotal(count.longValue());
         }
         catch (DataAccessException e)
         {
@@ -141,7 +143,7 @@ public class QueryDao implements IQueryDao
         {
             String sql = bean.getSql();
             String dbType = bean.getDbType().toString();
-            String querySql = PagerUtils.limit(sql, dbType, pageInfo.getStartRow(), pageInfo.getPageSize());
+            String querySql = PagerUtils.limit(sql, dbType, pageInfo.getStartRow() - 1, pageInfo.getPageSize());
             logger.debug("query sql:{},params:{}", querySql, bean.getParams());
             List<Map<String, Object>> list = bean.getJdbcTemplate().queryForList(querySql, bean.getParams());
             list = convertField(list);
@@ -183,7 +185,7 @@ public class QueryDao implements IQueryDao
     }
 
     @Override
-    public int getCount(SqlBean bean) throws SysException
+    public long getCount(SqlBean bean) throws SysException
     {
         String sql = null;
         try
@@ -191,7 +193,7 @@ public class QueryDao implements IQueryDao
             sql = PagerUtils.count(bean.getSql(), bean.getDbType().toString());
             logger.debug("query sql:{},params:{}", sql, bean.getParams());
             Number count = bean.getJdbcTemplate().queryForObject(sql, bean.getParams(), Number.class);
-            return count.intValue();
+            return count.longValue();
         }
         catch (DataAccessException e)
         {

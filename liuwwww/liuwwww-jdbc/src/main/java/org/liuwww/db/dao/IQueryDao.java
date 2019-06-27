@@ -22,5 +22,5 @@ public interface IQueryDao
 
     public Page getPage(SqlBean bean, Page pageInfo) throws SysException;
 
-    public int getCount(SqlBean bean) throws SysException;
+    public long getCount(SqlBean bean) throws SysException;
 }

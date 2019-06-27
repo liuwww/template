@@ -1,5 +1,7 @@
 package org.liuwww.db.query;
 
+import org.liuwww.db.context.DbContext;
+import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.dao.IQueryDao;
 import org.liuwww.db.sql.SqlBean;
 import org.liuwww.db.sql.SqlBeanUtil;
@@ -40,7 +42,9 @@ public class DefaultQueryBeanFactory implements QueryBeanFactory
     @Override
     public QueryBean createQueryBean(SqlBean sqlBean)
     {
-        return new DefaultQueryBean(getQueryDao(), sqlBean);
+        DefaultQueryBean queryBean = new DefaultQueryBean(getQueryDao(), sqlBean);
+        setJdbcTemplate(queryBean, null);
+        return queryBean;
     }
 
     protected IQueryDao getQueryDao()
@@ -54,23 +58,57 @@ public class DefaultQueryBeanFactory implements QueryBeanFactory
         SqlBean bean = SqlBeanUtil.getSqlBean(entity, jdbcTemplate);
         DefaultQueryBean queryBean = new DefaultQueryBean(getQueryDao(), bean);
         queryBean.setTableQuery(true);
-        queryBean.getSqlBean().setJdbcTemplate(jdbcTemplate);
+        setJdbcTemplate(queryBean, jdbcTemplate);
         return queryBean;
+    }
+
+    protected void setJdbcTemplate(QueryBean queryBean, JdbcTemplate jdbcTemplate)
+    {
+        if (jdbcTemplate != null)
+        {
+            queryBean.getSqlBean().setJdbcTemplate(jdbcTemplate);
+        }
+        else
+        {
+            SqlBean sqlBean = queryBean.getSqlBean();
+            if (sqlBean.getJdbcTemplate() == null)
+            {
+                TableMetaData tmd = sqlBean.getTableMetaData();
+                if (tmd != null)
+                {
+                    sqlBean.setJdbcTemplate(DbContext.getJdbcTemplateForTable(tmd.getTableName()));
+                }
+                else
+                {
+                    sqlBean.setJdbcTemplate(SqlBeanUtil.getDefaultJdbcTemplate());
+                }
+            }
+        }
+
+        if (queryBean.getSqlBean().getDbType() == null)
+        {
+            queryBean.getSqlBean()
+                    .setDbType(DbContext.getDbTypeForJdbcTemlate(queryBean.getSqlBean().getJdbcTemplate()));
+        }
+
     }
 
     @Override
     public QueryBean createQueryBean(String file, String tag, JdbcTemplate jdbcTemplate)
     {
         QueryBean queryBean = createQueryBean(file, tag);
-        queryBean.getSqlBean().setJdbcTemplate(jdbcTemplate);
+        setJdbcTemplate(queryBean, jdbcTemplate);
         return queryBean;
     }
 
     @Override
     public QueryBean createQueryBean(String file, String tag, JdbcTemplate jdbcTemplate, Object... params)
     {
-        QueryBean queryBean = createQueryBean(file, tag, params);
-        queryBean.getSqlBean().setJdbcTemplate(jdbcTemplate);
+
+        SqlBean bean = SqlBeanUtil.getOriginalSqlBean(file, tag);
+        bean.setParams(params);
+        QueryBean queryBean = new DefaultQueryBean(getQueryDao(), bean);
+        setJdbcTemplate(queryBean, jdbcTemplate);
         return queryBean;
     }
 
