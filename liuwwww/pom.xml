@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>liuwwww</groupId>
   <artifactId>liuwwww-parent</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
   <properties>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -11,7 +11,7 @@
   </properties>
   <modules>
   	<module>liuwwww-common</module>
-  	<module>liuwwww-jdbc</module>
+  	<module>template-jdbc</module>
   </modules>
   <dependencyManagement>
 		<dependencies>
