@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
   	<groupId>liuwwww</groupId>
-  	<artifactId>liuwwww-parent</artifactId>
+  	<artifactId>template-parent</artifactId>
   	<version>1.0.0</version>
   </parent>
-  <artifactId>liuwwww-common</artifactId>
+  <artifactId>template-common</artifactId>
   <packaging>jar</packaging>
   <properties>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

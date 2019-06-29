@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>liuwwww</groupId>
-		<artifactId>liuwwww-parent</artifactId>
+		<artifactId>template-parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
 	<artifactId>template-jdbc</artifactId>
@@ -13,7 +13,7 @@
 		<springframework.version>4.2.9.RELEASE</springframework.version>
 		<mysql.version>5.1.34</mysql.version>
 		<oracle.version>10.2.0.2</oracle.version>
-		<liuwwww-common.version>1.0.0</liuwwww-common.version>
+		<template-common.version>1.0.0</template-common.version>
 		<slf4j.version>1.7.12</slf4j.version>
 		<common.beanutils.version>1.9.2</common.beanutils.version>
 		<commons-configuration.verion>1.9</commons-configuration.verion>
@@ -35,8 +35,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>liuwwww</groupId>
-			<artifactId>liuwwww-common</artifactId>
-			<version>${liuwwww-common.version}</version>
+			<artifactId>template-common</artifactId>
+			<version>${template-common.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
