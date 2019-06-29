@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<testQuery>
+		<sql>select * from test_user where sts='A' </sql>
+		<order-by>user_id asc</order-by>
+	</testQuery>
+	<testQuery2>
+		<sql>select * from test_user2 where sts='A' </sql>
+		<jdbcTemplate>jdbcTemplate1</jdbcTemplate>
+		<order-by>user_id asc</order-by>
+	</testQuery2>
+	<testQuery3>
+		<sql>select * from test_user2 where sts=? and sts_date>? </sql>
+		<jdbcTemplate>jdbcTemplate1</jdbcTemplate>
+		<order-by>user_id asc</order-by>
+	</testQuery3>
+</sqls>

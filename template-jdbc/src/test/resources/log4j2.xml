@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration status="error" strict="true" name="log4jConfig" >
+	<Properties>
+    	<Property name="filename">logger/db.log</Property>
+    	<Property name="filepath">logger/db</Property>
+  	</Properties>
+	<Appenders >
+	
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<RollingFile name="ROLLING" fileName="${filename}" filePattern="${filepath}_%d{yyyy-MM-dd}_%i.log">
+            <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="24"/>
+                <SizeBasedTriggeringPolicy size="51200 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+   	 </RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="debug">
+			<appender-ref ref="Console" />
+			<appender-ref ref="ROLLING"/>
+		</Root>
+	</Loggers>
+</Configuration>
