@@ -94,12 +94,10 @@
 			<version>2.3</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- 连接池 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
 			<version>1.0.11</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -129,7 +127,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>template-jdbc</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
