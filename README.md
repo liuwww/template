@@ -44,6 +44,7 @@ template jdbc 是基于spirng JdbcTemplate 封装的对数据库进行增删改�
  QueryBeanCompare 查询条件组装<br/>
 
  ### queryTemplate
+ ```
  public QueryBean createQueryBean(String file, String tag, Object... params);
  public QueryBean createQueryBean(String tableName);
  public QueryBean createQueryBean(Table table);
@@ -67,14 +68,15 @@ template jdbc 是基于spirng JdbcTemplate 封装的对数据库进行增删改�
 		<order-by>user_id asc</order-by>
 	</testQuery3>
 </sqls>
+
 ```
 queryTeamplge.createQuery("test","testQuery").getPage(new Page());
 queryTeamplge.createQuery("test","testQuery2",sts,stsDate).getPage(new Page());
 ```
+
 条件与参数需要匹配，如果xml总存在?参数,通常需要在构建时，以不定长数组给出。xml中可以指定jdbcTemplate以指定查询指定的数据源，orderBy参数也是有效的。
 Table 也可以表示一个表或视图的查询，table.addField(field,alias).addFiled…… 表示查询的列，当为空时，查询所有字段，table 也实现了compare接口，可以构建灵活的查询条件，下面以QueryBeanCompare 统一说明。
-
-Compare 中实现了：<br/>
+Compare 中实现了：
 ```
 T eq(String field, Object val);//=
 T ne(String field, Object val);//!=
