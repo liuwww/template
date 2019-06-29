@@ -39,9 +39,9 @@ template jdbc 是基于spirng JdbcTemplate 封装的对数据库进行增删改�
  删除支持指定数据源。map或bean作为参数时，必须含有id字段，以id字段作为条件删除。deleteRows 可以使用条件删除。
  
  ## 查询api
- IQueryTemplate 简单查询
- QueryBean 获取指定结果集
- QueryBeanCompare 查询条件组装
+ IQueryTemplate 简单查询<br/>
+ QueryBean 获取指定结果集<br/>
+ QueryBeanCompare 查询条件组装<br/>
  下面进一步说明
 
 
