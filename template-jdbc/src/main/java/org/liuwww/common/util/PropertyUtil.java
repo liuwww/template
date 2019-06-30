@@ -73,7 +73,10 @@ public class PropertyUtil
                     {
                         if (!istry)
                         {
-                            logger.error("file load error", e);
+                            if (logger.isErrorEnabled())
+                            {
+                                logger.error("file load error", e);
+                            }
                             throw new SysException("", e);
                         }
 

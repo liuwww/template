@@ -37,7 +37,10 @@ public class BeanUtil implements ApplicationContextAware
         }
         catch (BeansException e)
         {
-            logger.debug("there is not has bean:{}", beanName);
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("there is not has bean:{}", beanName);
+            }
             return null;
         }
     }
@@ -50,7 +53,10 @@ public class BeanUtil implements ApplicationContextAware
         }
         catch (BeansException e)
         {
-            logger.debug("there is not has bean:{}", beanName);
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("there is not has bean:{}", beanName);
+            }
             return null;
         }
     }
@@ -63,7 +69,10 @@ public class BeanUtil implements ApplicationContextAware
         }
         catch (BeansException e)
         {
-            logger.debug("there is not has bean:{}", tClass);
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("there is not has bean:{}", tClass);
+            }
             return null;
         }
     }

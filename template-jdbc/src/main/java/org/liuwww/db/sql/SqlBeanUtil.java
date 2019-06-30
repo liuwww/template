@@ -240,7 +240,10 @@ public class SqlBeanUtil
                     }
                     else
                     {
-                        logger.warn("排序字段：{}，在表或视图{}中不存在", field, tmd.getTableName());
+                        if (logger.isWarnEnabled())
+                        {
+                            logger.warn("排序字段：{}，在表或视图{}中不存在", field, tmd.getTableName());
+                        }
                     }
                 }
                 else

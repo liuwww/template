@@ -74,7 +74,10 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         }
         else
         {
-            logger.warn("无匹配的查询字段：{}", field);
+            if (logger.isWarnEnabled())
+            {
+                logger.warn("无匹配的查询字段：{}", field);
+            }
         }
     }
 
@@ -115,7 +118,10 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
                 else
                 {
                     it.remove();
-                    logger.warn("无匹配的查询字段：{}", one.field);
+                    if (logger.isWarnEnabled())
+                    {
+                        logger.warn("无匹配的查询字段：{}", one.field);
+                    }
                 }
             }
             else if (c instanceof GroupCondition)
@@ -124,7 +130,10 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
             }
             else
             {
-                logger.warn("未处理的Condition类型{}", c.getClass().getName());
+                if (logger.isWarnEnabled())
+                {
+                    logger.warn("未处理的Condition类型{}", c.getClass().getName());
+                }
             }
         }
     }

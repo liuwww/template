@@ -87,7 +87,10 @@ public class DataTemplate implements IDataTemplate
     {
         if (!row.getIsEffective())
         {
-            logger.error("非法更新sql row:{}", JSON.toJSON(row));
+            if (logger.isErrorEnabled())
+            {
+                logger.error("非法更新sql row:{}", JSON.toJSON(row));
+            }
             throw new SysException("找不到对应的table:" + row.getTableName() + ",或参数异常！");
         }
     }

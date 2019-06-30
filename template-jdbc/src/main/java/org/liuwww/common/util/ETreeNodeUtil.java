@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.liuwww.common.util.ETreeNode.STATE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -23,9 +21,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ETreeNodeUtil
 {
-
-    @SuppressWarnings("unused")
-    private static Logger log = LoggerFactory.getLogger(ETreeNodeUtil.class);
 
     /**
      * 根据给定的list，list转换的mapObj获取children处理好的TreeNode list

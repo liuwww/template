@@ -70,8 +70,12 @@ public class IdGenerator
         }
         this.workerId = workerId;
         this.datacenterId = datacenterId;
-        LOG.info(String.format("ID生成器初始化. 时间戳 左偏移数 ： %d, 数据中心id位数 ：%d,  节点位数：%d, 每毫秒序列位数： %d, 节点： %d",
-                timestampLeftShift, datacenterIdBits, workerIdBits, sequenceBits, workerId));
+        if (LOG.isInfoEnabled())
+        {
+            LOG.info(String.format("ID生成器初始化. 时间戳 左偏移数 ： %d, 数据中心id位数 ：%d,  节点位数：%d, 每毫秒序列位数： %d, 节点： %d",
+                    timestampLeftShift, datacenterIdBits, workerIdBits, sequenceBits, workerId));
+        }
+
     }
 
     public synchronized long nextId()
@@ -79,7 +83,10 @@ public class IdGenerator
         long timestamp = timeGen();
         if (timestamp < lastTimestamp)
         {
-            LOG.error(String.format("时间不可回流，最新的毫秒数： %d.", lastTimestamp));
+            if (LOG.isErrorEnabled())
+            {
+                LOG.error(String.format("时间不可回流，最新的毫秒数： %d.", lastTimestamp));
+            }
             throw new RuntimeException(String.format("系统时钟回流了毫秒数： %d milliseconds", lastTimestamp - timestamp));
         }
         if (lastTimestamp == timestamp)

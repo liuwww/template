@@ -28,7 +28,10 @@ public class QueryDao implements IQueryDao
     {
         try
         {
-            logger.debug("query sql:{},params:{}", sqlBean.getSql(), sqlBean.getParams());
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("query sql:{},params:{}", sqlBean.getSql(), sqlBean.getParams());
+            }
             Map<String, Object> map = sqlBean.getJdbcTemplate().queryForMap(sqlBean.getSql(), sqlBean.getParams());
             return convertField(map);
         }
@@ -39,7 +42,10 @@ public class QueryDao implements IQueryDao
         catch (DataAccessException e)
         {
             e.printStackTrace();
-            logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
+            if (logger.isErrorEnabled())
+            {
+                logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
+            }
             throw new SysException("00001", e);
         }
     }
@@ -50,7 +56,10 @@ public class QueryDao implements IQueryDao
         try
 
         {
-            logger.debug("query sql:{},params:{}", sqlBean.getSql(), sqlBean.getParams());
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("query sql:{},params:{}", sqlBean.getSql(), sqlBean.getParams());
+            }
             List<Map<String, Object>> list = sqlBean.getJdbcTemplate().queryForList(sqlBean.getSql(),
                     sqlBean.getParams());
             return convertField(list);
@@ -61,8 +70,10 @@ public class QueryDao implements IQueryDao
         }
         catch (DataAccessException e)
         {
-            e.printStackTrace();
-            logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
+            if (logger.isErrorEnabled())
+            {
+                logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
+            }
             throw new SysException("00001", e);
         }
     }
@@ -72,7 +83,10 @@ public class QueryDao implements IQueryDao
     {
         try
         {
-            logger.debug("query sql:{},parmas:{}", sqlBean.getSql(), sqlBean.getParams());
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("query sql:{},parmas:{}", sqlBean.getSql(), sqlBean.getParams());
+            }
             return sqlBean.getJdbcTemplate().queryForObject(sqlBean.getSql(), sqlBean.getParams(),
                     new BeanPropertyRowMapper<T>(clazz));
         }
@@ -82,8 +96,10 @@ public class QueryDao implements IQueryDao
         }
         catch (DataAccessException e)
         {
-            e.printStackTrace();
-            logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
+            if (logger.isErrorEnabled())
+            {
+                logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
+            }
             throw new SysException("00001", e);
         }
     }
@@ -93,7 +109,10 @@ public class QueryDao implements IQueryDao
     {
         try
         {
-            logger.debug("query sql:{},params:{}", sqlBean.getSql(), sqlBean.getParams());
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("query sql:{},params:{}", sqlBean.getSql(), sqlBean.getParams());
+            }
             return sqlBean.getJdbcTemplate().query(sqlBean.getSql(), sqlBean.getParams(),
                     new BeanPropertyRowMapper<T>(clazz));
         }
@@ -104,7 +123,10 @@ public class QueryDao implements IQueryDao
         catch (DataAccessException e)
         {
             e.printStackTrace();
-            logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
+            if (logger.isErrorEnabled())
+            {
+                logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
+            }
             throw new SysException("00001", e);
         }
     }
@@ -120,17 +142,25 @@ public class QueryDao implements IQueryDao
 
             List<T> list = bean.getJdbcTemplate().query(querySql, bean.getParams(),
                     new BeanPropertyRowMapper<T>(clazz));
-            logger.debug("query sql:{},params:{}", querySql, bean.getParams());
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("query sql:{},params:{}", querySql, bean.getParams());
+            }
             pageInfo.setRows(list);
             String totalSql = PagerUtils.count(sql, dbType);
             Number count = bean.getJdbcTemplate().queryForObject(totalSql, bean.getParams(), Number.class);
-            logger.debug("totalSql sql:{},params:{}", totalSql, bean.getParams());
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("totalSql sql:{},params:{}", totalSql, bean.getParams());
+            }
             pageInfo.setTotal(count.longValue());
         }
         catch (DataAccessException e)
         {
-            e.printStackTrace();
-            logger.error("查询异常，sql:{},params:{}", bean.getSql(), Arrays.asList(bean.getParams()));
+            if (logger.isErrorEnabled())
+            {
+                logger.error("查询异常，sql:{},params:{}", bean.getSql(), Arrays.asList(bean.getParams()));
+            }
             throw new SysException("00001", e);
         }
         return pageInfo;
@@ -144,7 +174,10 @@ public class QueryDao implements IQueryDao
             String sql = bean.getSql();
             String dbType = bean.getDbType().toString();
             String querySql = PagerUtils.limit(sql, dbType, pageInfo.getStartRow() - 1, pageInfo.getPageSize());
-            logger.debug("query sql:{},params:{}", querySql, bean.getParams());
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("query sql:{},params:{}", querySql, bean.getParams());
+            }
             List<Map<String, Object>> list = bean.getJdbcTemplate().queryForList(querySql, bean.getParams());
             list = convertField(list);
             pageInfo.setRows(list);
@@ -155,8 +188,10 @@ public class QueryDao implements IQueryDao
         }
         catch (DataAccessException e)
         {
-            e.printStackTrace();
-            logger.error("查询异常，sql:{},params:{}", bean.getSql(), Arrays.asList(bean.getParams()));
+            if (logger.isErrorEnabled())
+            {
+                logger.error("查询异常，sql:{},params:{}", bean.getSql(), Arrays.asList(bean.getParams()));
+            }
             throw new SysException("00001", e);
         }
     }
@@ -191,14 +226,19 @@ public class QueryDao implements IQueryDao
         try
         {
             sql = PagerUtils.count(bean.getSql(), bean.getDbType().toString());
-            logger.debug("query sql:{},params:{}", sql, bean.getParams());
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("query sql:{},params:{}", sql, bean.getParams());
+            }
             Number count = bean.getJdbcTemplate().queryForObject(sql, bean.getParams(), Number.class);
             return count.longValue();
         }
         catch (DataAccessException e)
         {
-            e.printStackTrace();
-            logger.error("查询异常，sql:{},params:{}", sql, Arrays.asList(bean.getParams()));
+            if (logger.isErrorEnabled())
+            {
+                logger.error("查询异常，sql:{},params:{}", sql, Arrays.asList(bean.getParams()));
+            }
             throw new SysException("00001", e);
         }
     }

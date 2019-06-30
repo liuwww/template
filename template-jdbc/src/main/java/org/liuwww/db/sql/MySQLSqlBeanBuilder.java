@@ -51,7 +51,10 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
                 else
                 {
                     // sql.append('`').append(f.getField()).append('`');
-                    logger.warn("table or view {} 没有字段：{}", tmd.getTableName(), f.getField());
+                    if (logger.isWarnEnabled())
+                    {
+                        logger.warn("table or view {} 没有字段：{}", tmd.getTableName(), f.getField());
+                    }
                 }
 
                 if (StringUtils.isNotBlank(f.getAlias()))

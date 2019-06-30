@@ -56,7 +56,10 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
                 else
                 {// 这种情况 通常是字段写错了
                  // sql.append(f.getField());
-                    logger.warn("table or view {} 没有字段：{}", tmd.getTableName(), f.getField());
+                    if (logger.isWarnEnabled())
+                    {
+                        logger.warn("table or view {} 没有字段：{}", tmd.getTableName(), f.getField());
+                    }
                 }
                 if (StringUtils.isNotBlank(f.getAlias()))
                 {

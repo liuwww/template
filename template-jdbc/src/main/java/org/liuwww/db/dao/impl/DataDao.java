@@ -38,7 +38,10 @@ public class DataDao implements IDataDao
         }
         catch (DataAccessException e)
         {
-            logger.error("执行sql异常,sql:{},params:{},异常：{}", sql, Arrays.asList(params), e);
+            if (logger.isErrorEnabled())
+            {
+                logger.error("执行sql异常,sql:{},params:{},异常：{}", sql, Arrays.asList(params), e);
+            }
             throw new SysException("sql执行错误", e);
         }
     }
@@ -73,7 +76,10 @@ public class DataDao implements IDataDao
         }
         catch (Exception e)
         {
-            logger.error("执行sql异常,sql:{},params:{},异常：{}", bean.getSql(), Arrays.asList(bean.getParams()), e);
+            if (logger.isErrorEnabled())
+            {
+                logger.error("执行sql异常,sql:{},params:{},异常：{}", bean.getSql(), Arrays.asList(bean.getParams()), e);
+            }
             throw new SysException("sql执行错误", e);
         }
 
@@ -92,7 +98,10 @@ public class DataDao implements IDataDao
         }
         catch (DataAccessException e)
         {
-            logger.error("执行sql异常,sql:{},params:{},异常：{}", sql, batchArgs, e);
+            if (logger.isErrorEnabled())
+            {
+                logger.error("执行sql异常,sql:{},params:{},异常：{}", sql, batchArgs, e);
+            }
             throw new SysException("sql执行错误", e);
         }
     }

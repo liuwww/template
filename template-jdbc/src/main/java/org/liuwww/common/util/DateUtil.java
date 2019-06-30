@@ -96,7 +96,11 @@ public class DateUtil
         }
         catch (ParseException e)
         {
-            logger.info("字符串转日期异常：" + pattern, e);
+            if (logger.isInfoEnabled())
+            {
+
+                logger.info("字符串转日期异常：" + pattern, e);
+            }
         }
         return null;
     }
