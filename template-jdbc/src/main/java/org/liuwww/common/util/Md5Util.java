@@ -2,7 +2,7 @@ package org.liuwww.common.util;
 
 import java.security.MessageDigest;
 
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 
 public class Md5Util
 {
@@ -31,7 +31,7 @@ public class Md5Util
         catch (Exception e)
         {
             e.printStackTrace();
-            throw new SysException("", e);
+            throw new DbException("", e);
         }
 
     }

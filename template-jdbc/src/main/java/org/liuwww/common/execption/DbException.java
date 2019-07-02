@@ -1,33 +1,33 @@
 package org.liuwww.common.execption;
 
-public class SysException extends RuntimeException
+public class DbException extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 
     private Integer errId;
 
-    public SysException()
+    public DbException()
     {
 
     }
 
-    public SysException(String msg)
+    public DbException(String msg)
     {
         super(msg);
     }
 
-    public SysException(Throwable e)
+    public DbException(Throwable e)
     {
         super(e);
     }
 
-    public SysException(Integer errId, String msg)
+    public DbException(Integer errId, String msg)
     {
         super(msg);
         this.errId = errId;
     }
 
-    public SysException(String msg, Throwable e)
+    public DbException(String msg, Throwable e)
     {
         super(msg, e);
     }

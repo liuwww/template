@@ -17,7 +17,7 @@ import org.liuwww.db.sql.SqlBeanUtil;
 import com.alibaba.druid.sql.PagerUtils;
 
 import org.liuwww.common.entity.Order;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.DbNameConverter;
 import org.liuwww.common.util.StringUtil;
 
@@ -209,7 +209,7 @@ public class DefaultQueryBean extends DefaultSqlBean implements QueryBean, SqlBe
         {
             if (tables == null || tables.length == 0)
             {
-                throw new SysException("单表查询或单视图查询的关联表未设置！");
+                throw new DbException("单表查询或单视图查询的关联表未设置！");
             }
             tmd = DbContext.getTableMetaContext().getTableMetaData(tables[0]);
             qconditons.setTmd(tmd);

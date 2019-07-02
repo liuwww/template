@@ -71,9 +71,6 @@
     </bean>
  	 <!-- 开启事务控制的注解支持 -->
  	<tx:annotation-driven transaction-manager="transactionManager"/>
- 	 <!--自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
- 	<context:component-scan base-package="org.liuwww"></context:component-scan>
-
 
     <!-- 配置spring的transactionManager -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

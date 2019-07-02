@@ -23,7 +23,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.alibaba.fastjson.JSON;
 import org.liuwww.common.Idgen.IdGeneratorUtil;
 import org.liuwww.common.entity.TableEntity;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.EntryUtil;
 import org.liuwww.common.util.StringUtil;
 
@@ -35,50 +35,50 @@ public class DataTemplate implements IDataTemplate
     private IDataDao dataDao;
 
     @Override
-    public Row insert(String tableName, Map<String, Object> fieldVals) throws SysException
+    public Row insert(String tableName, Map<String, Object> fieldVals) throws DbException
     {
         return insert(tableName, fieldVals, null);
     }
 
     @Override
-    public <T> T insert(TableEntity<T> entity) throws SysException
+    public <T> T insert(TableEntity<T> entity) throws DbException
     {
         return insert(entity, null);
     }
 
     @Override
-    public <T> List<T> insert(List<? extends TableEntity<T>> entityList) throws SysException
+    public <T> List<T> insert(List<? extends TableEntity<T>> entityList) throws DbException
     {
         return insert(entityList, null);
     }
 
     @Override
-    public List<Row> insert(String tableName, List<Map<String, Object>> fList) throws SysException
+    public List<Row> insert(String tableName, List<Map<String, Object>> fList) throws DbException
     {
         return insert(tableName, fList, null);
     }
 
     @Override
-    public int update(String tableName, Map<String, Object> fieldVals) throws SysException
+    public int update(String tableName, Map<String, Object> fieldVals) throws DbException
     {
         return update(tableName, fieldVals, null);
     }
 
     @Override
-    public int delete(String tableName, Map<String, Object> idMap) throws SysException
+    public int delete(String tableName, Map<String, Object> idMap) throws DbException
     {
         return delete(tableName, idMap, null);
     }
 
     @Override
     public int updateRows(String tableName, Map<String, Object> valMap, Map<String, Object> paramMap)
-            throws SysException
+            throws DbException
     {
         return updateRows(tableName, valMap, paramMap, null);
     }
 
     @Override
-    public int deleteRows(String tableName, Map<String, Object> paramMap) throws SysException
+    public int deleteRows(String tableName, Map<String, Object> paramMap) throws DbException
     {
         return deleteRows(tableName, paramMap, null);
     }
@@ -91,36 +91,36 @@ public class DataTemplate implements IDataTemplate
             {
                 logger.error("非法更新sql row:{}", JSON.toJSON(row));
             }
-            throw new SysException("找不到对应的table:" + row.getTableName() + ",或参数异常！");
+            throw new DbException("找不到对应的table:" + row.getTableName() + ",或参数异常！");
         }
     }
 
     @Override
-    public <T> int update(TableEntity<T> entity) throws SysException
+    public <T> int update(TableEntity<T> entity) throws DbException
     {
         return update(entity, null);
     }
 
     @Override
-    public <T> int update(List<? extends TableEntity<T>> entityList) throws SysException
+    public <T> int update(List<? extends TableEntity<T>> entityList) throws DbException
     {
         return update(entityList, null);
     }
 
     @Override
-    public <T> int delete(TableEntity<T> entity) throws SysException
+    public <T> int delete(TableEntity<T> entity) throws DbException
     {
         return delete(entity, null);
     }
 
     @Override
-    public <T> int delete(List<? extends TableEntity<T>> enityList) throws SysException
+    public <T> int delete(List<? extends TableEntity<T>> enityList) throws DbException
     {
         return delete(enityList, null);
     }
 
     @Override
-    public int update(String tableName, List<Map<String, Object>> fieldMapList) throws SysException
+    public int update(String tableName, List<Map<String, Object>> fieldMapList) throws DbException
     {
         int count = 0;
         for (Map<String, Object> m : fieldMapList)
@@ -131,13 +131,13 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public int delete(String table, Serializable id) throws SysException
+    public int delete(String table, Serializable id) throws DbException
     {
         return delete(table, id, null);
     }
 
     @Override
-    public Row insert(String tableName, Map<String, Object> fieldVals, JdbcTemplate jdbcTemplate) throws SysException
+    public Row insert(String tableName, Map<String, Object> fieldVals, JdbcTemplate jdbcTemplate) throws DbException
     {
         TableMetaData tmd = DbContext.getTableMetaData(tableName, jdbcTemplate);
         Row row = RowUtil.getInsertRow(tableName, fieldVals, tmd);
@@ -150,7 +150,7 @@ public class DataTemplate implements IDataTemplate
 
     @Override
     public List<Row> insert(String tableName, List<Map<String, Object>> fList, JdbcTemplate jdbcTemplate)
-            throws SysException
+            throws DbException
     {
         List<Row> list = new ArrayList<Row>(fList.size());
 
@@ -223,7 +223,7 @@ public class DataTemplate implements IDataTemplate
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T insert(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws SysException
+    public <T> T insert(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws DbException
     {
         TableMetaData tmd = DbContext.getTableMetaData(entity.tableName(), jdbcTemplate);
         Row row = RowUtil.getInsertRow(entity, tmd);
@@ -249,7 +249,7 @@ public class DataTemplate implements IDataTemplate
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> insert(List<? extends TableEntity<T>> entityList, JdbcTemplate jdbcTemplate) throws SysException
+    public <T> List<T> insert(List<? extends TableEntity<T>> entityList, JdbcTemplate jdbcTemplate) throws DbException
     {
 
         Map<String, List<TableEntity<T>>> map = new HashMap<String, List<TableEntity<T>>>(2);
@@ -335,7 +335,7 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public int update(String tableName, Map<String, Object> fieldVals, JdbcTemplate jdbcTemplate) throws SysException
+    public int update(String tableName, Map<String, Object> fieldVals, JdbcTemplate jdbcTemplate) throws DbException
     {
         TableMetaData tmd = DbContext.getTableMetaData(tableName, jdbcTemplate);
         Row row = RowUtil.getUpdateRow(tableName, fieldVals, tmd);
@@ -347,7 +347,7 @@ public class DataTemplate implements IDataTemplate
 
     @Override
     public int update(String tableName, List<Map<String, Object>> fieldMapList, JdbcTemplate jdbcTemplate)
-            throws SysException
+            throws DbException
     {
         int count = 0;
         for (Map<String, Object> m : fieldMapList)
@@ -358,7 +358,7 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public <T> int update(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws SysException
+    public <T> int update(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws DbException
     {
         TableMetaData tmd = DbContext.getTableMetaData(entity.tableName(), jdbcTemplate);
         Row row = RowUtil.getUpdateRow(entity, tmd);
@@ -369,7 +369,7 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public <T> int update(List<? extends TableEntity<T>> entityList, JdbcTemplate jdbcTemplate) throws SysException
+    public <T> int update(List<? extends TableEntity<T>> entityList, JdbcTemplate jdbcTemplate) throws DbException
     {
         int count = 0;
         for (TableEntity<T> e : entityList)
@@ -381,7 +381,7 @@ public class DataTemplate implements IDataTemplate
 
     @Override
     public int updateRows(String tableName, Map<String, Object> valMap, Map<String, Object> paramMap,
-            JdbcTemplate jdbcTemplate) throws SysException
+            JdbcTemplate jdbcTemplate) throws DbException
     {
         TableMetaData tmd = DbContext.getTableMetaData(tableName, jdbcTemplate);
         SqlBean bean = SqlBeanUtil.getUpdateRowsSqlBean(tableName, valMap, paramMap, tmd);
@@ -390,7 +390,7 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public int delete(String tableName, Map<String, Object> idMap, JdbcTemplate jdbcTemplate) throws SysException
+    public int delete(String tableName, Map<String, Object> idMap, JdbcTemplate jdbcTemplate) throws DbException
     {
         TableMetaData tmd = DbContext.getTableMetaData(tableName, jdbcTemplate);
         Row row = RowUtil.getDeleteRow(tableName, idMap, tmd);
@@ -401,7 +401,7 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public int deleteRows(String tableName, Map<String, Object> paramMap, JdbcTemplate jdbcTemplate) throws SysException
+    public int deleteRows(String tableName, Map<String, Object> paramMap, JdbcTemplate jdbcTemplate) throws DbException
     {
         TableMetaData tmd = DbContext.getTableMetaData(tableName, jdbcTemplate);
         Row row = RowUtil.getDeleteRows(tableName, paramMap, tmd);
@@ -412,7 +412,7 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public <T> int delete(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws SysException
+    public <T> int delete(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws DbException
     {
         TableMetaData tmd = DbContext.getTableMetaData(entity.tableName(), jdbcTemplate);
         Row row = RowUtil.getDeleteRow(entity, tmd);
@@ -423,7 +423,7 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public <T> int delete(List<? extends TableEntity<T>> enityList, JdbcTemplate jdbcTemplate) throws SysException
+    public <T> int delete(List<? extends TableEntity<T>> enityList, JdbcTemplate jdbcTemplate) throws DbException
     {
         Map<String, List<TableEntity<T>>> map = new HashMap<String, List<TableEntity<T>>>(2);
 
@@ -461,7 +461,7 @@ public class DataTemplate implements IDataTemplate
         Column idColumn = tmd.getIdColumn();
         if (idColumn == null)
         {
-            throw new SysException("表[" + tmd.getTableName() + "]没有设置主键");
+            throw new DbException("表[" + tmd.getTableName() + "]没有设置主键");
         }
         String name = idColumn.getName();
         List<Object[]> list = new ArrayList<Object[]>(l.size());
@@ -527,7 +527,7 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public int delete(String table, Serializable[] ids) throws SysException
+    public int delete(String table, Serializable[] ids) throws DbException
     {
         return delete(table, ids, (JdbcTemplate) null);
     }

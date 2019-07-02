@@ -7,7 +7,7 @@ import java.util.Map;
 import org.liuwww.db.sql.Row;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.liuwww.common.entity.TableEntity;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 
 public interface IDataTemplate
 {
@@ -18,9 +18,9 @@ public interface IDataTemplate
      * @param tableName
      * @param fieldVals
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public Row insert(String tableName, Map<String, Object> fieldVals) throws SysException;
+    public Row insert(String tableName, Map<String, Object> fieldVals) throws DbException;
 
     /**
      * @Desc:插入单条数据,可以指定数据源
@@ -30,9 +30,9 @@ public interface IDataTemplate
      * @param fieldVals
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public Row insert(String tableName, Map<String, Object> fieldVals, JdbcTemplate jdbcTemplate) throws SysException;
+    public Row insert(String tableName, Map<String, Object> fieldVals, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:插入多条数据
@@ -41,9 +41,9 @@ public interface IDataTemplate
      * @param tableName
      * @param fieldVals
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public List<Row> insert(String tableName, List<Map<String, Object>> fieldValList) throws SysException;
+    public List<Row> insert(String tableName, List<Map<String, Object>> fieldValList) throws DbException;
 
     /**
      * @Desc:插入多条数据,可以指定数据源
@@ -53,10 +53,10 @@ public interface IDataTemplate
      * @param fieldVals
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
     public List<Row> insert(String tableName, List<Map<String, Object>> fieldValList, JdbcTemplate jdbcTemplate)
-            throws SysException;
+            throws DbException;
 
     /**
      * @Desc:插入单条数据
@@ -64,9 +64,9 @@ public interface IDataTemplate
      * @author liuwww
      * @param entity
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> T insert(TableEntity<T> entity) throws SysException;
+    public <T> T insert(TableEntity<T> entity) throws DbException;
 
     /**
      * @Desc:插入单条数据，可以指定数据源
@@ -75,18 +75,18 @@ public interface IDataTemplate
      * @param entity
      * @param jdbcTemplate
      * @return 
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> T insert(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws SysException;
+    public <T> T insert(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:插入多条数据
      * @Date 2017年5月19日下午5:36:16
      * @author liuwww
      * @param entityList
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> List<T> insert(List<? extends TableEntity<T>> entityList) throws SysException;
+    public <T> List<T> insert(List<? extends TableEntity<T>> entityList) throws DbException;
 
     /**
      * @Desc:插入多条数据,可以指定数据源
@@ -94,9 +94,9 @@ public interface IDataTemplate
      * @author liuwww
      * @param entityList
      * @param jdbcTemplate
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> List<T> insert(List<? extends TableEntity<T>> entityList, JdbcTemplate jdbcTemplate) throws SysException;
+    public <T> List<T> insert(List<? extends TableEntity<T>> entityList, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:根据id更新单条数据
@@ -105,9 +105,9 @@ public interface IDataTemplate
      * @param tableName
      * @param fieldVals
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public int update(String tableName, Map<String, Object> fieldVals) throws SysException;
+    public int update(String tableName, Map<String, Object> fieldVals) throws DbException;
 
     /**
      * @Desc:根据id更新单条数据，可以指定数据源
@@ -117,9 +117,9 @@ public interface IDataTemplate
      * @param fieldVals
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public int update(String tableName, Map<String, Object> fieldVals, JdbcTemplate jdbcTemplate) throws SysException;
+    public int update(String tableName, Map<String, Object> fieldVals, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:根据id更新多条条数据
@@ -128,9 +128,9 @@ public interface IDataTemplate
      * @param tableName
      * @param fieldVals
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public int update(String tableName, List<Map<String, Object>> fieldMapList) throws SysException;
+    public int update(String tableName, List<Map<String, Object>> fieldMapList) throws DbException;
 
     /**
      * @Desc:根据id更新多条条数据，可以指定数据源
@@ -140,10 +140,10 @@ public interface IDataTemplate
      * @param fieldVals
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
     public int update(String tableName, List<Map<String, Object>> fieldMapList, JdbcTemplate jdbcTemplate)
-            throws SysException;
+            throws DbException;
 
     /**
      * @Desc:更新单条数据
@@ -151,9 +151,9 @@ public interface IDataTemplate
      * @author liuwww
      * @param entity
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> int update(TableEntity<T> entity) throws SysException;
+    public <T> int update(TableEntity<T> entity) throws DbException;
 
     /**
      * @Desc:更新单条数据，可以指定数据源
@@ -162,9 +162,9 @@ public interface IDataTemplate
      * @param entity
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> int update(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws SysException;
+    public <T> int update(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:更新多条数据
@@ -172,9 +172,9 @@ public interface IDataTemplate
      * @author liuwww
      * @param entityList
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> int update(List<? extends TableEntity<T>> entityList) throws SysException;
+    public <T> int update(List<? extends TableEntity<T>> entityList) throws DbException;
 
     /**
      * @Desc:更新多条数据，可以指定数据源
@@ -183,9 +183,9 @@ public interface IDataTemplate
      * @param entityList
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> int update(List<? extends TableEntity<T>> entityList, JdbcTemplate jdbcTemplate) throws SysException;
+    public <T> int update(List<? extends TableEntity<T>> entityList, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc: 根据条件统一更新多条数据
@@ -195,10 +195,10 @@ public interface IDataTemplate
      * @param ValMap 要修改的字段和值
      * @param paramMap 条件，参数中每个有效的参数都将做为条件
      * @return
-     * @throws SysException
+     * @throws DbException
      */
     public int updateRows(String tableName, Map<String, Object> valMap, Map<String, Object> paramMap)
-            throws SysException;
+            throws DbException;
 
     /**
      * @Desc: 根据条件统一更新多条数据，可以指定数据源
@@ -209,10 +209,10 @@ public interface IDataTemplate
      * @param paramMap 条件，参数中每个有效的参数都将做为条件
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
     public int updateRows(String tableName, Map<String, Object> valMap, Map<String, Object> paramMap,
-            JdbcTemplate jdbcTemplate) throws SysException;
+            JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:根据id删除单条数据
@@ -221,9 +221,9 @@ public interface IDataTemplate
      * @param tableName
      * @param idMap 含有id值的map
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public int delete(String tableName, Map<String, Object> idMap) throws SysException;
+    public int delete(String tableName, Map<String, Object> idMap) throws DbException;
 
     /**
      * @Desc:根据id删除单条数据
@@ -233,9 +233,9 @@ public interface IDataTemplate
      * @param idMap 含有id值的map
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public int delete(String tableName, Map<String, Object> idMap, JdbcTemplate jdbcTemplate) throws SysException;
+    public int delete(String tableName, Map<String, Object> idMap, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:根据id删除多条数据
@@ -244,7 +244,7 @@ public interface IDataTemplate
      * @param tableName
      * @param idMapList 含有id值的mapList
      * @return
-     * @throws SysException
+     * @throws DbException
      */
     public int delete(String tableName, List<Map<String, Object>> idMapList);
 
@@ -256,7 +256,7 @@ public interface IDataTemplate
      * @param idMapList 含有id值的mapList
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
     public int delete(String tableName, List<Map<String, Object>> idMapList, JdbcTemplate jdbcTemplate);
 
@@ -267,9 +267,9 @@ public interface IDataTemplate
      * @param tableName
      * @param paramMap 参数中每个有效的参数都将做为条件
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public int deleteRows(String tableName, Map<String, Object> paramMap) throws SysException;
+    public int deleteRows(String tableName, Map<String, Object> paramMap) throws DbException;
 
     /**
      * @Desc:根据条件删除数据,可以指定数据源
@@ -279,10 +279,10 @@ public interface IDataTemplate
      * @param paramMap 参数中每个有效的参数都将做为条件
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
     public int deleteRows(String tableName, Map<String, Object> paramMap, JdbcTemplate jdbcTemplate)
-            throws SysException;
+            throws DbException;
 
     /**
      * @Desc:删除一条数据
@@ -290,9 +290,9 @@ public interface IDataTemplate
      * @author liuwww
      * @param entity
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> int delete(TableEntity<T> entity) throws SysException;
+    public <T> int delete(TableEntity<T> entity) throws DbException;
 
     /**
      * @Desc:删除一条数据,可以指定数据源
@@ -301,9 +301,9 @@ public interface IDataTemplate
      * @param entity
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> int delete(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws SysException;
+    public <T> int delete(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:删除多条数据
@@ -311,9 +311,9 @@ public interface IDataTemplate
      * @author liuwww
      * @param enityList
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> int delete(List<? extends TableEntity<T>> enityList) throws SysException;
+    public <T> int delete(List<? extends TableEntity<T>> enityList) throws DbException;
 
     /**
      * @Desc:删除多条数据，可以指定数据源
@@ -322,9 +322,9 @@ public interface IDataTemplate
      * @param enityList
      * @param jdbcTemplate
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public <T> int delete(List<? extends TableEntity<T>> enityList, JdbcTemplate jdbcTemplate) throws SysException;
+    public <T> int delete(List<? extends TableEntity<T>> enityList, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:删除给定id的表数据
@@ -333,9 +333,9 @@ public interface IDataTemplate
      * @param table
      * @param id
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public int delete(String table, Serializable id) throws SysException;
+    public int delete(String table, Serializable id) throws DbException;
 
     /**
      * @Desc:删除给定id的表数据
@@ -344,9 +344,9 @@ public interface IDataTemplate
      * @param table
      * @param ids
      * @return
-     * @throws SysException
+     * @throws DbException
      */
-    public int delete(String table, Serializable[] ids) throws SysException;
+    public int delete(String table, Serializable[] ids) throws DbException;
 
     /**
      * @desc:根据id删除数据

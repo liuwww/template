@@ -18,7 +18,7 @@ import org.liuwww.db.sql.DbType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.StringUtil;
 
 public class DefaultDataSourceContext implements DataSourceContext
@@ -165,7 +165,7 @@ public class DefaultDataSourceContext implements DataSourceContext
         }
         catch (SQLException e)
         {
-            throw new SysException(e);
+            throw new DbException(e);
         }
         finally
         {

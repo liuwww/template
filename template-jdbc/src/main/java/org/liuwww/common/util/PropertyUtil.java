@@ -9,7 +9,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public class PropertyUtil
                             {
                                 logger.error("file load error", e);
                             }
-                            throw new SysException("", e);
+                            throw new DbException("", e);
                         }
 
                     }

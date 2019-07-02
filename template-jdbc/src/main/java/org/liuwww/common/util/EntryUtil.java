@@ -15,7 +15,7 @@ import java.util.Set;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
 import org.liuwww.common.execption.BusinessExecption;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,7 +197,7 @@ public class EntryUtil
         }
         catch (Exception e)
         {
-            throw new SysException("get field value throuth field self error", e);
+            throw new DbException("get field value throuth field self error", e);
         }
     }
 
@@ -215,7 +215,7 @@ public class EntryUtil
         }
         catch (Exception e)
         {
-            throw new SysException("get field value throuth Getter error", e);
+            throw new DbException("get field value throuth Getter error", e);
         }
     }
 
@@ -231,7 +231,7 @@ public class EntryUtil
         EntryProps entryprops = getEntryProps(clazz).get(field);
         if (entryprops == null)
         {
-            throw new SysException("there is no field:" + field + " in Class:" + clazz);
+            throw new DbException("there is no field:" + field + " in Class:" + clazz);
         }
     }
 
@@ -398,7 +398,7 @@ public class EntryUtil
                 }
                 catch (Exception e)
                 {
-                    throw new SysException("set field value throuth field self error", e);
+                    throw new DbException("set field value throuth field self error", e);
                 }
             }
 
@@ -414,7 +414,7 @@ public class EntryUtil
         }
         catch (Exception e)
         {
-            throw new SysException("set field value throuth Getter error", e);
+            throw new DbException("set field value throuth Getter error", e);
         }
 
     }
@@ -519,7 +519,7 @@ public class EntryUtil
                     }
                     catch (Exception e)
                     {
-                        throw new SysException("get field value throuth field self error", e);
+                        throw new DbException("get field value throuth field self error", e);
                     }
                 }
 

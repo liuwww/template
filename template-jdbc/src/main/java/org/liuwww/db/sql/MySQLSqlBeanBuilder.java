@@ -13,7 +13,7 @@ import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
 import org.liuwww.common.entity.Order;
 import org.liuwww.common.entity.TableEntity;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.EntryUtil;
 import org.liuwww.common.util.StringUtil;
 
@@ -27,7 +27,7 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
         TableMetaData tmd = table.getTableMetaData();
         if (tmd == null)
         {
-            throw new SysException("表【" + table.getName() + "】不存在或没加载！");
+            throw new DbException("表【" + table.getName() + "】不存在或没加载！");
         }
         DbType dbType = tmd.getDbType();
         StringBuffer sql = new StringBuffer("select ");
@@ -325,7 +325,7 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
         }
         if (params.size() == 0)
         {
-            throw new SysException("更新数据时无有效更新字段！");
+            throw new DbException("更新数据时无有效更新字段！");
         }
         int len = params.size();
         sql = sql.delete(sql.length() - 1, sql.length());
@@ -342,7 +342,7 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
         }
         if (len == params.size())
         {
-            throw new SysException("更新数据时无有效条件字段！");
+            throw new DbException("更新数据时无有效条件字段！");
         }
         sql = sql.delete(sql.length() - 4, sql.length());
         return new DefaultSqlBean(sql, params.toArray(), null, tmd.getDbType(), null);
@@ -365,7 +365,7 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
         Column idColumn = tmd.getIdColumn();
         if (idColumn == null)
         {
-            throw new SysException("表[" + tmd.getTableName() + "]没有主键");
+            throw new DbException("表[" + tmd.getTableName() + "]没有主键");
         }
         StringBuilder sql = new StringBuilder("delete from ");
         sql.append('`').append(tmd.getTableName()).append('`').append(" where ");

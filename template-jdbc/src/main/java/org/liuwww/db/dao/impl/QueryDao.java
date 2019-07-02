@@ -15,7 +15,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import com.alibaba.druid.sql.PagerUtils;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.DbNameConverter;
 
 public class QueryDao implements IQueryDao
@@ -46,7 +46,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
             }
-            throw new SysException("00001", e);
+            throw new DbException("00001", e);
         }
     }
 
@@ -74,7 +74,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
             }
-            throw new SysException("00001", e);
+            throw new DbException("00001", e);
         }
     }
 
@@ -100,7 +100,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
             }
-            throw new SysException("00001", e);
+            throw new DbException("00001", e);
         }
     }
 
@@ -127,12 +127,12 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
             }
-            throw new SysException("00001", e);
+            throw new DbException("00001", e);
         }
     }
 
     @Override
-    public <T> Page getPage(SqlBean bean, Page pageInfo, Class<T> clazz) throws SysException
+    public <T> Page getPage(SqlBean bean, Page pageInfo, Class<T> clazz) throws DbException
     {
         try
         {
@@ -161,13 +161,13 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", bean.getSql(), Arrays.asList(bean.getParams()));
             }
-            throw new SysException("00001", e);
+            throw new DbException("00001", e);
         }
         return pageInfo;
     }
 
     @Override
-    public Page getPage(SqlBean bean, Page pageInfo) throws SysException
+    public Page getPage(SqlBean bean, Page pageInfo) throws DbException
     {
         try
         {
@@ -192,7 +192,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", bean.getSql(), Arrays.asList(bean.getParams()));
             }
-            throw new SysException("00001", e);
+            throw new DbException("00001", e);
         }
     }
 
@@ -220,7 +220,7 @@ public class QueryDao implements IQueryDao
     }
 
     @Override
-    public long getCount(SqlBean bean) throws SysException
+    public long getCount(SqlBean bean) throws DbException
     {
         String sql = null;
         try
@@ -239,7 +239,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", sql, Arrays.asList(bean.getParams()));
             }
-            throw new SysException("00001", e);
+            throw new DbException("00001", e);
         }
     }
 

@@ -9,7 +9,7 @@ import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.StringUtil;
 
 public class Table extends AbstractCompare<Table>
@@ -83,7 +83,7 @@ public class Table extends AbstractCompare<Table>
     {
         if (StringUtil.isBlank(this.name))
         {
-            throw new SysException("table name 不可为空！");
+            throw new DbException("table name 不可为空！");
         }
         tmd = DbContext.getTableMetaData(this.name, this.jdbcTemplate);
     }
@@ -116,7 +116,7 @@ public class Table extends AbstractCompare<Table>
     {
         if (tmd == null)
         {
-            throw new SysException("请先设置正确的tableName值！");
+            throw new DbException("请先设置正确的tableName值！");
         }
         Column column = tmd.getColumn(field);
         if (column == null)

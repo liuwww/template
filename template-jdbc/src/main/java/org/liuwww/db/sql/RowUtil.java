@@ -14,7 +14,7 @@ import org.liuwww.db.context.TableMetaData;
 
 import org.liuwww.common.Idgen.IdGeneratorUtil;
 import org.liuwww.common.entity.TableEntity;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.BeanUtil;
 import org.liuwww.common.util.DateUtil;
 import org.liuwww.common.util.EntryUtil;
@@ -127,7 +127,7 @@ public class RowUtil
         }
         if (tmd == null)
         {
-            throw new SysException("表[" + tableName + "]不存在或没有加载！");
+            throw new DbException("表[" + tableName + "]不存在或没有加载！");
         }
         row.setDbType(tmd.getDbType());
         row.setTableName(tmd.getTableName());
@@ -197,14 +197,14 @@ public class RowUtil
 
         if (tmd == null)
         {
-            throw new SysException("表[" + tableName + "]不存在或没有加载！");
+            throw new DbException("表[" + tableName + "]不存在或没有加载！");
         }
         row.setDbType(tmd.getDbType());
         row.setTableName(tmd.getTableName());
         Column idColumn = tmd.getIdColumn();
         if (idColumn == null)
         {
-            throw new SysException("表[" + tableName + "]没有主键字段！");
+            throw new DbException("表[" + tableName + "]没有主键字段！");
         }
         for (String key : fieldVals.keySet())
         {
@@ -253,7 +253,7 @@ public class RowUtil
         }
         if (tmd == null)
         {
-            throw new SysException("表[" + tableName + "]不存在或没有加载！");
+            throw new DbException("表[" + tableName + "]不存在或没有加载！");
         }
         row.setDbType(tmd.getDbType());
         Map<String, Object> rowValueMap = new HashMap<String, Object>(2);
@@ -261,7 +261,7 @@ public class RowUtil
         Column idColumn = tmd.getIdColumn();
         if (idColumn == null)
         {
-            throw new SysException("表[" + tableName + "]没有主键！");
+            throw new DbException("表[" + tableName + "]没有主键！");
         }
         for (String key : fieldVals.keySet())
         {
@@ -341,14 +341,14 @@ public class RowUtil
         }
         if (tmd == null)
         {
-            throw new SysException("表[" + entity.tableName() + "不存在或没有加载！");
+            throw new DbException("表[" + entity.tableName() + "不存在或没有加载！");
         }
         row.setDbType(tmd.getDbType());
         row.setTableName(tmd.getTableName());
         Column idColumn = tmd.getIdColumn();
         if (idColumn == null)
         {
-            throw new SysException("表[" + entity.tableName() + "]没有主键字段！");
+            throw new DbException("表[" + entity.tableName() + "]没有主键字段！");
         }
         for (Column column : tmd.getColumnList())
         {
@@ -414,7 +414,7 @@ public class RowUtil
         }
         if (tmd == null)
         {
-            throw new SysException("表[" + entity.tableName() + "]不存在或没有加载！");
+            throw new DbException("表[" + entity.tableName() + "]不存在或没有加载！");
         }
         Row row = new Row();
         Map<String, Object> rowValueMap = new HashMap<String, Object>();
@@ -423,7 +423,7 @@ public class RowUtil
         Column idColumn = tmd.getIdColumn();
         if (idColumn == null)
         {
-            throw new SysException("表[" + entity.tableName() + "]没有主键！");
+            throw new DbException("表[" + entity.tableName() + "]没有主键！");
         }
         row.setIdName(idColumn.getColumnName());
         row.setDbType(tmd.getDbType());

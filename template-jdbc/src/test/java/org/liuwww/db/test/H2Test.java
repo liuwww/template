@@ -15,6 +15,7 @@ import org.springframework.dao.DataAccessException;
 
 public class H2Test extends AbstractTest
 {
+
     @Autowired
     private DbContext dbContext;
 

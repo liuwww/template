@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.liuwww.common.entity.Order;
 import org.liuwww.common.entity.TableEntity;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.EntryUtil;
 import org.liuwww.common.util.StringUtil;
 
@@ -32,7 +32,7 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
         TableMetaData tmd = table.getTableMetaData();
         if (tmd == null)
         {
-            throw new SysException("表【" + table.getName() + "】不存在或没加载！");
+            throw new DbException("表【" + table.getName() + "】不存在或没加载！");
         }
         DbType dbType = tmd.getDbType();
         StringBuffer sql = new StringBuffer("select ");
@@ -247,7 +247,7 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
         Column idColumn = tmd.getIdColumn();
         if (idColumn == null)
         {
-            throw new SysException("表[" + tmd.getTableName() + "]没有主键");
+            throw new DbException("表[" + tmd.getTableName() + "]没有主键");
         }
         StringBuilder sql = new StringBuilder("delete from ");
         sql.append(tmd.getTableName()).append(" where ");
@@ -421,7 +421,7 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
         }
         if (params.size() == 0)
         {
-            throw new SysException("更新数据时无有效更新字段！");
+            throw new DbException("更新数据时无有效更新字段！");
         }
         int len = params.size();
         sql = sql.delete(sql.length() - 1, sql.length());
@@ -438,7 +438,7 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
         }
         if (len == params.size())
         {
-            throw new SysException("更新数据时无有效条件字段！");
+            throw new DbException("更新数据时无有效条件字段！");
         }
         sql = sql.delete(sql.length() - 4, sql.length());
         return new DefaultSqlBean(sql, params.toArray(), null, tmd.getDbType(), null);

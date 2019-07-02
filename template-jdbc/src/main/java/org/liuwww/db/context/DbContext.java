@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.BeanUtil;
 
 @Component
@@ -40,11 +40,11 @@ public class DbContext
 
     private TableMetaContext tmc;
 
-    private DbContext()
+    public DbContext()
     {
         if (instance != null)
         {
-            throw new SysException("DbContext不可多次实例化！");
+            throw new DbException("DbContext不可多次实例化！");
         }
         instance = this;
     }
@@ -73,7 +73,7 @@ public class DbContext
         TableMetaData tmd = instance.tmc.getTableMetaData(tableName);
         if (tmd == null)
         {
-            throw new SysException("table[" + tableName + "]不存在");
+            throw new DbException("table[" + tableName + "]不存在");
         }
         DataSource ds = tmd.getDataSource();
         for (JdbcTemplate jt : instance.jtList)
@@ -103,7 +103,7 @@ public class DbContext
         JdbcTemplate jdbcTemplate = BeanUtil.getBean(jdbcTemplateBeanName, JdbcTemplate.class);
         if (jdbcTemplate == null)
         {
-            throw new SysException("没有beanName为" + jdbcTemplateBeanName + "的JdbcTemplate实例");
+            throw new DbException("没有beanName为" + jdbcTemplateBeanName + "的JdbcTemplate实例");
         }
         return instance.tmc.getDbType(jdbcTemplate.getDataSource());
     }
@@ -140,12 +140,12 @@ public class DbContext
         }
         if (tmd == null)
         {
-            throw new SysException("表[" + tableName + "]不存在或没加载！");
+            throw new DbException("表[" + tableName + "]不存在或没加载！");
         }
         return tmd;
     }
 
-    @Bean(name = "#jDataDao")
+    @Bean(name = "#dbDataDao")
     private IDataDao dataDao()
     {
         if (this.dataDao == null)
@@ -161,7 +161,7 @@ public class DbContext
         return this.dataDao;
     }
 
-    @Bean(name = "#jQueryDao")
+    @Bean(name = "#dbQueryDao")
     private IQueryDao queryDao()
     {
         if (this.queryDao == null)
@@ -178,7 +178,7 @@ public class DbContext
         return this.queryDao;
     }
 
-    @Bean(name = "#jDataTemplate")
+    @Bean(name = "#dbDataTemplate")
     private IDataTemplate dataTemplate()
     {
         if (this.dataTemplate == null)
@@ -195,7 +195,7 @@ public class DbContext
         return this.dataTemplate;
     }
 
-    @Bean(name = "#jQueryTemplate")
+    @Bean(name = "#dbQueryTemplate")
     private IQueryTemplate queryTemplate()
     {
         if (this.queryTemplate == null)
@@ -209,6 +209,12 @@ public class DbContext
             }
         }
         return this.queryTemplate;
+    }
+
+    @Bean(name = "#dbBeanUtil")
+    private BeanUtil getBeanUtil()
+    {
+        return new BeanUtil();
     }
 
     private IDataDao dataDao;

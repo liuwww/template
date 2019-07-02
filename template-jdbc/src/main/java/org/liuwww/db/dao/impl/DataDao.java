@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.SqlTypeValue;
 import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 
 public class DataDao implements IDataDao
 {
@@ -26,7 +26,7 @@ public class DataDao implements IDataDao
     private Logger logger = LoggerFactory.getLogger(DataDao.class);
 
     @Override
-    public int executeUpdate(String sql, Object[] params, JdbcTemplate jdbcTemplate) throws SysException
+    public int executeUpdate(String sql, Object[] params, JdbcTemplate jdbcTemplate) throws DbException
     {
         try
         {
@@ -42,18 +42,18 @@ public class DataDao implements IDataDao
             {
                 logger.error("执行sql异常,sql:{},params:{},异常：{}", sql, Arrays.asList(params), e);
             }
-            throw new SysException("sql执行错误", e);
+            throw new DbException("sql执行错误", e);
         }
     }
 
     @Override
-    public int executeUpdate(SqlBean bean) throws SysException
+    public int executeUpdate(SqlBean bean) throws DbException
     {
         return executeUpdate(bean.getSql(), bean.getParams(), bean.getJdbcTemplate());
     }
 
     @Override
-    public String insertByMysql(final SqlBean bean) throws SysException
+    public String insertByMysql(final SqlBean bean) throws DbException
     {
         try
         {
@@ -80,13 +80,13 @@ public class DataDao implements IDataDao
             {
                 logger.error("执行sql异常,sql:{},params:{},异常：{}", bean.getSql(), Arrays.asList(bean.getParams()), e);
             }
-            throw new SysException("sql执行错误", e);
+            throw new DbException("sql执行错误", e);
         }
 
     }
 
     @Override
-    public int[] executeBatchUpdate(String sql, List<Object[]> batchArgs, JdbcTemplate jdbcTemplate) throws SysException
+    public int[] executeBatchUpdate(String sql, List<Object[]> batchArgs, JdbcTemplate jdbcTemplate) throws DbException
     {
         try
         {
@@ -102,7 +102,7 @@ public class DataDao implements IDataDao
             {
                 logger.error("执行sql异常,sql:{},params:{},异常：{}", sql, batchArgs, e);
             }
-            throw new SysException("sql执行错误", e);
+            throw new DbException("sql执行错误", e);
         }
     }
 

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.liuwww.common.entity.Order;
 import org.liuwww.common.entity.TableEntity;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.BeanUtil;
 import org.liuwww.common.util.StringUtil;
 import org.liuwww.common.util.XmlReaderUtil;
@@ -79,7 +79,7 @@ public class SqlBeanUtil
         String sql = XmlReaderUtil.getProp("sql/" + fileName, tag + ".sql");
         if (sql == null)
         {
-            throw new SysException("文件：+" + fileName + "的sql:" + tag + "不存在！");
+            throw new DbException("文件：+" + fileName + "的sql:" + tag + "不存在！");
         }
         String orderBy = XmlReaderUtil.getProp("sql/" + fileName, tag + ".order-by");
         String jdbcTemplateStr = XmlReaderUtil.getProp("sql/" + fileName, tag + ".jdbcTemplate");

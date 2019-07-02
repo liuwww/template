@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 { "classpath:spring/spring.xml" })
 public abstract class AbstractTest
 {
+
     @Autowired
     protected IDataTemplate dataTemplate;
 

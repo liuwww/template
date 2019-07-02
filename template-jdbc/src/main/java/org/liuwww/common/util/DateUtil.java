@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.liuwww.common.execption.SysException;
+import org.liuwww.common.execption.DbException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +80,7 @@ public class DateUtil
         }
         catch (ParseException e)
         {
-            throw new SysException("", e);
+            throw new DbException("", e);
         }
     }
 
