@@ -7,13 +7,11 @@ import org.liuwww.db.dao.IQueryDao;
 import org.liuwww.db.sql.SqlBean;
 import org.liuwww.db.sql.SqlBeanUtil;
 import org.liuwww.db.sql.Table;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class DefaultQueryBeanFactory implements QueryBeanFactory
 {
 
-    @Autowired
     protected IQueryDao queryDao;
 
     @Override

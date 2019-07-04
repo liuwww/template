@@ -21,8 +21,17 @@ import org.liuwww.common.execption.BusinessExecption;
 
 public class QueryTemplate extends DefaultQueryBeanFactory implements IQueryTemplate, QueryBeanFactory
 {
+
+    public QueryTemplate()
+    {
+
+    }
+
     @Autowired
-    private IQueryDao queryDao;
+    public QueryTemplate(IQueryDao queryDao)
+    {
+        this.queryDao = queryDao;
+    }
 
     @SuppressWarnings("unchecked")
     @Override

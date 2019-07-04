@@ -5,14 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.liuwww.db.context.TableMetaData;
-import org.springframework.stereotype.Component;
 
 /**
  * 表新增数据或者更新数据时 一些默认值的设置,默认实现，可以由实现ITableDefaultValue接口的bean覆盖此实现<br>
  * bean的name规则为tableName_tableDefaultValue,其中tableName大写
  * @author lwww 2017年5月25日下午4:44:25
  */
-@Component(TableDefaultValue.BEAN_NAME_SUFFIX)
+// @Component(TableDefaultValue.BEAN_NAME_SUFFIX)
 public class TableDefaultValueImpl implements TableDefaultValue
 {
 

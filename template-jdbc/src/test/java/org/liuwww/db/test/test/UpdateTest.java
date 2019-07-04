@@ -7,9 +7,40 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.liuwww.db.test.entity.TestUser;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class UpdateTest extends AbstractTest
 {
+
+    public UpdateTest()
+    {
+
+    }
+
+    // @Bean
+    // public DbContext dbcontext()
+    // {
+    // return new DbContext();
+    // }
+    //
+    // @Bean
+    // public IQueryTemplate getQuerytemplate(DbContext dbContext)
+    // {
+    // return dbContext.getQueryTemplate();
+    // }
+    //
+    // @Bean
+    // public IDataTemplate getDatatemplate(DbContext dbContext)
+    // {
+    // return dbContext.getDataTemplate();
+    // }
+    //
+    // @Bean
+    // public BeanUtil beanUtil(DbContext dbContext)
+    // {
+    // return dbContext.getBeanUtil();
+    // }
 
     public UpdateTest(AbstractTest test)
     {

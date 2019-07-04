@@ -16,6 +16,7 @@ import org.liuwww.db.sql.Row;
 import org.liuwww.db.sql.RowUtil;
 import org.liuwww.db.sql.SqlBean;
 import org.liuwww.db.sql.SqlBeanUtil;
+import org.liuwww.db.sql.TableDefaultValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,18 @@ public class DataTemplate implements IDataTemplate
 {
     private Logger logger = LoggerFactory.getLogger(DataTemplate.class);
 
-    @Autowired
+    @Autowired(required = false)
     private IDataDao dataDao;
+
+    public DataTemplate()
+    {
+        System.out.println("333333333333333333333");
+    }
+
+    public DataTemplate(IDataDao dataDao)
+    {
+        this.dataDao = dataDao;
+    }
 
     @Override
     public Row insert(String tableName, Map<String, Object> fieldVals) throws DbException
@@ -71,8 +82,7 @@ public class DataTemplate implements IDataTemplate
     }
 
     @Override
-    public int updateRows(String tableName, Map<String, Object> valMap, Map<String, Object> paramMap)
-            throws DbException
+    public int updateRows(String tableName, Map<String, Object> valMap, Map<String, Object> paramMap) throws DbException
     {
         return updateRows(tableName, valMap, paramMap, null);
     }
@@ -172,7 +182,12 @@ public class DataTemplate implements IDataTemplate
         List<Column> clist = tmd.getColumnList();
         int len = clist.size();
         List<Object[]> ps = new ArrayList<Object[]>(fList.size());
-        Map<String, Object> dmap = RowUtil.getTableDefaultValue(tmd).getNewDefaultValue(tmd);
+        TableDefaultValue defaultValue = RowUtil.getTableDefaultValue(tmd);
+        Map<String, Object> dmap = null;
+        if (defaultValue != null)
+        {
+            dmap = defaultValue.getNewDefaultValue(tmd);
+        }
         Column idColumn = tmd.getIdColumn();
         for (Map<String, Object> e : fList)
         {
@@ -202,7 +217,7 @@ public class DataTemplate implements IDataTemplate
                 }
                 else
                 {
-                    if (val == null)
+                    if (val == null && dmap != null)
                     {
                         val = dmap.get(c.getColumnName());
                     }
@@ -303,7 +318,12 @@ public class DataTemplate implements IDataTemplate
     {
         List<Column> clist = tmd.getColumnList();
         List<Object[]> ps = new ArrayList<Object[]>(list.size());
-        Map<String, Object> dmap = RowUtil.getTableDefaultValue(tmd).getNewDefaultValue(tmd);
+        TableDefaultValue defaultValue = RowUtil.getTableDefaultValue(tmd);
+        Map<String, Object> dmap = null;
+        if (defaultValue != null)
+        {
+            dmap = defaultValue.getNewDefaultValue(tmd);
+        }
         for (TableEntity<T> e : list)
         {
             Object[] os = new Object[clist.size()];
@@ -321,7 +341,7 @@ public class DataTemplate implements IDataTemplate
                 }
                 else
                 {
-                    if (val == null)
+                    if (val == null && dmap != null)
                     {
                         val = dmap.get(c.getColumnName());
                     }

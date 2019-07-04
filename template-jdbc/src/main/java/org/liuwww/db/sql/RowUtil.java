@@ -3,6 +3,7 @@ package org.liuwww.db.sql;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,27 +50,34 @@ public class RowUtil
         {
             tableDefaultValue = (TableDefaultValue) BeanUtil.getBean(TableDefaultValue.BEAN_NAME_SUFFIX);
         }
-        Map<String, Object> map = null;
-        if (type.equals(DataOpeType.INSERT))
+        if (tableDefaultValue != null)
         {
-            map = tableDefaultValue.getNewDefaultValue(tmd);
+            Map<String, Object> map = null;
+            if (type.equals(DataOpeType.INSERT))
+            {
+                map = tableDefaultValue.getNewDefaultValue(tmd);
+            }
+            else
+            {
+                map = tableDefaultValue.getUpdateDefaultValue(tmd);
+            }
+            Map<String, Object> valuMap = row.getRowValueMap();
+            Map<String, Object> addMap = new HashMap<String, Object>();
+            for (String key : map.keySet())
+            {
+                Object val = map.get(key);
+                if (!valuMap.containsKey(key))
+                {
+                    valuMap.put(key, val);
+                    addMap.put(key, val);
+                }
+            }
+            row.setAdditionalMap(addMap);
         }
         else
         {
-            map = tableDefaultValue.getUpdateDefaultValue(tmd);
+            row.setAdditionalMap(Collections.<String, Object> emptyMap());
         }
-        Map<String, Object> valuMap = row.getRowValueMap();
-        Map<String, Object> addMap = new HashMap<String, Object>();
-        for (String key : map.keySet())
-        {
-            Object val = map.get(key);
-            if (!valuMap.containsKey(key))
-            {
-                valuMap.put(key, val);
-                addMap.put(key, val);
-            }
-        }
-        row.setAdditionalMap(addMap);
         convertInValidVal(row, tmd);
         return row;
     }

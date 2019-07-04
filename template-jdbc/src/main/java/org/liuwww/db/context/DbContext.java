@@ -14,6 +14,8 @@ import org.liuwww.db.service.IQueryTemplate;
 import org.liuwww.db.service.impl.DataTemplate;
 import org.liuwww.db.service.impl.QueryTemplate;
 import org.liuwww.db.sql.DbType;
+import org.liuwww.db.sql.TableDefaultValue;
+import org.liuwww.db.sql.TableDefaultValueImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -146,7 +148,7 @@ public class DbContext
     }
 
     @Bean(name = "#dbDataDao")
-    private IDataDao dataDao()
+    private IDataDao getDataDao()
     {
         if (this.dataDao == null)
         {
@@ -162,7 +164,7 @@ public class DbContext
     }
 
     @Bean(name = "#dbQueryDao")
-    private IQueryDao queryDao()
+    private IQueryDao getQueryDao()
     {
         if (this.queryDao == null)
         {
@@ -179,7 +181,7 @@ public class DbContext
     }
 
     @Bean(name = "#dbDataTemplate")
-    private IDataTemplate dataTemplate()
+    public IDataTemplate getDataTemplate()
     {
         if (this.dataTemplate == null)
         {
@@ -187,7 +189,7 @@ public class DbContext
             {
                 if (this.dataTemplate == null)
                 {
-                    this.dataTemplate = new DataTemplate();
+                    this.dataTemplate = new DataTemplate(getDataDao());
                 }
             }
 
@@ -196,7 +198,7 @@ public class DbContext
     }
 
     @Bean(name = "#dbQueryTemplate")
-    private IQueryTemplate queryTemplate()
+    public IQueryTemplate getQueryTemplate()
     {
         if (this.queryTemplate == null)
         {
@@ -204,17 +206,35 @@ public class DbContext
             {
                 if (this.queryTemplate == null)
                 {
-                    this.queryTemplate = new QueryTemplate();
+                    this.queryTemplate = new QueryTemplate(getQueryDao());
                 }
             }
         }
         return this.queryTemplate;
     }
 
+    private BeanUtil beanUtil;
+
     @Bean(name = "#dbBeanUtil")
-    private BeanUtil getBeanUtil()
+    public BeanUtil getBeanUtil()
     {
-        return new BeanUtil();
+        if (beanUtil == null)
+        {
+            synchronized (this)
+            {
+                if (beanUtil == null)
+                {
+                    beanUtil = new BeanUtil();
+                }
+            }
+        }
+        return beanUtil;
+    }
+
+    @Bean(name = TableDefaultValue.BEAN_NAME_SUFFIX)
+    private TableDefaultValue tableDefaultValue()
+    {
+        return new TableDefaultValueImpl();
     }
 
     private IDataDao dataDao;

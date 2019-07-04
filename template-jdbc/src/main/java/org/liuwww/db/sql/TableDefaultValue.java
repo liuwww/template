@@ -11,7 +11,7 @@ import org.liuwww.db.context.TableMetaData;
 public interface TableDefaultValue
 {
 
-    public static String BEAN_NAME_SUFFIX = "_tableDefaultValue";
+    public static String BEAN_NAME_SUFFIX = "_dbTableDefaultValue";
 
     /**
      * @Desc:新增数据时，默认值的设置
