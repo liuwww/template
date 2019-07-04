@@ -10,17 +10,24 @@ maven:
         </dependency>
 ````
 
- jar包引入类路径后，注册DbContext为spring bean后即可用spring 注入的方法使用IDataTemplate和IQueryTemplate
+bean扫描路径包含org.liuwww.db，可用spring 注入的方法使用IDataTemplate和IQueryTemplate
+ 
+ ```
+ @ComponentScan(basePackages = {"your path","org.liuwww.db"})
+ ```
+ ```
+ <context:component-scan base-package="yourpath,org.liuwww.db" />	
+ ```
  ```
     @Autowired
     protected IDataTemplate dataTemplate;
     @Autowired
     protected IQueryTemplate queryTemplate;
  ```
- bean name是[#jDataTemplate]和[#jQueryTemplate]所以也可以使用BeanUtil(如果注册为bean或者在spring 扫描路径内)
+ bean name是[#jDataTemplate]和[#jQueryTemplate]所以也可以使用BeanUtil
  ```
- 	BeanUtil.getBean("#jDataTemplate");
-	BeanUtil.getBean("#jQueryTemplate");
+ 	BeanUtil.getBean("#dbDataTemplate");
+	BeanUtil.getBean("#dbQueryTemplate");
 	BeanUtil.getBean(IDataTemplate.class);
 	BeanUtil.getBean(IQueryTemplate.class);
  ```
