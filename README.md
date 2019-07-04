@@ -1,6 +1,15 @@
 # 简介
 template jdbc 是基于spirng JdbcTemplate 封装的对数据库进行增删改查的一套api。实现了在项目启动加载时，加载配置的数据源中的表及视图的元数据，在对数据增删改查时，根据元数据进行sql语句的组装，实现数据的操作。api分为两个，一个是数据操作api,另一个是数据查询api。使用查询api，可以不在java代码中拼接sql,开发过程中，sql多数以视图给出，部分sql以xml文件形式给出，查询条件以接口形式组装，条件的有效性由接口中自动判断实现。在开发过程中，数据表字段常常变化，基础代码或者配置需要跟着改动，以元数据自动匹配的功能，不需要改动基础代码，省掉了很多麻烦。该套代码已实现mysql和h2的测试，在mysql和oracle环境中使用过。
 # 引入使用
+maven:
+````
+	<dependency>
+	  <groupId>com.github.liuwww</groupId>
+	  <artifactId>template-jdbc</artifactId>
+	  <version>1.0.1</version>
+        </dependency>
+````
+
  jar包引入类路径后，注册DbContext为spring bean后即可用spring 注入的方法使用IDataTemplate和IQueryTemplate
  ```
     @Autowired
