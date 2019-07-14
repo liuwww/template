@@ -6,7 +6,7 @@ maven:
 	<dependency>
 	  <groupId>com.github.liuwww</groupId>
 	  <artifactId>template-jdbc</artifactId>
-	  <version>1.0.1</version>
+	  <version>1.0.2</version>
         </dependency>
 ````
 
@@ -18,6 +18,8 @@ bean扫描路径包含org.liuwww.db，可用spring 注入的方法使用IDataTem
  ```
  <context:component-scan base-package="yourpath,org.liuwww.db" />	
  ```
+ spring boot 引入即可使用，不用另外配置
+ 
  ```
     @Autowired
     protected IDataTemplate dataTemplate;
