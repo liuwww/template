@@ -1,9 +1,7 @@
 package org.liuwww.db.test.entity;
 
 import org.liuwww.common.entity.TableEntity;
-import org.springframework.stereotype.Component;
 
-@Component
 public class TestUser implements TableEntity<TestUser>
 {
 

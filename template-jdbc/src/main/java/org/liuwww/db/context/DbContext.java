@@ -5,10 +5,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.liuwww.db.dao.IDataDao;
-import org.liuwww.db.dao.IQueryDao;
-import org.liuwww.db.dao.impl.DataDao;
-import org.liuwww.db.dao.impl.QueryDao;
 import org.liuwww.db.service.IDataTemplate;
 import org.liuwww.db.service.IQueryTemplate;
 import org.liuwww.db.service.impl.DataTemplate;
@@ -147,39 +143,6 @@ public class DbContext
         return tmd;
     }
 
-    @Bean(name = "#dbDataDao")
-    private IDataDao getDataDao()
-    {
-        if (this.dataDao == null)
-        {
-            synchronized (this)
-            {
-                if (this.dataDao == null)
-                {
-                    dataDao = new DataDao();
-                }
-            }
-        }
-        return this.dataDao;
-    }
-
-    @Bean(name = "#dbQueryDao")
-    private IQueryDao getQueryDao()
-    {
-        if (this.queryDao == null)
-        {
-            synchronized (this)
-            {
-                if (this.queryDao == null)
-                {
-
-                    this.queryDao = new QueryDao();
-                }
-            }
-        }
-        return this.queryDao;
-    }
-
     @Bean(name = "#dbDataTemplate")
     public IDataTemplate getDataTemplate()
     {
@@ -189,7 +152,7 @@ public class DbContext
             {
                 if (this.dataTemplate == null)
                 {
-                    this.dataTemplate = new DataTemplate(getDataDao());
+                    this.dataTemplate = new DataTemplate();
                 }
             }
 
@@ -206,7 +169,7 @@ public class DbContext
             {
                 if (this.queryTemplate == null)
                 {
-                    this.queryTemplate = new QueryTemplate(getQueryDao());
+                    this.queryTemplate = new QueryTemplate();
                 }
             }
         }
@@ -236,10 +199,6 @@ public class DbContext
     {
         return new TableDefaultValueImpl();
     }
-
-    private IDataDao dataDao;
-
-    private IQueryDao queryDao;
 
     private IDataTemplate dataTemplate;
 

@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.dao.IDataDao;
+import org.liuwww.db.dao.impl.DataDao;
 import org.liuwww.db.service.IDataTemplate;
 import org.liuwww.db.sql.Column;
 import org.liuwww.db.sql.Row;
@@ -32,14 +33,14 @@ public class DataTemplate implements IDataTemplate
 {
     private Logger logger = LoggerFactory.getLogger(DataTemplate.class);
 
-    @Autowired(required = false)
     private IDataDao dataDao;
 
     public DataTemplate()
     {
-        System.out.println("333333333333333333333");
+        this.dataDao = new DataDao();
     }
 
+    @Autowired
     public DataTemplate(IDataDao dataDao)
     {
         this.dataDao = dataDao;

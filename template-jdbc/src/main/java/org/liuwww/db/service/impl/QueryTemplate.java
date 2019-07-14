@@ -7,6 +7,7 @@ import java.util.Map;
 import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.dao.IQueryDao;
+import org.liuwww.db.dao.impl.QueryDao;
 import org.liuwww.db.page.Page;
 import org.liuwww.db.query.DefaultQueryBeanFactory;
 import org.liuwww.db.query.QueryBeanFactory;
@@ -24,7 +25,7 @@ public class QueryTemplate extends DefaultQueryBeanFactory implements IQueryTemp
 
     public QueryTemplate()
     {
-
+        this.queryDao = new QueryDao();
     }
 
     @Autowired
