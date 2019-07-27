@@ -211,7 +211,7 @@ public class Page implements Serializable
     /**
      * 计算起止行号
      */
-    private void calculateStartAndEndRow()
+    public void calculateStartAndEndRow()
     {
         this.startRow = this.pageNum > 0 ? (this.pageNum - 1) * this.pageSize : 0;
         this.endRow = this.startRow + this.pageSize * (this.pageNum > 0 ? 1 : 0);

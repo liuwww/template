@@ -138,6 +138,7 @@ public class QueryDao implements IQueryDao
         {
             String sql = bean.getSql();
             String dbType = bean.getDbType().toString();
+            pageInfo.calculateStartAndEndRow();
             String querySql = PagerUtils.limit(sql, dbType, pageInfo.getStartRow() - 1, pageInfo.getPageSize());
 
             List<T> list = bean.getJdbcTemplate().query(querySql, bean.getParams(),
@@ -173,6 +174,7 @@ public class QueryDao implements IQueryDao
         {
             String sql = bean.getSql();
             String dbType = bean.getDbType().toString();
+            pageInfo.calculateStartAndEndRow();
             String querySql = PagerUtils.limit(sql, dbType, pageInfo.getStartRow() - 1, pageInfo.getPageSize());
             if (logger.isDebugEnabled())
             {

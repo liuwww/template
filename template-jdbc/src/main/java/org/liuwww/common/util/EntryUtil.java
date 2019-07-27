@@ -25,7 +25,6 @@ public class EntryUtil
 
     private static Logger logger = LoggerFactory.getLogger(EntryUtil.class);
 
-    @SuppressWarnings("unchecked")
     public static Set<Class<?>> simpleClasses = new HashSet<Class<?>>(Arrays.asList(short.class, char.class, int.class,
             long.class, byte.class, float.class, double.class, boolean.class, Short.class, Character.class,
             Integer.class, Long.class, Byte.class, Float.class, Boolean.class, String.class, CharSequence.class));
@@ -381,7 +380,15 @@ public class EntryUtil
             {
                 Converter converter = null;
                 converter = ConvertUtils.lookup(entryprops.type);
-                val = converter.convert(entryprops.type, val);
+                if (converter == null && entryprops.type != Object.class)
+                {
+                    BeanUtils.setProperty(entry, field, val);
+                    return;
+                }
+                else
+                {
+                    val = converter.convert(entryprops.type, val);
+                }
             }
             if (setter != null)
             {
