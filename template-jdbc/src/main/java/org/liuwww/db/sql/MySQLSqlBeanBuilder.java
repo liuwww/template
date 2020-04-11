@@ -202,7 +202,10 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
     @Override
     public String buildConditonSqlFragment(OneCondition c, DbType dbType)
     {
-
+        if (!c.isColumnField())
+        {
+            return super.buildConditonSqlFragment(c, dbType);
+        }
         CompareOpe ope = c.getOpe();
         if (ope == CompareOpe.notNull)
         {

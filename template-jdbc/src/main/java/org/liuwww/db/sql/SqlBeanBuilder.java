@@ -19,6 +19,8 @@ public interface SqlBeanBuilder
 
     public SqlBean buildInsert(Row row);
 
+    public SqlBean buildInsert(Row row, boolean withId);
+
     public SqlBean buildUpdate(Row row);
 
     public SqlBean buildDelete(Row row);
@@ -41,5 +43,7 @@ public interface SqlBeanBuilder
     public String buildDeleteSql(TableMetaData tmd);
 
     public String buildInsertSql(TableMetaData tmd);
+
+    public String buildInsertSql(TableMetaData tmd, boolean withId);
 
 }

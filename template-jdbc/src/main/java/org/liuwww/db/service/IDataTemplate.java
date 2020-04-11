@@ -12,7 +12,7 @@ import org.liuwww.common.execption.DbException;
 public interface IDataTemplate
 {
     /**
-     * @Desc:插入单条数据
+     * @Desc:插入单条数据，如果参数中已设置了Id,则以设置的为准
      * @Date 2017年5月11日下午5:23:38
      * @author liuwww
      * @param tableName
@@ -23,7 +23,7 @@ public interface IDataTemplate
     public Row insert(String tableName, Map<String, Object> fieldVals) throws DbException;
 
     /**
-     * @Desc:插入单条数据,可以指定数据源
+     * @Desc:插入单条数据,可以指定数据源，如果参数中已设置了Id,则以设置的为准
      * @Date 2017年5月11日下午5:23:38
      * @author liuwww
      * @param tableName
@@ -35,7 +35,7 @@ public interface IDataTemplate
     public Row insert(String tableName, Map<String, Object> fieldVals, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
-     * @Desc:插入多条数据
+     * @Desc:插入多条数据，如果参数中已设置了Id,则以设置的为准
      * @Date 2017年5月11日下午5:23:38
      * @author liuwww
      * @param tableName
@@ -46,7 +46,7 @@ public interface IDataTemplate
     public List<Row> insert(String tableName, List<Map<String, Object>> fieldValList) throws DbException;
 
     /**
-     * @Desc:插入多条数据,可以指定数据源
+     * @Desc:插入多条数据,可以指定数据源，如果参数中已设置了Id,则以设置的为准
      * @Date 2017年5月11日下午5:23:38
      * @author liuwww
      * @param tableName
@@ -59,7 +59,7 @@ public interface IDataTemplate
             throws DbException;
 
     /**
-     * @Desc:插入单条数据
+     * @Desc:插入单条数据，如果参数中已设置了Id,则以设置的为准
      * @Date 2017年5月19日下午5:32:23
      * @author liuwww
      * @param entity
@@ -69,7 +69,7 @@ public interface IDataTemplate
     public <T> T insert(TableEntity<T> entity) throws DbException;
 
     /**
-     * @Desc:插入单条数据，可以指定数据源
+     * @Desc:插入单条数据，可以指定数据源，如果参数中已设置了Id,则以设置的为准
      * @Date 2017年5月19日下午5:32:23
      * @author liuwww
      * @param entity
@@ -80,7 +80,7 @@ public interface IDataTemplate
     public <T> T insert(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
-     * @Desc:插入多条数据
+     * @Desc:插入多条数据，如果参数中已设置了Id,则以设置的为准
      * @Date 2017年5月19日下午5:36:16
      * @author liuwww
      * @param entityList
@@ -89,7 +89,7 @@ public interface IDataTemplate
     public <T> List<T> insert(List<? extends TableEntity<T>> entityList) throws DbException;
 
     /**
-     * @Desc:插入多条数据,可以指定数据源
+     * @Desc:插入多条数据,可以指定数据源，如果参数中已设置了Id,则以设置的为准
      * @Date 2017年5月19日下午5:36:16
      * @author liuwww
      * @param entityList
@@ -281,8 +281,7 @@ public interface IDataTemplate
      * @return
      * @throws DbException
      */
-    public int deleteRows(String tableName, Map<String, Object> paramMap, JdbcTemplate jdbcTemplate)
-            throws DbException;
+    public int deleteRows(String tableName, Map<String, Object> paramMap, JdbcTemplate jdbcTemplate) throws DbException;
 
     /**
      * @Desc:删除一条数据

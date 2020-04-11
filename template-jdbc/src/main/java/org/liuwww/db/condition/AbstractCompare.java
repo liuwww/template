@@ -65,12 +65,12 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         return getTarget();
     }
 
-    private void addConditon(String field, CompareOpe ope, Object val, ConditionRel rel)
+    protected void addConditon(String field, CompareOpe ope, Object val, ConditionRel rel)
     {
-        String column = getColumn(field);
-        if (column != null)
+        Condition condition = getCondition(field, ope, val, rel);
+        if (condition != null)
         {
-            conditionList.add(new OneCondition(column, ope, val, rel));
+            conditionList.add(condition);
         }
         else
         {
@@ -86,6 +86,7 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         if (condition instanceof OneCondition)
         {
             OneCondition one = (OneCondition) condition;
+
             addConditon(one.field, one.ope, one.getVal(), one.rel);
         }
         else if (condition instanceof GroupCondition)
@@ -323,6 +324,16 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
     protected String getColumn(String field)
     {
         return field;
+    }
+
+    protected Condition getCondition(String field, CompareOpe ope, Object val, ConditionRel rel)
+    {
+        String column = getColumn(field);
+        if (column != null)
+        {
+            return new OneCondition(column, ope, val, rel);
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")

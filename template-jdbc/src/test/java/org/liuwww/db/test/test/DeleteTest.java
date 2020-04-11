@@ -186,4 +186,17 @@ public class DeleteTest extends AbstractTest
         Assert.assertNull(u2);
     }
 
+    public void deleteAll()
+    {
+        List<TestUser> list = queryTemplate.createQueryBean("test_user", jdbcTemplate1).getBeanList(TestUser.class);
+        dataTemplate.delete(list, jdbcTemplate1);
+
+        List<TestUser2> list2 = queryTemplate.createQueryBean("test_user2", jdbcTemplate1).getBeanList(TestUser2.class);
+        dataTemplate.delete(list2, jdbcTemplate1);
+
+        List<TestUser2> list3 = queryTemplate.createQueryBean("test_user2", jdbcTemplate2).getBeanList(TestUser2.class);
+        dataTemplate.delete(list3, jdbcTemplate2);
+
+    }
+
 }

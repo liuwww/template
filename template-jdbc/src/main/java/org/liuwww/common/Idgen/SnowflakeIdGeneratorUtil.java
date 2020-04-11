@@ -1,12 +1,17 @@
 package org.liuwww.common.Idgen;
 
-public class IdGeneratorUtil
+public class SnowflakeIdGeneratorUtil
 {
-    private static IdGenerator generator = null;
+    private static SnowflakeIdGenerator generator = null;
 
     static
     {
-        generator = new IdGenerator(0, 0);
+        generator = new SnowflakeIdGenerator(0, 0);
+    }
+
+    public static IdGenerator getIdGenerator()
+    {
+        return generator;
     }
 
     public static long nextId()

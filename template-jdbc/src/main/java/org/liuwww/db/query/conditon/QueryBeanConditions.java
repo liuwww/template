@@ -1,6 +1,10 @@
 package org.liuwww.db.query.conditon;
 
 import org.liuwww.db.condition.AbstractCompare;
+import org.liuwww.db.condition.CompareOpe;
+import org.liuwww.db.condition.Condition;
+import org.liuwww.db.condition.OneCondition;
+import org.liuwww.db.condition.Condition.ConditionRel;
 import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.query.QueryBean;
 import org.liuwww.db.sql.Column;
@@ -38,6 +42,23 @@ public class QueryBeanConditions extends AbstractCompare<QueryBeanCompare> imple
             return null;
         }
         return column.getColumnName();
+    }
+
+    @Override
+    protected Condition getCondition(String field, CompareOpe ope, Object val, ConditionRel rel)
+    {
+        Condition condition = super.getCondition(field, ope, val, rel);
+        if (condition != null)
+        {
+            if (!isOne || tmd == null)
+            {
+                if (condition instanceof OneCondition)
+                {
+                    ((OneCondition) condition).setColumnField(false);
+                }
+            }
+        }
+        return condition;
     }
 
     public TableMetaData getTmd()

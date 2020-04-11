@@ -20,10 +20,11 @@ import org.liuwww.db.sql.SqlBeanUtil;
 import org.liuwww.db.sql.TableDefaultValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import com.alibaba.fastjson.JSON;
-import org.liuwww.common.Idgen.IdGeneratorUtil;
+
+import org.liuwww.common.Idgen.IdGenerator;
+import org.liuwww.common.Idgen.SnowflakeIdGeneratorUtil;
 import org.liuwww.common.entity.TableEntity;
 import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.EntryUtil;
@@ -35,15 +36,23 @@ public class DataTemplate implements IDataTemplate
 
     private IDataDao dataDao;
 
+    private IdGenerator idGenerator;
+
     public DataTemplate()
     {
         this.dataDao = new DataDao();
     }
 
-    @Autowired
-    public DataTemplate(IDataDao dataDao)
+    public DataTemplate(IdGenerator idGenerator)
+    {
+        this.dataDao = new DataDao();
+        this.idGenerator = idGenerator;
+    }
+
+    public DataTemplate(IDataDao dataDao, IdGenerator idGenerator)
     {
         this.dataDao = dataDao;
+        this.idGenerator = idGenerator;
     }
 
     @Override
@@ -153,9 +162,37 @@ public class DataTemplate implements IDataTemplate
         TableMetaData tmd = DbContext.getTableMetaData(tableName, jdbcTemplate);
         Row row = RowUtil.getInsertRow(tableName, fieldVals, tmd);
         checkRow(row);
+
+        IdGenerator idGenerator = getIdGenerator();
+        String id = row.getIdValue();
+        Column idColunm = tmd.getIdColumn();
+        boolean needCreateId = StringUtil.isBlank(id) && idColunm != null;
+        boolean isCreatedByDs = idGenerator.isCreatedByDatabase(tableName, tmd);
+        if (needCreateId && !isCreatedByDs)
+        {
+            id = idGenerator.nextKey(tmd.getTableName(), tmd);
+            if (StringUtil.isBlank(id))
+            {
+                throw new DbException("table[" + tableName + "]的id不可为空");
+            }
+            String idName = tmd.getIdColumn().getColumnName();
+            row.setIdValue(id);
+            row.setIdName(idName);
+            row.getRowValueMap().put(idName, id);
+        }
         SqlBean bean = SqlBeanUtil.getInsertSqlBean(row);
         SqlBeanUtil.checkSqlBeanJdbcTemplate(tableName, jdbcTemplate, bean);
-        dataDao.executeUpdate(bean);
+        if (needCreateId && isCreatedByDs)
+        {
+            id = dataDao.insert4AutoInc(bean);
+            row.setIdValue(id);
+            row.setIdName(tmd.getIdColumn().getColumnName());
+        }
+        else
+        {
+            dataDao.executeUpdate(bean);
+
+        }
         return row;
     }
 
@@ -163,16 +200,62 @@ public class DataTemplate implements IDataTemplate
     public List<Row> insert(String tableName, List<Map<String, Object>> fList, JdbcTemplate jdbcTemplate)
             throws DbException
     {
-        List<Row> list = new ArrayList<Row>(fList.size());
-
-        TableMetaData tmd = DbContext.getTableMetaData(tableName, jdbcTemplate);
-        String sql = SqlBeanUtil.getInsertSql(tmd);
-        List<Object[]> ps = getInsertMapParamList(fList, tmd, list);
         if (jdbcTemplate == null)
         {
             jdbcTemplate = DbContext.getJdbcTemplateForTable(tableName);
         }
-        dataDao.executeBatchUpdate(sql, ps, jdbcTemplate);
+        List<Row> list = new ArrayList<Row>(fList.size());
+        TableMetaData tmd = DbContext.getTableMetaData(tableName, jdbcTemplate);
+        Column idColumn = tmd.getIdColumn();
+        IdGenerator generator = getIdGenerator();
+        boolean isCreatedByDs = generator.isCreatedByDatabase(tableName, tmd);
+        if (!isCreatedByDs || idColumn == null)
+        {
+            List<Object[]> ps = getInsertMapParamList(fList, tmd, list);
+            String sql = SqlBeanUtil.getInsertSql(tmd, !isCreatedByDs);
+            dataDao.executeBatchUpdate(sql, ps, jdbcTemplate);
+        }
+        else
+        {
+            List<Map<String, Object>> withIdList = new ArrayList<>();
+            List<Map<String, Object>> notWithIdList = new ArrayList<>();
+            for (Map<String, Object> m : fList)
+            {
+                Object id = m.get(idColumn.getName());
+                if (id == null)
+                {
+                    id = m.get(idColumn.getColumnName());
+                }
+                if (id != null && StringUtil.isNotBlank(id.toString()))
+                {
+                    withIdList.add(m);
+                }
+                else
+                {
+                    notWithIdList.add(m);
+                }
+            }
+            List<Row> withIdRowList = new ArrayList<>(withIdList.size());
+            if (!withIdList.isEmpty())
+            {
+                String sql = SqlBeanUtil.getInsertSql(tmd, true);
+                List<Object[]> ps = getInsertMapParamList(withIdList, tmd, withIdRowList);
+                dataDao.executeBatchUpdate(sql, ps, jdbcTemplate);
+            }
+            List<Row> notWithIdRowList = new ArrayList<>(notWithIdList.size());
+            if (!notWithIdList.isEmpty())
+            {
+                String sql = SqlBeanUtil.getInsertSql(tmd, false);
+                List<Object[]> ps = getInsertMapParamList(notWithIdList, tmd, notWithIdRowList);
+                String[] ids = dataDao.insert4AutoInc(sql, ps, jdbcTemplate);
+                for (int i = 0; i < ids.length; i++)
+                {
+                    notWithIdRowList.get(i).setIdValue(ids[i]);
+                }
+            }
+            list.addAll(notWithIdRowList);
+            list.addAll(withIdRowList);
+        }
 
         return list;
     }
@@ -181,7 +264,6 @@ public class DataTemplate implements IDataTemplate
     {
 
         List<Column> clist = tmd.getColumnList();
-        int len = clist.size();
         List<Object[]> ps = new ArrayList<Object[]>(fList.size());
         TableDefaultValue defaultValue = RowUtil.getTableDefaultValue(tmd);
         Map<String, Object> dmap = null;
@@ -190,6 +272,10 @@ public class DataTemplate implements IDataTemplate
             dmap = defaultValue.getNewDefaultValue(tmd);
         }
         Column idColumn = tmd.getIdColumn();
+        IdGenerator idGenerator = getIdGenerator();
+        String tableName = tmd.getTableName();
+        boolean isCreateByDs = idGenerator.isCreatedByDatabase(tableName, tmd);
+        int len = isCreateByDs ? clist.size() - 1 : clist.size();
         for (Map<String, Object> e : fList)
         {
             Object[] os = new Object[len];
@@ -208,11 +294,19 @@ public class DataTemplate implements IDataTemplate
                 {
                     val = e.get(c.getColumnName());
                 }
-                if (c == idColumn)
+                if (c == idColumn && isCreateByDs)
+                {
+                    if (val != null && StringUtil.isNotBlank(val.toString()))
+                    {
+                        r.setIdValue(val.toString());
+                    }
+                    continue;
+                }
+                else if (c == idColumn && !isCreateByDs)
                 {
                     if (val == null || StringUtil.isBlank(val.toString()))
                     {
-                        val = IdGeneratorUtil.nextStringId();
+                        val = idGenerator.nextKey(tableName, tmd);
                     }
                     r.setIdValue(val.toString());
                 }
@@ -225,12 +319,14 @@ public class DataTemplate implements IDataTemplate
 
                 }
                 os[i++] = val;
-                if (val != null)
+                // if (val != null)
                 {
-                    rowValMap.put(c.getName(), val);
+                    rowValMap.put(c.getColumnName(), val);
                 }
             }
             RowUtil.setRowValMap(r, rowValMap);
+            r.setAdditionalMap(dmap);
+            list.add(r);
             ps.add(os);
         }
         return ps;
@@ -241,16 +337,48 @@ public class DataTemplate implements IDataTemplate
     @Override
     public <T> T insert(TableEntity<T> entity, JdbcTemplate jdbcTemplate) throws DbException
     {
+
+        if (jdbcTemplate == null)
+        {
+            jdbcTemplate = DbContext.getJdbcTemplateForTable(entity.tableName());
+        }
         TableMetaData tmd = DbContext.getTableMetaData(entity.tableName(), jdbcTemplate);
+        String tableName = tmd.getTableName();
+        Column idColumn = tmd.getIdColumn();
+        IdGenerator generator = getIdGenerator();
         Row row = RowUtil.getInsertRow(entity, tmd);
+        String id = row.getIdValue();
+        boolean needCreateId = StringUtil.isBlank(id) && idColumn != null;
+        boolean isCreatedByDs = generator.isCreatedByDatabase(tableName, tmd);
+        Map<String, Object> addMap = row.getAdditionalMap();
+        if (needCreateId && !isCreatedByDs)
+        {
+            String idName = idColumn.getColumnName();
+            id = generator.nextKey(tableName, tmd);
+            if (StringUtil.isBlank(id))
+            {
+                throw new DbException("table[" + tableName + "]的id不可为空");
+            }
+            row.setIdValue(id);
+            row.setIdName(idName);
+            row.getRowValueMap().put(idName, id);
+            addMap.put(idName, id);
+        }
+
         checkRow(row);
         SqlBean bean = SqlBeanUtil.getInsertSqlBean(row);
-        SqlBeanUtil.checkSqlBeanJdbcTemplate(entity.tableName(), jdbcTemplate, bean);
-        dataDao.executeUpdate(bean);
-
-        Map<String, Object> addMap = row.getAdditionalMap();
-        EntryUtil.setFieldValue(entity, row.getIdName(), row.getIdValue());
-
+        SqlBeanUtil.checkSqlBeanJdbcTemplate(tableName, jdbcTemplate, bean);
+        if (needCreateId && isCreatedByDs)
+        {
+            id = dataDao.insert4AutoInc(bean);
+            row.setIdName(idColumn.getColumnName());
+            row.setIdValue(id);
+            addMap.put(row.getIdName(), id);
+        }
+        else
+        {
+            dataDao.executeUpdate(bean);
+        }
         for (String key : addMap.keySet())
         {
             Column column = tmd.getColumn(key);
@@ -280,79 +408,214 @@ public class DataTemplate implements IDataTemplate
             }
             list.add(entity);
         }
+        IdGenerator generator = getIdGenerator();
+
         for (Entry<String, List<TableEntity<T>>> entry : map.entrySet())
         {
             String tableName = entry.getKey();
             List<TableEntity<T>> list = entry.getValue();
             TableMetaData tmd = DbContext.getTableMetaData(tableName, jdbcTemplate);
-            String sql = SqlBeanUtil.getInsertSql(tmd);
-            List<Object[]> ps = getInsertParamList(list, tmd);
             if (jdbcTemplate == null)
             {
                 jdbcTemplate = DbContext.getJdbcTemplateForTable(tableName);
             }
-            dataDao.executeBatchUpdate(sql, ps, jdbcTemplate);
-            for (int i = 0, len = ps.size(); i < len; i++)
+            TableDefaultValue defaultValue = RowUtil.getTableDefaultValue(tmd);
+            Map<String, Object> dmap = null;
+            if (defaultValue != null)
             {
-                Object[] es = ps.get(0);
-                List<Column> clist = tmd.getColumnList();
-                TableEntity<T> e = list.get(i);
-                for (int j = 0, len2 = clist.size(); j < len2; j++)
+                dmap = defaultValue.getNewDefaultValue(tmd);
+            }
+            InsertData insertData = new InsertData(list, tmd, generator, false);
+            insertData.init();
+            String sql = insertData.sqlNotWithId;
+            List<Object[]> ps = insertData.psNotWithIdList;
+            if (sql != null && ps != null && !ps.isEmpty())
+            {
+                String[] ids = dataDao.insert4AutoInc(sql, ps, jdbcTemplate);
+                Column idColumn = tmd.getIdColumn();
+                List<Object> elist = insertData.notWithIdEntityList;
+                if (idColumn != null)
                 {
-                    Object val = es[j];
-                    if (val != null)
+                    String idName = idColumn.getName();
+                    for (int i = 0, len = elist.size(); i < len; i++)
                     {
-                        Column c = clist.get(j);
-                        if (EntryUtil.hasField(e, c.getName()))
+                        Object en = elist.get(i);
+                        if (EntryUtil.hasField(en, idName))
                         {
-                            EntryUtil.setFieldValue(e, c.getName(), val);
+                            EntryUtil.setFieldValue(en, idName, ids[i]);
                         }
                     }
                 }
+                setDefaultVal(elist, tmd, dmap);
+            }
+
+            sql = insertData.sqlWithId;
+            ps = insertData.psWithIdList;
+            if (sql != null && ps != null && !ps.isEmpty())
+            {
+                dataDao.executeBatchUpdate(sql, ps, jdbcTemplate);
+                setDefaultVal(insertData.withIdEntityList, tmd, dmap);
             }
         }
 
         return (List<T>) entityList;
     }
 
-    private <T> List<Object[]> getInsertParamList(List<TableEntity<T>> list, TableMetaData tmd)
+    private <T> void setDefaultVal(List<Object> entityList, TableMetaData tmd, Map<String, Object> dmap)
     {
-        List<Column> clist = tmd.getColumnList();
-        List<Object[]> ps = new ArrayList<Object[]>(list.size());
-        TableDefaultValue defaultValue = RowUtil.getTableDefaultValue(tmd);
-        Map<String, Object> dmap = null;
-        if (defaultValue != null)
+        if (dmap != null)
         {
-            dmap = defaultValue.getNewDefaultValue(tmd);
-        }
-        for (TableEntity<T> e : list)
-        {
-            Object[] os = new Object[clist.size()];
-            Column idColumn = tmd.getIdColumn();
-            int i = 0;
-            for (Column c : clist)
+            Class<?> clazz = entityList.get(0).getClass();
+            for (Entry<String, Object> en : dmap.entrySet())
             {
-                Object val = EntryUtil.getFieldValue(e, c.getName());
-                if (c == idColumn)
+                String key = en.getKey();
+                Object val = en.getValue();
+                Column c = tmd.getColumn(key);
+                String name = c.getName();
+                if (EntryUtil.hasField(clazz, name))
                 {
-                    if (val == null || StringUtil.isBlank(val.toString()))
+                    for (int i = 0, len = entityList.size(); i < len; i++)
                     {
-                        val = IdGeneratorUtil.nextStringId();
+                        EntryUtil.setFieldValue(entityList.get(i), name, val);
                     }
+                }
+            }
+        }
+    }
+
+    class InsertData
+    {
+        List<Object> entityList;
+
+        TableMetaData tmd;
+
+        IdGenerator generator;
+
+        int size;
+
+        boolean isMap;
+
+        String sqlWithId;
+
+        String sqlNotWithId;
+
+        List<Object[]> psWithIdList;
+
+        List<Object[]> psNotWithIdList;
+
+        List<Object> withIdEntityList;
+
+        List<Object> notWithIdEntityList;
+
+        @SuppressWarnings(
+        { "rawtypes", "unchecked" })
+        public InsertData(List list, TableMetaData tmd, IdGenerator generator, boolean isMap)
+        {
+            super();
+            this.entityList = list;
+            this.tmd = tmd;
+            this.generator = generator;
+            this.isMap = isMap;
+        }
+
+        void init()
+        {
+            String tableName = tmd.getTableName();
+            Column idColumn = tmd.getIdColumn();
+            boolean isAutoInc = generator.isCreatedByDatabase(tableName, tmd) && idColumn != null;
+            if (isAutoInc)
+            {
+                sqlNotWithId = SqlBeanUtil.getInsertSql(tmd, false);
+                psNotWithIdList = new ArrayList<>(size);
+            }
+            else
+            {
+                sqlWithId = SqlBeanUtil.getInsertSql(tmd, true);
+                psWithIdList = new ArrayList<>(size);
+            }
+            List<Column> clist = tmd.getColumnList();
+            TableDefaultValue defaultValue = RowUtil.getTableDefaultValue(tmd);
+            Map<String, Object> dmap = null;
+            if (defaultValue != null)
+            {
+                dmap = defaultValue.getNewDefaultValue(tmd);
+            }
+            int columnSize = clist.size();
+            for (Object e : entityList)
+            {
+                List<Object> pList = new ArrayList<Object>(columnSize);
+                for (Column c : clist)
+                {
+                    Object val = EntryUtil.getFieldValue(e, c.getName());
+                    if (isMap && val == null)
+                    {
+                        val = EntryUtil.getFieldValue(e, c.getColumnName());
+                    }
+                    if (c == idColumn)
+                    {
+                        if (val == null || StringUtil.isBlank(val.toString()))
+                        {
+                            if (isAutoInc)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                val = idGenerator.nextKey(tableName, tmd);
+                                if (EntryUtil.hasField(e, idColumn.getName()))
+                                {
+                                    EntryUtil.setFieldValue(e, idColumn.getName(), val);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (val == null && dmap != null)
+                        {
+                            val = dmap.get(c.getColumnName());
+                        }
+                    }
+
+                    pList.add(val);
+                }
+
+                if (pList.size() == columnSize)
+                {
+                    if (sqlWithId == null)
+                    {
+                        sqlWithId = SqlBeanUtil.getInsertSql(tmd, true);
+                    }
+                    if (psWithIdList == null)
+                    {
+                        psWithIdList = new ArrayList<>(size);
+                    }
+                    if (withIdEntityList == null)
+                    {
+                        withIdEntityList = new ArrayList<>();
+                    }
+                    psWithIdList.add(pList.toArray());
+                    withIdEntityList.add(e);
                 }
                 else
                 {
-                    if (val == null && dmap != null)
+                    if (sqlNotWithId == null)
                     {
-                        val = dmap.get(c.getColumnName());
+                        sqlNotWithId = SqlBeanUtil.getInsertSql(tmd, false);
                     }
-
+                    if (psNotWithIdList == null)
+                    {
+                        psNotWithIdList = new ArrayList<>(size);
+                    }
+                    if (notWithIdEntityList == null)
+                    {
+                        notWithIdEntityList = new ArrayList<>();
+                    }
+                    psNotWithIdList.add(pList.toArray());
+                    notWithIdEntityList.add(e);
                 }
-                os[i++] = val;
             }
-            ps.add(os);
         }
-        return ps;
     }
 
     @Override
@@ -571,6 +834,16 @@ public class DataTemplate implements IDataTemplate
         int[] rs = dataDao.executeBatchUpdate(sql, plist, jdbcTemplate);
 
         return getTotal(rs);
+    }
+
+    public IdGenerator getIdGenerator()
+    {
+        if (idGenerator == null)
+        {
+            idGenerator = SnowflakeIdGeneratorUtil.getIdGenerator();
+        }
+
+        return idGenerator;
     }
 
 }

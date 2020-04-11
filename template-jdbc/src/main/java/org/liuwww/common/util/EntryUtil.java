@@ -468,6 +468,11 @@ public class EntryUtil
         return getEntryProps(obj.getClass()).containsKey(field);
     }
 
+    public static boolean hasField(Class<?> clazz, String field)
+    {
+        return getEntryProps(clazz).containsKey(field);
+    }
+
     /**
      * @desc:orig中的字段有值，才会赋值,并且类型不会自动匹配
      * @Date:2018年6月2日下午7:30:18

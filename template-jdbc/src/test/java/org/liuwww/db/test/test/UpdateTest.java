@@ -18,30 +18,6 @@ public class UpdateTest extends AbstractTest
 
     }
 
-    // @Bean
-    // public DbContext dbcontext()
-    // {
-    // return new DbContext();
-    // }
-    //
-    // @Bean
-    // public IQueryTemplate getQuerytemplate(DbContext dbContext)
-    // {
-    // return dbContext.getQueryTemplate();
-    // }
-    //
-    // @Bean
-    // public IDataTemplate getDatatemplate(DbContext dbContext)
-    // {
-    // return dbContext.getDataTemplate();
-    // }
-    //
-    // @Bean
-    // public BeanUtil beanUtil(DbContext dbContext)
-    // {
-    // return dbContext.getBeanUtil();
-    // }
-
     public UpdateTest(AbstractTest test)
     {
         super(test);

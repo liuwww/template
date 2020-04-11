@@ -16,11 +16,13 @@ public class OneCondition implements Condition
 
     protected CompareOpe ope;
 
-    protected Param val;
+    protected Param param;
 
     protected Boolean isValid;
 
     protected ConditionRel rel;
+
+    protected boolean isColumnField = true;
 
     public OneCondition(String field, CompareOpe ope, Object val)
     {
@@ -28,20 +30,20 @@ public class OneCondition implements Condition
         this.field = field;
         this.ope = ope;
         this.rel = ConditionRel.AND;
-        this.val = new Param(val);
+        this.param = new Param(val);
     }
 
     public static OneCondition getTheCondition(String field, CompareOpe ope, Object val)
     {
         OneCondition c = new OneCondition(field, ope, val);
-        c.val.getValList().set(0, val);
+        c.param.getValList().set(0, val);
         return c;
     }
 
     public static OneCondition getTheCondition(String field, CompareOpe ope, Object val, ConditionRel rel)
     {
         OneCondition c = new OneCondition(field, ope, val, rel);
-        c.val.getValList().set(0, val);
+        c.param.getValList().set(0, val);
         return c;
     }
 
@@ -71,7 +73,12 @@ public class OneCondition implements Condition
 
     public Object getVal()
     {
-        return val;
+        List<Object> valList = param.getValList();
+        if (valList != null && !valList.isEmpty())
+        {
+            return valList.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -87,7 +94,7 @@ public class OneCondition implements Condition
         {
             return Collections.emptyList();
         }
-        return val.getValList();
+        return param.getValList();
     }
 
     @Override
@@ -105,13 +112,13 @@ public class OneCondition implements Condition
         {
             if (this.isValid == null)
             {
-                if (this.val == null)
+                if (this.param == null)
                 {
                     this.isValid = false;
                 }
                 else
                 {
-                    this.isValid = this.val.isValid();
+                    this.isValid = this.param.isValid();
                 }
             }
             if (logger.isDebugEnabled())
@@ -127,6 +134,16 @@ public class OneCondition implements Condition
     public ConditionRel getCondtionRel()
     {
         return this.rel;
+    }
+
+    public boolean isColumnField()
+    {
+        return isColumnField;
+    }
+
+    public void setColumnField(boolean isColumnField)
+    {
+        this.isColumnField = isColumnField;
     }
 
 }

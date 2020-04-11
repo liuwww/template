@@ -17,7 +17,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-
+import org.liuwww.common.Idgen.IdGenerator;
 import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.BeanUtil;
 
@@ -35,6 +35,9 @@ public class DbContext
 
     @Autowired
     private List<JdbcTemplate> jtList;
+
+    @Autowired(required = false)
+    private IdGenerator idGenerator;
 
     private TableMetaContext tmc;
 
@@ -152,7 +155,7 @@ public class DbContext
             {
                 if (this.dataTemplate == null)
                 {
-                    this.dataTemplate = new DataTemplate();
+                    this.dataTemplate = new DataTemplate(idGenerator);
                 }
             }
 

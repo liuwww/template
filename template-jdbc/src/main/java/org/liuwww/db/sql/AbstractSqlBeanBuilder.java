@@ -161,6 +161,12 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
     @Override
     public SqlBean buildInsert(Row row)
     {
+        return buildInsert(row, true);
+    }
+
+    @Override
+    public SqlBean buildInsert(Row row, boolean withId)
+    {
 
         StringBuilder sql = new StringBuilder("insert into ");
         StringBuilder subsql = new StringBuilder();
@@ -172,6 +178,12 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
         {
             sql.append(entry.getKey()).append(',');
             params.add(entry.getValue());
+            subsql.append("?,");
+        }
+        if (withId && StringUtil.isNotBlank(row.getIdName()))
+        {
+            sql.append(row.getIdName()).append(",");
+            params.add(row.getIdValue());
             subsql.append("?,");
         }
         sql = sql.delete(sql.length() - 1, sql.length());
@@ -187,13 +199,24 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
     @Override
     public String buildInsertSql(TableMetaData tmd)
     {
+        return buildInsertSql(tmd, true);
+    }
+
+    @Override
+    public String buildInsertSql(TableMetaData tmd, boolean withId)
+    {
         StringBuilder sql = new StringBuilder("insert into ");
         StringBuilder subsql = new StringBuilder();
         sql.append(tmd.getTableName());
         sql.append('(');
         List<Column> list = tmd.getColumnList();
+        Column idColumn = tmd.getIdColumn();
         for (Column c : list)
         {
+            if (!withId && c.equals(idColumn))
+            {
+                continue;
+            }
             sql.append(c.getColumnName()).append(',');
             subsql.append("?,");
         }

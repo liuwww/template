@@ -74,7 +74,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
             }
-            throw new DbException("00001", e);
+            throw new DbException("查询异常，sql:" + sqlBean.getSql() + ",params:" + Arrays.asList(sqlBean.getParams()), e);
         }
     }
 
@@ -100,7 +100,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
             }
-            throw new DbException("00001", e);
+            throw new DbException("查询异常，sql:" + sqlBean.getSql() + ",params:" + Arrays.asList(sqlBean.getParams()), e);
         }
     }
 
@@ -127,7 +127,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", sqlBean.getSql(), Arrays.asList(sqlBean.getParams()));
             }
-            throw new DbException("00001", e);
+            throw new DbException("查询异常，sql:" + sqlBean.getSql() + ",params:" + Arrays.asList(sqlBean.getParams()), e);
         }
     }
 
@@ -162,7 +162,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", bean.getSql(), Arrays.asList(bean.getParams()));
             }
-            throw new DbException("00001", e);
+            throw new DbException("查询异常，sql:" + bean.getSql() + ",params:" + Arrays.asList(bean.getParams()), e);
         }
         return pageInfo;
     }
@@ -194,7 +194,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", bean.getSql(), Arrays.asList(bean.getParams()));
             }
-            throw new DbException("00001", e);
+            throw new DbException("查询异常，sql:" + bean.getSql() + ",params:" + Arrays.asList(bean.getParams()), e);
         }
     }
 
@@ -241,7 +241,7 @@ public class QueryDao implements IQueryDao
             {
                 logger.error("查询异常，sql:{},params:{}", sql, Arrays.asList(bean.getParams()));
             }
-            throw new DbException("00001", e);
+            throw new DbException("查询异常，sql:" + sql + ",params:" + Arrays.asList(bean.getParams()), e);
         }
     }
 

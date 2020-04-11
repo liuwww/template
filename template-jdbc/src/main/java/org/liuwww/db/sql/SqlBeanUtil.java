@@ -41,7 +41,15 @@ public class SqlBeanUtil
     public static SqlBean getInsertSqlBean(Row row)
     {
         SqlBeanBuilder builder = getSqlBuilder(row.getDbType());
-        return builder.buildInsert(row);
+        if (StringUtil.isNotBlank(row.getIdName()) && StringUtil.isNotBlank(row.getIdValue()))
+        {
+            return builder.buildInsert(row);
+        }
+        else
+        {
+            return builder.buildInsert(row, false);
+        }
+
     }
 
     public static SqlBean getSqlBean(Table table)
@@ -201,9 +209,9 @@ public class SqlBeanUtil
         }
     }
 
-    public static String getInsertSql(TableMetaData tmd)
+    public static String getInsertSql(TableMetaData tmd, boolean withId)
     {
-        return getSqlBuilder(tmd.getDbType()).buildInsertSql(tmd);
+        return getSqlBuilder(tmd.getDbType()).buildInsertSql(tmd, withId);
     }
 
     public static void addSqlOrderBy(StringBuilder sql, Order order, TableMetaData tmd)

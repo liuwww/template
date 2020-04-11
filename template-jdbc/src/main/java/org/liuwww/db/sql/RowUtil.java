@@ -12,8 +12,8 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
-
-import org.liuwww.common.Idgen.IdGeneratorUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.liuwww.common.entity.TableEntity;
 import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.BeanUtil;
@@ -23,6 +23,8 @@ import org.liuwww.common.util.StringUtil;
 
 public class RowUtil
 {
+    private static Logger logger = LoggerFactory.getLogger(RowUtil.class);
+
     private static enum DataOpeType {
         INSERT, UPDATE
     }
@@ -151,19 +153,21 @@ public class RowUtil
             Column column = tmd.getColumn(key);
             if (column != null)
             {
-                if (idColumn.equals(column))
+                if (column.equals(idColumn))
                 {
                     if (StringUtils.isNotBlank(val.toString()))
                     {
                         row.setIdValue(val.toString());
+                        row.setIdName(idColumn.getColumnName());
                     }
-                    else
-                    {
-                        String id = IdGeneratorUtil.nextStringId();
-                        row.setIdValue(id);
-                    }
-                    row.setIdName(key);
-                    rowValueMap.put(column.getColumnName(), row.getIdValue());
+                    // else
+                    // {
+                    // String id = SnowflakeIdGeneratorUtil.nextStringId();
+                    // row.setIdValue(id);
+                    // }
+                    // row.setIdName(key);
+                    // rowValueMap.put(column.getColumnName(),
+                    // row.getIdValue());
                 }
                 else
                 {
@@ -175,13 +179,13 @@ public class RowUtil
                 }
             }
         }
-        if (row.getIdName() == null)
-        {
-            String id = IdGeneratorUtil.nextStringId();
-            row.setIdName(idColumn.getName());
-            row.setIdValue(id);
-            rowValueMap.put(idColumn.getColumnName(), id);
-        }
+        // if (row.getIdName() == null)
+        // {
+        // String id = SnowflakeIdGeneratorUtil.nextStringId();
+        // row.setIdName(idColumn.getName());
+        // row.setIdValue(id);
+        // rowValueMap.put(idColumn.getColumnName(), id);
+        // }
 
         if (rowValueMap.size() > 0)
         {
@@ -224,7 +228,7 @@ public class RowUtil
             Column column = tmd.getColumn(key);
             if (column != null)
             {
-                if (idColumn.equals(column))
+                if (column.equals(idColumn))
                 {
 
                     row.setIdValue(val.toString());
@@ -276,7 +280,7 @@ public class RowUtil
             Column column = tmd.getColumn(key);
             if (column != null)
             {
-                if (idColumn.equals(column))
+                if (column.equals(idColumn))
                 {
                     Object val = fieldVals.get(key);
                     rowValueMap.put(column.getColumnName(), val);
@@ -356,7 +360,11 @@ public class RowUtil
         Column idColumn = tmd.getIdColumn();
         if (idColumn == null)
         {
-            throw new DbException("表[" + entity.tableName() + "]没有主键字段！");
+            if (logger.isInfoEnabled())
+            {
+                logger.info("表[{}]没有主键字段！", entity.tableName());
+            }
+            // throw new DbException("表[" + entity.tableName() + "]没有主键字段！");
         }
         for (Column column : tmd.getColumnList())
         {
@@ -371,20 +379,20 @@ public class RowUtil
             {
                 continue;
             }
-            if (idColumn.equals(column))
+            if (column.equals(idColumn))
             {
 
                 if (val != null && StringUtils.isNotBlank(val.toString()))
                 {
                     row.setIdValue(val.toString());
+                    row.setIdName(column.getName());
+                    rowValueMap.put(column.getColumnName(), row.getIdValue());
                 }
                 else
                 {
-                    String id = IdGeneratorUtil.nextStringId();
-                    row.setIdValue(id);
+                    // String id = SnowflakeIdGeneratorUtil.nextStringId();
+                    // row.setIdValue(id);
                 }
-                row.setIdName(column.getName());
-                rowValueMap.put(column.getColumnName(), row.getIdValue());
             }
             else
             {
@@ -395,13 +403,13 @@ public class RowUtil
                 rowValueMap.put(column.getColumnName(), val);
             }
         }
-        if (row.getIdName() == null)
-        {
-            String id = IdGeneratorUtil.nextStringId();
-            row.setIdName(idColumn.getName());
-            row.setIdValue(id);
-            rowValueMap.put(idColumn.getColumnName(), id);
-        }
+        // if (row.getIdName() == null)
+        // {
+        // String id = SnowflakeIdGeneratorUtil.nextStringId();
+        // row.setIdName(idColumn.getName());
+        // row.setIdValue(id);
+        // rowValueMap.put(idColumn.getColumnName(), id);
+        // }
 
         if (rowValueMap.size() > 0)
         {
@@ -448,9 +456,8 @@ public class RowUtil
             {
                 continue;
             }
-            if (idColumn.equals(column))
+            if (column.equals(idColumn))
             {
-
                 if (val != null && StringUtils.isNotBlank(val.toString()))
                 {
                     row.setIdValue(val.toString());
@@ -486,14 +493,30 @@ public class RowUtil
             row.setTableName(tmd.getTableName());
             row.setDbType(tmd.getDbType());
             Column idColumn = tmd.getIdColumn();
-            Field field = EntryUtil.getField(entity.getClass(), idColumn.getName());
-            if (field != null)
+            if (idColumn != null)
             {
-                Object val = EntryUtil.getFieldValue(entity, idColumn.getName());
-                rowValueMap.put(idColumn.getColumnName(), val);
-                row.setIdName(idColumn.getColumnName());
-                row.setIdValue(val.toString());
+                Field field = EntryUtil.getField(entity.getClass(), idColumn.getName());
+                if (field != null)
+                {
+                    Object val = EntryUtil.getFieldValue(entity, idColumn.getName());
+                    rowValueMap.put(idColumn.getColumnName(), val);
+                    row.setIdName(idColumn.getColumnName());
+                    row.setIdValue(val.toString());
+                }
             }
+            else
+            {
+                for (Column c : tmd.getColumnList())
+                {
+                    String field = c.getName();
+                    if (EntryUtil.hasField(entity, field))
+                    {
+                        Object val = EntryUtil.getFieldValue(entity, c.getName());
+                        rowValueMap.put(c.getColumnName(), val);
+                    }
+                }
+            }
+
         }
         else
         {

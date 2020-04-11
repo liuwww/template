@@ -139,7 +139,7 @@ public abstract class AbstractTest
                 if (name.startsWith("test") && name.length() > 4)
                 {
                     m.setAccessible(true);
-                    System.out.println("method:" + name);
+                    System.err.println("method:" + name);
                     m.invoke(this, new Object[0]);
                     showDataCount();
                 }
