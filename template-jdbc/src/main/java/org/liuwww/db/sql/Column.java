@@ -12,7 +12,7 @@ public class Column
 
     private String tableName;
 
-    private String DataTypeName;
+    private String dataTypeName;
 
     private int dataType;
 
@@ -97,12 +97,12 @@ public class Column
 
     public String getDataTypeName()
     {
-        return DataTypeName;
+        return dataTypeName;
     }
 
     public void setDataTypeName(String dataTypeName)
     {
-        DataTypeName = dataTypeName;
+        this.dataTypeName = dataTypeName;
     }
 
     public int getDataType()

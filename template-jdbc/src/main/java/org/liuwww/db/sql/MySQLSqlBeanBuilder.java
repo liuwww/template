@@ -376,4 +376,31 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
         return sql.toString();
     }
 
+    @Override
+    public String buildInsertSql(TableMetaData tmd, boolean withId)
+    {
+        StringBuilder sql = new StringBuilder("insert into ");
+        StringBuilder subsql = new StringBuilder();
+        sql.append(tmd.getTableName());
+        sql.append('(');
+        List<Column> list = tmd.getColumnList();
+        Column idColumn = tmd.getIdColumn();
+        for (Column c : list)
+        {
+            if (!withId && c.equals(idColumn))
+            {
+                continue;
+            }
+            sql.append("`").append(c.getColumnName()).append("`,");
+            subsql.append("?,");
+        }
+        sql = sql.delete(sql.length() - 1, sql.length());
+        sql.append(") ");
+        sql.append("values(");
+        subsql = subsql.delete(subsql.length() - 1, subsql.length());
+        sql.append(subsql);
+        sql.append(")");
+        return sql.toString();
+    }
+
 }

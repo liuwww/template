@@ -35,6 +35,10 @@ public class TableMetaData
 
     private String tableType;
 
+    private String comment;
+
+    private String idColumnName;
+
     public String getTableType()
     {
         return tableType;
@@ -187,6 +191,36 @@ public class TableMetaData
     protected void setColumnList(List<Column> columnList)
     {
         this.columnList = columnList;
+    }
+
+    protected void setcomment(String comment)
+    {
+        this.comment = comment;
+    }
+
+    public String getComment()
+    {
+        return comment;
+    }
+
+    public String getIdColumnName()
+    {
+        return idColumnName;
+    }
+
+    protected void setIdColumnName(String idColumnName)
+    {
+        this.idColumnName = idColumnName;
+    }
+
+    protected void putNameMap(String name, Column column)
+    {
+        nameMap.put(name, column);
+    }
+
+    protected void putColumnMap(String name, Column column)
+    {
+        columnMap.put(name, column);
     }
 
 }

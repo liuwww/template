@@ -180,6 +180,10 @@ public class DataTemplate implements IDataTemplate
             row.setIdName(idName);
             row.getRowValueMap().put(idName, id);
         }
+        else if (idColunm != null && StringUtil.isNotBlank(id))
+        {
+            row.getRowValueMap().put(idColunm.getColumnName(), id);
+        }
         SqlBean bean = SqlBeanUtil.getInsertSqlBean(row);
         SqlBeanUtil.checkSqlBeanJdbcTemplate(tableName, jdbcTemplate, bean);
         if (needCreateId && isCreatedByDs)
@@ -363,6 +367,10 @@ public class DataTemplate implements IDataTemplate
             row.setIdName(idName);
             row.getRowValueMap().put(idName, id);
             addMap.put(idName, id);
+        }
+        else if (idColumn != null && StringUtil.isNotBlank(id))
+        {
+            row.getRowValueMap().put(idColumn.getColumnName(), id);
         }
 
         checkRow(row);

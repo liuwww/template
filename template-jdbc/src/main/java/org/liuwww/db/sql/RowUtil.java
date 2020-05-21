@@ -238,7 +238,8 @@ public class RowUtil
                 {
                     if (column.isNumberColumn() && StringUtil.isBlank(val.toString()))
                     {
-                        continue;
+                        val = null;
+                        // continue;
                     }
                     rowValueMap.put(column.getColumnName(), val);
                 }
