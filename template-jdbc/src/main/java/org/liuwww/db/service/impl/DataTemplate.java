@@ -287,7 +287,10 @@ public class DataTemplate implements IDataTemplate
             Row r = new Row();
             r.setDbType(tmd.getDbType());
             r.setAdditionalMap(dmap);
-            r.setIdName(idColumn.getName());
+            if (idColumn != null)
+            {
+                r.setIdName(idColumn.getName());
+            }
             r.setTableName(tmd.getTableName());
             Map<String, Object> rowValMap = new HashMap<String, Object>(len);
             int i = 0;
