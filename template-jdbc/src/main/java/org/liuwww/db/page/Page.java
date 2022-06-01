@@ -47,7 +47,7 @@ public class Page implements Serializable
     /**
      * 排序字段
      */
-    private String sortName;;
+    private String sortName;
 
     /**
      * asc ,desc
