@@ -173,8 +173,28 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
             params.add(map.get(key));
         }
         sql = sql.delete(sql.length() - 1, sql.length());
-        sql.append(" where ").append(row.getIdName()).append("=?");
-        params.add(row.getIdValue());
+        sql.append(" where ");
+        if (StringUtil.isNotBlank(row.getIdValue()))
+        {
+            sql.append(row.getIdName()).append("=?");
+            params.add(row.getIdValue());
+        }
+        else if (row.getIdValues() != null && row.getIdValues().length > 0)
+        {
+            String[] idValues = row.getIdValues();
+            String[] idNames = row.getIdNames();
+            for (int i = 0; i < idNames.length; i++)
+            {
+                sql.append(idNames[i]).append("=? and ");
+                params.add(idValues[i]);
+            }
+            sql.delete(sql.length() - 4, sql.length());
+        }
+        else
+        {
+            sql.append("1=2");
+        }
+
         return new DefaultSqlBean(sql.toString(), params.toArray(), null, DbType.MYSQL, null);
     }
 

@@ -1,5 +1,6 @@
 package org.liuwww.db.test;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.liuwww.db.context.DbContext;
 import org.liuwww.db.test.test.AbstractTest;
@@ -18,7 +19,7 @@ public class H2Test extends AbstractTest
     @Autowired
     private DbContext dbContext;
 
-    // @Before
+    @Before
     public void init()
     {
         try

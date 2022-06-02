@@ -323,6 +323,17 @@ public class DefaultDataSourceContext implements DataSourceContext
                         {
                             tmd.setIdColumn(column);
                         }
+                        else if (tmd.isUnionKey())
+                        {
+                            String[] idNames = tmd.getIdNames();
+                            for (int i = 0; i < idNames.length; i++)
+                            {
+                                if (StringUtil.equals(idNames[i], columnName))
+                                {
+                                    tmd.getIdColumns()[i] = column;
+                                }
+                            }
+                        }
                     }
                 }
                 rs.close();

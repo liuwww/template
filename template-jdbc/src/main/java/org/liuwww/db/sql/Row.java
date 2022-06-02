@@ -8,6 +8,10 @@ public class Row
 
     private String idName;
 
+    private String[] idValues;
+
+    private String[] idNames;
+
     private String tableName;
 
     private boolean isEffective = true;
@@ -87,6 +91,26 @@ public class Row
     public void setAdditionalMap(Map<String, Object> additionalMap)
     {
         this.additionalMap = additionalMap;
+    }
+
+    public String[] getIdValues()
+    {
+        return idValues;
+    }
+
+    public void setIdValues(String[] idValues)
+    {
+        this.idValues = idValues;
+    }
+
+    public String[] getIdNames()
+    {
+        return idNames;
+    }
+
+    public void setIdNames(String[] idNames)
+    {
+        this.idNames = idNames;
     }
 
 }

@@ -27,6 +27,13 @@ public class TableMetaData
 
     private Column idColumn;
 
+    /**
+     * 处理联合主键的情况
+     */
+    private Column[] idColumns;
+
+    private String[] idNames;
+
     private Map<String, Column> nameMap;
 
     private Map<String, Column> columnMap;
@@ -211,6 +218,14 @@ public class TableMetaData
     protected void setIdColumnName(String idColumnName)
     {
         this.idColumnName = idColumnName;
+        String[] ids = idColumnName.split(",");
+        if (ids.length > 1)
+        {
+            // 联合主键处理
+            idColumns = new Column[ids.length];
+            idColumnName = null;
+            idNames = ids;
+        }
     }
 
     protected void putNameMap(String name, Column column)
@@ -221,6 +236,24 @@ public class TableMetaData
     protected void putColumnMap(String name, Column column)
     {
         columnMap.put(name, column);
+    }
+
+    public String[] getIdNames()
+    {
+        return idNames;
+    }
+
+    /**
+     * 判断是否是联合主键
+     */
+    public boolean isUnionKey()
+    {
+        return idNames != null && idNames.length > 1;
+    }
+
+    public Column[] getIdColumns()
+    {
+        return idColumns;
     }
 
 }

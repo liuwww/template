@@ -14,6 +14,7 @@ import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.liuwww.common.entity.TableEntity;
 import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.BeanUtil;
@@ -214,9 +215,20 @@ public class RowUtil
         row.setDbType(tmd.getDbType());
         row.setTableName(tmd.getTableName());
         Column idColumn = tmd.getIdColumn();
-        if (idColumn == null)
+
+        boolean isUnionKey = tmd.isUnionKey();
+
+        if (!isUnionKey && idColumn == null)
         {
-            throw new DbException("表[" + tableName + "]没有主键字段！");
+            throw new DbException("表[" + tableName + "]没有主键！");
+        }
+        else if (isUnionKey)
+        {
+            row.setIdNames(tmd.getIdNames());
+        }
+        else
+        {
+            row.setIdName(idColumn.getColumnName());
         }
         for (String key : fieldVals.keySet())
         {
@@ -228,21 +240,53 @@ public class RowUtil
             Column column = tmd.getColumn(key);
             if (column != null)
             {
-                if (column.equals(idColumn))
-                {
 
-                    row.setIdValue(val.toString());
-                    row.setIdName(column.getColumnName());
-                }
-                else
+                if (!isUnionKey)
                 {
-                    if (column.isNumberColumn() && StringUtil.isBlank(val.toString()))
+                    if (column.equals(idColumn))
                     {
-                        val = null;
-                        // continue;
+
+                        row.setIdValue(val.toString());
+                        row.setIdName(column.getColumnName());
                     }
-                    rowValueMap.put(column.getColumnName(), val);
+                    else
+                    {
+                        if (column.isNumberColumn() && StringUtil.isBlank(val.toString()))
+                        {
+                            val = null;
+                            // continue;
+                        }
+                        rowValueMap.put(column.getColumnName(), val);
+                    }
                 }
+                else if (isUnionKey)
+                {
+                    // 联合主键的情况
+                    int index = getObjectIndex(tmd.getIdColumns(), column);
+                    if (index >= 0)
+                    {
+                        String[] idValues = row.getIdValues();
+                        if (idValues == null)
+                        {
+                            idValues = new String[tmd.getIdColumns().length];
+                            row.setIdValues(idValues);
+                        }
+                        if (val != null && StringUtils.isNotBlank(val.toString()))
+                        {
+                            idValues[index] = val.toString();
+                        }
+                    }
+                    else
+                    {
+                        if (column.isNumberColumn() && StringUtil.isBlank(val.toString()))
+                        {
+                            continue;
+                        }
+                        rowValueMap.put(column.getColumnName(), val);
+                    }
+
+                }
+
             }
         }
 
@@ -272,34 +316,84 @@ public class RowUtil
         Map<String, Object> rowValueMap = new HashMap<String, Object>(2);
         row.setTableName(tmd.getTableName());
         Column idColumn = tmd.getIdColumn();
-        if (idColumn == null)
+        boolean isUnionKey = tmd.isUnionKey();
+        if (!isUnionKey && idColumn == null)
         {
             throw new DbException("表[" + tableName + "]没有主键！");
+        }
+        else if (isUnionKey)
+        {
+            row.setIdNames(tmd.getIdNames());
+        }
+        else
+        {
+            row.setIdName(idColumn.getColumnName());
         }
         for (String key : fieldVals.keySet())
         {
             Column column = tmd.getColumn(key);
             if (column != null)
             {
-                if (column.equals(idColumn))
+                if (!isUnionKey)
                 {
-                    Object val = fieldVals.get(key);
-                    rowValueMap.put(column.getColumnName(), val);
+                    if (column.equals(idColumn))
+                    {
+                        Object val = fieldVals.get(key);
+                        rowValueMap.put(column.getColumnName(), val);
 
-                    row.setIdValue(val.toString());
-                    row.setIdName(column.getColumnName());
-                    row.setRowValueMap(rowValueMap);
-                    break;
+                        row.setIdValue(val.toString());
+                        row.setIdName(column.getColumnName());
+                        row.setRowValueMap(rowValueMap);
+                        break;
+                    }
                 }
-
+                else if (isUnionKey)
+                {
+                    int index = getObjectIndex(tmd.getIdColumns(), column);
+                    if (index >= 0)
+                    {
+                        String[] idValues = row.getIdValues();
+                        if (idValues == null)
+                        {
+                            idValues = new String[tmd.getIdColumns().length];
+                            row.setIdValues(idValues);
+                        }
+                        Object val = fieldVals.get(key);
+                        idValues[index] = val.toString();
+                    }
+                }
             }
         }
 
-        if (row.getIdName() == null)
+        checkUpdateRowValid(row, isUnionKey);
+        return row;
+    }
+
+    private static void checkUpdateRowValid(Row row, boolean isUnionKey)
+    {
+        if (row.getIdName() == null && !isUnionKey)
         {
             row.setIsEffective(false);
         }
-        return row;
+        else if (isUnionKey)
+        {
+            String[] idValues = row.getIdValues();
+            if (idValues == null || idValues.length == 0)
+            {
+                row.setIsEffective(false);
+            }
+            else
+            {
+                for (String idVal : idValues)
+                {
+                    if (StringUtil.isBlank(idVal))
+                    {
+                        row.setIsEffective(false);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -438,11 +532,20 @@ public class RowUtil
 
         row.setTableName(tmd.getTableName());
         Column idColumn = tmd.getIdColumn();
-        if (idColumn == null)
+        boolean isUnionKey = tmd.isUnionKey();
+
+        if (!isUnionKey && idColumn == null)
         {
             throw new DbException("表[" + entity.tableName() + "]没有主键！");
         }
-        row.setIdName(idColumn.getColumnName());
+        else if (isUnionKey)
+        {
+            row.setIdNames(tmd.getIdNames());
+        }
+        else
+        {
+            row.setIdName(idColumn.getColumnName());
+        }
         row.setDbType(tmd.getDbType());
         for (Column column : tmd.getColumnList())
         {
@@ -457,63 +560,144 @@ public class RowUtil
             {
                 continue;
             }
-            if (column.equals(idColumn))
+            // 非联合主键情况的处理
+            if (!isUnionKey)
             {
-                if (val != null && StringUtils.isNotBlank(val.toString()))
+                if (column.equals(idColumn))
                 {
-                    row.setIdValue(val.toString());
+                    if (val != null && StringUtils.isNotBlank(val.toString()))
+                    {
+                        row.setIdValue(val.toString());
+                    }
                 }
-            }
-            else
-            {
-                if (column.isNumberColumn() && StringUtil.isBlank(val.toString()))
+                else
                 {
-                    continue;
+                    if (column.isNumberColumn() && StringUtil.isBlank(val.toString()))
+                    {
+                        continue;
+                    }
+                    rowValueMap.put(column.getColumnName(), val);
                 }
-                rowValueMap.put(column.getColumnName(), val);
-            }
-        }
 
-        if (StringUtils.isBlank(row.getIdValue()) || rowValueMap.size() == 0)
-        {
-            row.setIsEffective(false);
+            }
+            else if (isUnionKey)
+            {
+                // 联合主键的情况
+                int index = getObjectIndex(tmd.getIdColumns(), column);
+                if (index >= 0)
+                {
+                    String[] idValues = row.getIdValues();
+                    if (idValues == null)
+                    {
+                        idValues = new String[tmd.getIdColumns().length];
+                        row.setIdValues(idValues);
+                    }
+                    if (val != null && StringUtils.isNotBlank(val.toString()))
+                    {
+                        idValues[index] = val.toString();
+                    }
+                }
+                else
+                {
+                    if (column.isNumberColumn() && StringUtil.isBlank(val.toString()))
+                    {
+                        continue;
+                    }
+                    rowValueMap.put(column.getColumnName(), val);
+                }
+            }
         }
-        else
+        if (checkUpdateSingleRowValid(row, rowValueMap))
         {
             row.setRowValueMap(rowValueMap);
         }
+        else
+        {
+            row.setIsEffective(false);
+        }
         return defaultValue(row, tmd, DataOpeType.UPDATE);
+    }
+
+    /**
+     * 检查更新单行的数据是否是有效数据（id齐全，并且存在非id的更新数据）
+     */
+    private static boolean checkUpdateSingleRowValid(Row row, Map<String, Object> rowValueMap)
+    {
+        if (rowValueMap == null || rowValueMap.size() == 0)
+        {
+            return false;
+        }
+        boolean idChecked = false;
+        if (StringUtil.isNotBlank(row.getIdValue()))
+        {
+            idChecked = true;
+        }
+        if (!idChecked)
+        {
+            // 联合主键更新时，主键的每个值都不可为空
+            String[] idValues = row.getIdValues();
+            for (String id : idValues)
+            {
+                if (StringUtil.isBlank(id))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public static <T> Row getDeleteRow(TableEntity<T> entity, TableMetaData tmd)
     {
         Row row = new Row();
         Map<String, Object> rowValueMap = new HashMap<String, Object>();
+        boolean isUnionKey = false;
         if (tmd != null)
         {
             row.setTableName(tmd.getTableName());
             row.setDbType(tmd.getDbType());
-            Column idColumn = tmd.getIdColumn();
-            if (idColumn != null)
+            isUnionKey = tmd.isUnionKey();
+            if (isUnionKey)
             {
-                Field field = EntryUtil.getField(entity.getClass(), idColumn.getName());
-                if (field != null)
+                Column[] idColumnList = tmd.getIdColumns();
+                row.setIdNames(tmd.getIdNames());
+                for (int i = idColumnList.length - 1; i >= 0; i--)
                 {
-                    Object val = EntryUtil.getFieldValue(entity, idColumn.getName());
-                    rowValueMap.put(idColumn.getColumnName(), val);
-                    row.setIdName(idColumn.getColumnName());
-                    row.setIdValue(val.toString());
+                    Column idColumn = idColumnList[i];
+                    Field field = EntryUtil.getField(entity.getClass(), idColumn.getName());
+                    if (field != null)
+                    {
+                        Object val = EntryUtil.getFieldValue(entity, idColumn.getName());
+                        rowValueMap.put(idColumn.getColumnName(), val);
+                    }
                 }
+
             }
             else
             {
-                for (Column c : tmd.getColumnList())
+                Column idColumn = tmd.getIdColumn();
+                if (idColumn != null)
                 {
-                    String field = c.getName();
-                    if (EntryUtil.hasField(entity, field))
+                    Field field = EntryUtil.getField(entity.getClass(), idColumn.getName());
+                    if (field != null)
                     {
-                        Object val = EntryUtil.getFieldValue(entity, c.getName());
-                        rowValueMap.put(c.getColumnName(), val);
+                        Object val = EntryUtil.getFieldValue(entity, idColumn.getName());
+                        rowValueMap.put(idColumn.getColumnName(), val);
+                        row.setIdName(idColumn.getColumnName());
+                        row.setIdValue(val.toString());
+                    }
+                }
+                else
+                {
+                    for (Column c : tmd.getColumnList())
+                    {
+                        String field = c.getName();
+                        if (EntryUtil.hasField(entity, field))
+                        {
+                            Object val = EntryUtil.getFieldValue(entity, c.getName());
+                            rowValueMap.put(c.getColumnName(), val);
+                        }
                     }
                 }
             }
@@ -525,9 +709,16 @@ public class RowUtil
             row.setTableName(entity.tableName());
         }
 
-        if (StringUtils.isBlank(row.getIdValue()))
+        if (StringUtils.isBlank(row.getIdValue()) && !isUnionKey)
         {
             row.setIsEffective(false);
+        }
+        else if (isUnionKey)
+        {
+            if (rowValueMap.size() != tmd.getIdColumns().length)
+            {
+                row.setIsEffective(false);
+            }
         }
         else
         {
@@ -540,4 +731,21 @@ public class RowUtil
     {
         row.setRowValueMap(rowValMap);
     }
+
+    public static int getObjectIndex(Object[] objs, Object obj)
+    {
+        if (objs == null)
+        {
+            return -1;
+        }
+        for (int i = 0; i < objs.length; i++)
+        {
+            if (objs[i] == obj)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }

@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.liuwww</groupId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<artifactId>template-jdbc</artifactId>
 	<packaging>jar</packaging>
 	<name>template-jdbc</name>
@@ -38,7 +38,7 @@
 		<commons-configuration.verion>1.9</commons-configuration.verion>
 		<commons-io.version>2.5</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
-		<alibaba.druid>1.0.11</alibaba.druid>
+		<alibaba.druid>1.1.22</alibaba.druid>
 		<slf4j.version>1.7.12</slf4j.version>
 	</properties>
 	<dependencyManagement>

@@ -180,7 +180,7 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
             params.add(entry.getValue());
             subsql.append("?,");
         }
-        if (withId && StringUtil.isNotBlank(row.getIdName()))
+        if (withId && StringUtil.isNotBlank(row.getIdName()) && map.get(row.getIdName()) == null)
         {
             sql.append(row.getIdName()).append(",");
             params.add(row.getIdValue());
