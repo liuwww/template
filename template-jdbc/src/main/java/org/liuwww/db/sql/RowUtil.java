@@ -364,8 +364,20 @@ public class RowUtil
                 }
             }
         }
-
         checkUpdateRowValid(row, isUnionKey);
+        if (isUnionKey)
+        {
+            String[] idNames = row.getIdNames();
+            String[] idValues = row.getIdValues();
+            if (idValues != null && idValues.length != 0)
+            {
+                for (int i = 0; i < idNames.length; i++)
+                {
+                    rowValueMap.put(idNames[i], idValues[i]);
+                }
+            }
+            row.setRowValueMap(rowValueMap);
+        }
         return row;
     }
 
