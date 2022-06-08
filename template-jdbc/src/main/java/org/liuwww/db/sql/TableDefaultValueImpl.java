@@ -22,7 +22,7 @@ public class TableDefaultValueImpl implements TableDefaultValue
         Column column = tmd.getColumn("sts");
         if (column != null)
         {
-            valueMap.put("STS", "A");
+            valueMap.put(column.getColumnName(), "A");
         }
         column = tmd.getColumn("stsDate");
         if (column != null)
