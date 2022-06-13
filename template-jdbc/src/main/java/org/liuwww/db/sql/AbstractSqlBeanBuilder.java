@@ -361,7 +361,7 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
         if (group.size() > 0)
         {
             StringBuilder sql = new StringBuilder(group.getCondtionRel().getVal());
-            sql.append('(');
+            sql.append(" (");
 
             boolean first = true;
             for (Condition condition : group)
