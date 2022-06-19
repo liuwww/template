@@ -753,20 +753,41 @@ public class DataTemplate implements IDataTemplate
 
     private <T> List<Object[]> getIdPs(List<TableEntity<T>> l, TableMetaData tmd)
     {
-        Column idColumn = tmd.getIdColumn();
-        if (idColumn == null)
+
+        if (tmd.isUnionKey())
         {
-            throw new DbException("表[" + tmd.getTableName() + "]没有设置主键");
+            Column[] idColumns = tmd.getIdColumns();
+            List<Object[]> list = new ArrayList<Object[]>(l.size());
+            for (TableEntity<T> e : l)
+            {
+                Object[] ids = new Object[idColumns.length];
+                for (int i = 0; i < ids.length; i++)
+                {
+                    Object val = EntryUtil.getFieldValue(e, idColumns[i].getName());
+                    ids[i] = val;
+                }
+                // TODO 检查id是否都有值
+                list.add(ids);
+            }
+            return list;
         }
-        String name = idColumn.getName();
-        List<Object[]> list = new ArrayList<Object[]>(l.size());
-        for (TableEntity<T> e : l)
+        else
         {
-            Object val = EntryUtil.getFieldValue(e, name);
-            list.add(new Object[]
-            { val });
+            Column idColumn = tmd.getIdColumn();
+            if (idColumn == null)
+            {
+                throw new DbException("表[" + tmd.getTableName() + "]没有设置主键");
+            }
+            String name = idColumn.getName();
+            List<Object[]> list = new ArrayList<Object[]>(l.size());
+            for (TableEntity<T> e : l)
+            {
+                Object val = EntryUtil.getFieldValue(e, name);
+                list.add(new Object[]
+                { val });
+            }
+            return list;
         }
-        return list;
     }
 
     private int getTotal(int[] rs)

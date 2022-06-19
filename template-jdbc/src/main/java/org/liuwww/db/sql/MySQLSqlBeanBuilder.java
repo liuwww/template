@@ -43,10 +43,12 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
         {
             for (Field f : table.getFieldList())
             {
+                boolean valid = false;
                 Column c = tmd.getColumn(f.getField());
                 if (c != null)
                 {
                     sql.append('`').append(c.getColumnName()).append('`');
+                    valid = true;
                 }
                 else
                 {
@@ -61,7 +63,10 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
                 {
                     sql.append(" as ").append('`').append(f.getAlias()).append('`');
                 }
-                sql.append(",");
+                if (valid)
+                {
+                    sql.append(",");
+                }
             }
             sql = sql.deleteCharAt(sql.length() - 1);
         }
@@ -385,15 +390,35 @@ public class MySQLSqlBeanBuilder extends AbstractSqlBeanBuilder implements SqlBe
     @Override
     public String buildDeleteSql(TableMetaData tmd)
     {
-        Column idColumn = tmd.getIdColumn();
-        if (idColumn == null)
+        boolean unionKey = tmd.isUnionKey();
+        if (unionKey)
         {
-            throw new DbException("表[" + tmd.getTableName() + "]没有主键");
+            Column[] idColumns = tmd.getIdColumns();
+            StringBuilder sql = new StringBuilder("delete from ");
+            sql.append('`').append(tmd.getTableName()).append('`').append(" where ");
+            for (int i = 0; i < idColumns.length; i++)
+            {
+                sql.append('`').append(idColumns[i].getColumnName()).append('`').append("=? ");
+
+                if (i != idColumns.length - 1)
+                {
+                    sql.append("and ");
+                }
+            }
+            return sql.toString();
         }
-        StringBuilder sql = new StringBuilder("delete from ");
-        sql.append('`').append(tmd.getTableName()).append('`').append(" where ");
-        sql.append('`').append(idColumn.getColumnName()).append('`').append("=? ");
-        return sql.toString();
+        else
+        {
+            Column idColumn = tmd.getIdColumn();
+            if (idColumn == null)
+            {
+                throw new DbException("表[" + tmd.getTableName() + "]没有主键");
+            }
+            StringBuilder sql = new StringBuilder("delete from ");
+            sql.append('`').append(tmd.getTableName()).append('`').append(" where ");
+            sql.append('`').append(idColumn.getColumnName()).append('`').append("=? ");
+            return sql.toString();
+        }
     }
 
     @Override
