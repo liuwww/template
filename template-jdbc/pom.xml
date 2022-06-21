@@ -29,7 +29,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springframework.version>4.2.9.RELEASE</springframework.version>
-		<mysql.version>8.0.16</mysql.version>
+		<mysql.version>8.0.28</mysql.version>
 		<oracle.version>10.2.0.2</oracle.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springframework.version>4.2.9.RELEASE</springframework.version>
