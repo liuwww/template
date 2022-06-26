@@ -289,15 +289,37 @@ public class RowUtil
 
             }
         }
-
-        if (rowValueMap.size() > 0 && StringUtils.isNotBlank(row.getIdValue()))
+        if (isUnionKey)
         {
-            row.setRowValueMap(rowValueMap);
+            if (rowValueMap.size() > 0)
+            {
+                if (row.getIdValues() != null && row.getIdValues().length == row.getIdNames().length)
+                {
+                    row.setRowValueMap(rowValueMap);
+                }
+                else
+                {
+                    row.setIsEffective(false);
+                }
+            }
+            else
+            {
+                row.setIsEffective(false);
+            }
+
         }
         else
         {
-            row.setIsEffective(false);
+            if (rowValueMap.size() > 0 && StringUtils.isNotBlank(row.getIdValue()))
+            {
+                row.setRowValueMap(rowValueMap);
+            }
+            else
+            {
+                row.setIsEffective(false);
+            }
         }
+
         return defaultValue(row, tmd, DataOpeType.UPDATE);
     }
 
