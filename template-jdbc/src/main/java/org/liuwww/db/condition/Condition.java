@@ -11,7 +11,7 @@ import org.liuwww.common.util.StringUtil;
 public interface Condition
 {
     public static enum ConditionRel {
-        AND("and"), OR("or");
+        AND("and"), OR(" or");
 
         private String val;
 
