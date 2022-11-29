@@ -46,7 +46,7 @@ bean扫描路径包含org.liuwww.db，可用spring 注入的方法使用IDataTem
 ```
  map 中的key 可以是表字段名称或者是JavaBean的字段名称 如 user_name,USER_NAME,userName,表字段名称不区分大小写，sql组装时根据元数据中的字段名称组装，参数大小写没有影响。使用bean做参数时 bean需要实现接口TableEntity并实现方法 tableName,返回该表的表名称。如果存在多个数据源，并且多个数据源存在表面一致的表，在进行方法调用时，应增加参数Jdbctemplate 以指明使用哪一个数据源，未指明时使用匹配到的第一个数据源。
  #### ID生成策略
-  默认使用的是Snowflake ID 的策略，使用long类型表示，目前不支持自定义的其他策略。
+  默认使用的是Snowflake ID 的策略，使用long类型表示，支持自定义的其他策略。
  
  ### 修改
  ```
