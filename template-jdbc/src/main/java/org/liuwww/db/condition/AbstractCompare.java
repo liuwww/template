@@ -321,6 +321,20 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         return getTarget();
     }
 
+    @Override
+    public T isNull(String filed)
+    {
+        addConditon(filed, CompareOpe.isNull, null, null);
+        return getTarget();
+    }
+
+    @Override
+    public T isNull(String filed, ConditionRel rel)
+    {
+        addConditon(filed, CompareOpe.isNull, null, rel);
+        return getTarget();
+    }
+
     protected String getColumn(String field)
     {
         return field;

@@ -433,7 +433,21 @@ public class QueryTest extends AbstractTest
         page.setSortName("userCode");
         page.setSortOrder("asc");
         queryBean.getPage(page, TestUser.class);
+    }
 
+    public void testQueryMore12()
+    {
+        Page page = new Page();
+        page.setSortName("userCode");
+        page.setSortOrder("asc");
+
+        QueryBean queryBean = queryTemplate.createQueryBean("test_user").getCompare().isNull("FIELD5").getQueryBean();
+        System.out.println("---------66----------");
+        queryBean.getPage(page);
+        System.out.println("---------77----------");
+        page.setSortName("userCode");
+        page.setSortOrder("asc");
+        queryBean.getPage(page, TestUser.class);
     }
 
 }

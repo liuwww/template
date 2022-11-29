@@ -252,6 +252,25 @@ public interface Compare<T extends Compare<T>> extends Iterable<Condition>
     T notNull(String field, ConditionRel rel);
 
     /**
+     * @desc:字段为null
+     * @Date:2022年11月29日下午11:26:13
+     * @author liuwww
+     * @param filed
+     * @return
+     */
+    T isNull(String filed);
+
+    /**
+     * @desc:字段为null
+     * @Date:2022年11月29日下午11:26:22
+     * @author liuwww
+     * @param filed
+     * @param rel
+     * @return
+     */
+    T isNull(String filed, ConditionRel rel);
+
+    /**
      * @desc:字段为空字符串
      * @Date:2019年6月26日下午10:47:55
      * @author liuwww

@@ -30,14 +30,14 @@ public class H2Test extends AbstractTest
                     + "  `STS_DATE` datetime DEFAULT NULL ,\r\n" + "  `STS` char(1) DEFAULT NULL,\r\n"
                     + "  `FIELD1` varchar(255) DEFAULT NULL,\r\n" + "  `FIELD2` varchar(255) DEFAULT NULL,\r\n"
                     + "  `FIELD3` varchar(255) DEFAULT NULL,\r\n" + "  `FIELD4` varchar(255) DEFAULT NULL,\r\n"
-                    + "  `FIELD5` varchar(255) DEFAULT NULL,\r\n" + "  PRIMARY KEY (`USER_ID`)\r\n" + ") CHARSET=utf8";
+                    + "  `FIELD5` varchar(255) DEFAULT NULL,\r\n" + "  PRIMARY KEY (`USER_ID`)\r\n" + ")";
             String csql2 = "CREATE TABLE `test_user2` (\r\n" + "  `USER_ID` bigint(20) NOT NULL AUTO_INCREMENT,\r\n"
                     + "  `NAME` varchar(255) DEFAULT NULL,\r\n" + "  `USER_CODE` varchar(255) DEFAULT NULL,\r\n"
                     + "  `PASSWORD` varchar(255) DEFAULT NULL,\r\n" + "  `CREATE_DATE` datetime DEFAULT NULL ,\r\n"
                     + "  `STS_DATE` datetime DEFAULT NULL,\r\n" + "  `STS` char(1) DEFAULT NULL,\r\n"
                     + "  `FIELD1` varchar(255) DEFAULT NULL,\r\n" + "  `FIELD2` varchar(255) DEFAULT NULL,\r\n"
                     + "  `FIELD3` varchar(255) DEFAULT NULL,\r\n" + "  `FIELD4` varchar(255) DEFAULT NULL,\r\n"
-                    + "  `FIELD5` varchar(255) DEFAULT NULL,\r\n" + "  PRIMARY KEY (`USER_ID`)\r\n" + ") CHARSET=utf8";
+                    + "  `FIELD5` varchar(255) DEFAULT NULL,\r\n" + "  PRIMARY KEY (`USER_ID`)\r\n" + ")";
 
             String vsql = "create or replace view test_user2_view as  select * from test_user2";
 
