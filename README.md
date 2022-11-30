@@ -6,7 +6,7 @@ maven:
 	<dependency>
 	  <groupId>com.github.liuwww</groupId>
 	  <artifactId>template-jdbc</artifactId>
-	  <version>1.0.2</version>
+	  <version>1.0.5</version>
         </dependency>
 ````
 
