@@ -38,7 +38,7 @@
 		<commons-configuration.verion>1.9</commons-configuration.verion>
 		<commons-io.version>2.7</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
-		<alibaba.druid>1.1.22</alibaba.druid>
+		<alibaba.druid>1.2.15</alibaba.druid>
 		<slf4j.version>1.7.12</slf4j.version>
 	</properties>
 	<dependencyManagement>

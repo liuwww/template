@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 import org.liuwww.common.execption.DbException;
 import org.liuwww.common.util.DbNameConverter;
@@ -137,7 +139,8 @@ public class QueryDao implements IQueryDao
         try
         {
             String sql = bean.getSql();
-            String dbType = bean.getDbType().toString();
+            String dbTypeName = bean.getDbType().toString();
+            DbType dbType = DbType.of(dbTypeName);
             pageInfo.calculateStartAndEndRow();
             String querySql = PagerUtils.limit(sql, dbType, pageInfo.getStartRow() - 1, pageInfo.getPageSize());
 
@@ -173,7 +176,8 @@ public class QueryDao implements IQueryDao
         try
         {
             String sql = bean.getSql();
-            String dbType = bean.getDbType().toString();
+            String dbTypeName = bean.getDbType().toString();
+            DbType dbType = DbType.of(dbTypeName);
             pageInfo.calculateStartAndEndRow();
             String querySql = PagerUtils.limit(sql, dbType, pageInfo.getStartRow() - 1, pageInfo.getPageSize());
             if (logger.isDebugEnabled())
@@ -227,7 +231,9 @@ public class QueryDao implements IQueryDao
         String sql = null;
         try
         {
-            sql = PagerUtils.count(bean.getSql(), bean.getDbType().toString());
+            String dbTypeName = bean.getDbType().toString();
+            DbType dbType = DbType.of(dbTypeName);
+            sql = PagerUtils.count(bean.getSql(), dbType);
             if (logger.isDebugEnabled())
             {
                 logger.debug("query sql:{},params:{}", sql, bean.getParams());

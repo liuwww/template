@@ -14,6 +14,7 @@ import org.liuwww.db.sql.DefaultSqlBean;
 import org.liuwww.db.sql.SqlBean;
 import org.liuwww.db.sql.SqlBeanUtil;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 
 import org.liuwww.common.entity.Order;
@@ -113,7 +114,8 @@ public class DefaultQueryBean extends DefaultSqlBean implements QueryBean, SqlBe
         CharSequence sql_ = sql;
         if (maxNum > 0)
         {
-            sql_ = PagerUtils.limit(sql.toString(), dbType.toString(), 0, maxNum);
+            DbType type = DbType.of(dbType.toString());
+            sql_ = PagerUtils.limit(sql.toString(), type, 0, maxNum);
         }
         return new DefaultSqlBean(sql_, params, orderBy, dbType, tables, jdbcTemplate);
 
