@@ -450,4 +450,12 @@ public class QueryTest extends AbstractTest
         queryBean.getPage(page, TestUser.class);
     }
 
+    public void testQueryNotFiledCondition()
+    {
+        long c = queryTemplate.createQueryBean("test_user").getCompare()
+                .addCondition(new OneCondition("year(create_date)", CompareOpe.eq, "2022", false)).eq("2222", "1")
+                .getQueryBean().getCount();
+        System.out.println("count:" + c);
+    }
+
 }

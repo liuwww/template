@@ -86,8 +86,11 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         if (condition instanceof OneCondition)
         {
             OneCondition one = (OneCondition) condition;
-
-            addConditon(one.field, one.ope, one.getVal(), one.rel);
+            OneCondition validCondition = getValidFieldCondition(one);
+            if (validCondition != null)
+            {
+                conditionList.add(condition);
+            }
         }
         else if (condition instanceof GroupCondition)
         {
@@ -99,6 +102,30 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         {
             conditionList.add(condition);
             // throw new SysException("未做处理:" + condition.getClass().getName());
+        }
+    }
+
+    protected OneCondition getValidFieldCondition(OneCondition one)
+    {
+        if (!one.isColumnField())
+        {
+            return one;
+        }
+        else
+        {
+            Condition condition = getCondition(one.field, one.ope, one.getVal(), one.rel);
+            if (condition != null)
+            {
+                return one;
+            }
+            else
+            {
+                if (logger.isWarnEnabled())
+                {
+                    logger.warn("无匹配的查询字段：{}", one.field);
+                }
+                return null;
+            }
         }
     }
 

@@ -26,11 +26,23 @@ public class OneCondition implements Condition
 
     public OneCondition(String field, CompareOpe ope, Object val)
     {
+        this(field, ope, val, true);
+    }
+
+    /**
+     * @param field 条件字段
+     * @param ope 比较类型
+     * @param val 条件参数值
+     * @param isColumnField field是否是数据库字段，如果true则会判断字段是否有效，非有效字段将不会拼接到sql中，如果是false则会默认是有效字段
+     */
+    public OneCondition(String field, CompareOpe ope, Object val, boolean isColumnField)
+    {
         super();
         this.field = field;
         this.ope = ope;
         this.rel = ConditionRel.AND;
         this.param = new Param(val);
+        this.isColumnField = isColumnField;
     }
 
     public static OneCondition getTheCondition(String field, CompareOpe ope, Object val)
