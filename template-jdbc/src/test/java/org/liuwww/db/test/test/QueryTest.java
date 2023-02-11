@@ -1,5 +1,6 @@
 package org.liuwww.db.test.test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -458,4 +459,29 @@ public class QueryTest extends AbstractTest
         System.out.println("count:" + c);
     }
 
+    public void testQueryInCondition()
+    {
+        List<TestUser> beanList = queryTemplate.createQueryBean("test_user").getBeanList(TestUser.class);
+        List<Object> uidParas = new ArrayList<>();
+        List<Object> ucodeParas = new ArrayList<>();
+        int testLen = 3;
+        for (int i = 0; i < testLen; i++)
+        {
+            if (i < beanList.size() - 1)
+            {
+                uidParas.add(beanList.get(i).getUserId());
+                ucodeParas.add(beanList.get(i).getUserCode());
+            }
+        }
+        long count = queryTemplate.createQueryBean("test_user").getCompare().in("userId", uidParas)
+                .in("userCode", ucodeParas).getQueryBean().getCount();
+        Assert.assertEquals(count, testLen);
+        GroupCondition groupCondition = new GroupCondition();
+        groupCondition.addCondition(new OneCondition("userId", CompareOpe.in, uidParas)).in("userCode", ucodeParas);
+        count = queryTemplate.createQueryBean("test_user").getCompare()
+                .addCondition(new OneCondition("userId", CompareOpe.in, uidParas)).in("userCode", new ArrayList<>())
+                .addCondition(groupCondition).getQueryBean().getCount();
+
+        Assert.assertEquals(count, testLen);
+    }
 }

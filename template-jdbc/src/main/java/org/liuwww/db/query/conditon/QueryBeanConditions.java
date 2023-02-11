@@ -61,12 +61,13 @@ public class QueryBeanConditions extends AbstractCompare<QueryBeanCompare> imple
         return condition;
     }
 
-    public TableMetaData getTmd()
+    @Override
+    public TableMetaData getTableMetaData()
     {
         return tmd;
     }
 
-    public void setTmd(TableMetaData tmd)
+    public void setTableMetaData(TableMetaData tmd)
     {
         this.tmd = tmd;
     }

@@ -1,5 +1,6 @@
 package org.liuwww.db.condition;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import org.liuwww.common.util.StringUtil;
 import org.liuwww.db.condition.Condition.ConditionRel;
+import org.liuwww.db.context.TableMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +29,38 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         return conditionList.size();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T addCondition(Condition condition)
     {
+        if (condition instanceof OneCondition)
+        {
+            OneCondition one = (OneCondition) condition;
+            String column = getColumn(one.getField());
+            one.setField(column);
+            if (one.getOpe() == CompareOpe.in)
+            {
+                List<Object> valList = one.param.getValList();
+                if (valList.size() == 1 && valList.get(0) != null)
+                {
+                    Object para = valList.get(0);
+                    if (para instanceof List)
+                    {
+                        valList.clear();
+                        valList.addAll((List) para);
+                    }
+                    else if (para.getClass().isArray())
+                    {
+                        valList.clear();
+                        int length = Array.getLength(para);
+                        for (int i = 0; i < length; i++)
+                        {
+                            valList.add(Array.get(para, i));
+                        }
+                    }
+                }
+            }
+        }
         addTheCondition(condition);
         return getTarget();
     }
@@ -65,18 +96,65 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         return getTarget();
     }
 
+    @SuppressWarnings(
+    { "unchecked", "rawtypes" })
     protected void addConditon(String field, CompareOpe ope, Object val, ConditionRel rel)
     {
-        Condition condition = getCondition(field, ope, val, rel);
-        if (condition != null)
+        if (CompareOpe.in == ope)
         {
-            conditionList.add(condition);
+            String column = getColumn(field);
+            if (column != null)
+            {
+                OneCondition oneCondition = null;
+                if (val != null)
+                {
+                    if (val instanceof List)
+                    {
+                        List list = (List) val;
+                        oneCondition = new OneCondition(column, ope, list, rel);
+                    }
+                    else if (val.getClass().isArray())
+                    {
+                        List list = new ArrayList<>();
+                        int len = Array.getLength(val);
+                        for (int i = 0; i < len; i++)
+                        {
+                            list.add(Array.get(val, i));
+                        }
+                        oneCondition = new OneCondition(column, ope, list, rel);
+                    }
+                    else
+                    {
+                        oneCondition = new OneCondition(column, ope, val, rel);
+                    }
+                }
+                else
+                {
+                    oneCondition = new OneCondition(column, ope, val, rel);
+                }
+                conditionList.add(oneCondition);
+            }
+            else
+            {
+                if (logger.isWarnEnabled())
+                {
+                    logger.warn("无匹配的查询字段：{}", field);
+                }
+            }
         }
         else
         {
-            if (logger.isWarnEnabled())
+            Condition condition = getCondition(field, ope, val, rel);
+            if (condition != null)
             {
-                logger.warn("无匹配的查询字段：{}", field);
+                conditionList.add(condition);
+            }
+            else
+            {
+                if (logger.isWarnEnabled())
+                {
+                    logger.warn("无匹配的查询字段：{}", field);
+                }
             }
         }
     }
@@ -113,9 +191,10 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         }
         else
         {
-            Condition condition = getCondition(one.field, one.ope, one.getVal(), one.rel);
-            if (condition != null)
+            String column = getColumn(one.getField());
+            if (column != null)
             {
+                one.setField(column);
                 return one;
             }
             else
@@ -372,7 +451,8 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         String column = getColumn(field);
         if (column != null)
         {
-            return new OneCondition(column, ope, val, rel);
+            OneCondition oneCondition = new OneCondition(column, ope, val, rel);
+            return oneCondition;
         }
         return null;
     }
@@ -449,5 +529,21 @@ public abstract class AbstractCompare<T extends Compare<T>> implements Compare<T
         addConditon(field, CompareOpe.emptyStr, null, rel);
         return (T) this;
     }
+
+    @Override
+    public T in(String field, List<Object> params)
+    {
+        return in(field, params, ConditionRel.AND);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T in(String field, List<Object> params, ConditionRel rel)
+    {
+        addConditon(field, CompareOpe.in, params, rel);
+        return (T) this;
+    }
+
+    public abstract TableMetaData getTableMetaData();
 
 }

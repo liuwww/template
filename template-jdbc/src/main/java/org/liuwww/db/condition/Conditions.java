@@ -34,7 +34,8 @@ public class Conditions extends AbstractCompare<Conditions>
         return super.getColumn(column.getColumnName());
     }
 
-    public TableMetaData getTmd()
+    @Override
+    public TableMetaData getTableMetaData()
     {
         return tmd;
     }

@@ -289,4 +289,24 @@ public interface Compare<T extends Compare<T>> extends Iterable<Condition>
      */
     T emptyStr(String field, ConditionRel rel);
 
+    /**
+     * @desc:in 条件查询
+     * @Date:2023年2月11日下午8:08:25
+     * @author liuwww
+     * @param field
+     * @param params
+     * @return
+     */
+    T in(String field, List<Object> params);
+
+    /**
+     * @desc:in 条件查询
+     * @Date:2023年2月11日下午8:08:25
+     * @author liuwww
+     * @param field
+     * @param params
+     * @return
+     */
+    T in(String field, List<Object> params, ConditionRel rel);
+
 }

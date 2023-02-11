@@ -3,6 +3,7 @@ package org.liuwww.db.condition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.sql.DbType;
 import org.liuwww.db.sql.SqlBeanUtil;
 
@@ -69,6 +70,12 @@ public class GroupCondition extends AbstractCompare<GroupCondition> implements C
     public ConditionRel getCondtionRel()
     {
         return this.rel;
+    }
+
+    @Override
+    public TableMetaData getTableMetaData()
+    {
+        return null;
     }
 
 }

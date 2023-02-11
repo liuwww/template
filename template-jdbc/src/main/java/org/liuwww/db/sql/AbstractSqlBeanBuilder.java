@@ -486,6 +486,19 @@ public abstract class AbstractSqlBeanBuilder implements SqlBeanBuilder
             return new StringBuilder(c.getCondtionRel().getVal()).append("  ").append(c.getField()).append(" is null ")
                     .toString();
         }
+        else if (ope == CompareOpe.in)
+        {
+            StringBuilder builder = new StringBuilder(c.getCondtionRel().getVal()).append("  ").append(c.getField())
+                    .append(" in(");
+            int len = c.getParamList().size();
+            for (int i = 0; i < len; i++)
+            {
+                builder.append("?,");
+            }
+            builder.delete(builder.length() - 1, builder.length());
+            builder.append(")");
+            return builder.toString();
+        }
         else
         {
             return new StringBuilder(c.getCondtionRel().getVal()).append("  ").append(c.getField()).append(" ")

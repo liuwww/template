@@ -214,12 +214,12 @@ public class DefaultQueryBean extends DefaultSqlBean implements QueryBean, SqlBe
                 throw new DbException("单表查询或单视图查询的关联表未设置！");
             }
             tmd = DbContext.getTableMetaContext().getTableMetaData(tables[0]);
-            qconditons.setTmd(tmd);
+            qconditons.setTableMetaData(tmd);
         }
         else
         {
             qconditons.setOne(false);
-            qconditons.setTmd(null);
+            qconditons.setTableMetaData(null);
         }
     }
 

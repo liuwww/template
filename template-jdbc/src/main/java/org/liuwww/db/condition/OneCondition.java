@@ -29,6 +29,11 @@ public class OneCondition implements Condition
         this(field, ope, val, true);
     }
 
+    public OneCondition(String field, CompareOpe ope, List val)
+    {
+        this(field, ope, val, true);
+    }
+
     /**
      * @param field 条件字段
      * @param ope 比较类型
@@ -45,6 +50,42 @@ public class OneCondition implements Condition
         this.isColumnField = isColumnField;
     }
 
+    /**
+     * @param field 条件字段
+     * @param ope 比较类型
+     * @param val 条件参数值
+     * @param isColumnField field是否是数据库字段，如果true则会判断字段是否有效，非有效字段将不会拼接到sql中，如果是false则会默认是有效字段
+     */
+    @SuppressWarnings(
+    { "unchecked", "rawtypes" })
+    public OneCondition(String field, CompareOpe ope, List val, boolean isColumnField)
+    {
+        super();
+        this.field = field;
+        this.ope = ope;
+        this.rel = ConditionRel.AND;
+        this.param = new Param(val);
+        this.isColumnField = isColumnField;
+    }
+
+    public OneCondition(String field, CompareOpe ope, Object val, ConditionRel rel)
+    {
+        this(field, ope, val);
+        if (rel != null)
+        {
+            this.rel = rel;
+        }
+    }
+
+    public OneCondition(String field, CompareOpe ope, List val, ConditionRel rel)
+    {
+        this(field, ope, val);
+        if (rel != null)
+        {
+            this.rel = rel;
+        }
+    }
+
     public static OneCondition getTheCondition(String field, CompareOpe ope, Object val)
     {
         OneCondition c = new OneCondition(field, ope, val);
@@ -57,15 +98,6 @@ public class OneCondition implements Condition
         OneCondition c = new OneCondition(field, ope, val, rel);
         c.param.getValList().set(0, val);
         return c;
-    }
-
-    public OneCondition(String field, CompareOpe ope, Object val, ConditionRel rel)
-    {
-        this(field, ope, val);
-        if (rel != null)
-        {
-            this.rel = rel;
-        }
     }
 
     public String getField()

@@ -1,6 +1,7 @@
 package org.liuwww.db.condition;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,9 +62,21 @@ public interface Condition
             }
             for (Object val : valList)
             {
-                if (val != null && !(val instanceof String && StringUtil.isBlank(val.toString())))
+                if (val != null)
                 {
-                    return true;
+                    if (!(val instanceof String && StringUtil.isBlank(val.toString())))
+                    {
+                        return true;
+                    }
+                    if (val instanceof List && !((List) val).isEmpty())
+                    {
+                        return true;
+                    }
+                    if (val.getClass().isArray() && Array.getLength(val) > 0)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
             }
             return false;
