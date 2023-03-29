@@ -47,6 +47,22 @@ public class UpdateTest extends AbstractTest
         dataCompareUtil.testMapEqual(map, map2);
     }
 
+    public void testUpdateBean()
+    {
+        Map<String, Object> map = queryTestUser1Map();
+        map.put("field1", getRandomStr());
+        map.put("field2", getRandomStr());
+        map.put("field3", getRandomStr());
+        map.put("field4", getRandomStr());
+        map.put("field5", getRandomStr());
+        dataTemplate.createUpdateBean("test_user").addCondition("userId", map.get("userId"))
+                .addValue("field1", map.get("field1")).addValue("field2", map.get("field2"))
+                .addValue("field3", map.get("field3")).addValue("field4", map.get("field4"))
+                .addValue("field5", map.get("field5")).update();
+        Map<String, Object> map2 = queryTemplate.getMap("test_user", (Serializable) map.get("userId"));
+        dataCompareUtil.testMapEqual(map, map2);
+    }
+
     public void testUpdateEntityList()
     {
         List<TestUser> list = queryTestUserList(10);

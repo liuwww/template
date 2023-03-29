@@ -18,6 +18,10 @@ import org.liuwww.db.sql.RowUtil;
 import org.liuwww.db.sql.SqlBean;
 import org.liuwww.db.sql.SqlBeanUtil;
 import org.liuwww.db.sql.TableDefaultValue;
+import org.liuwww.db.update.DefaultDeleteBean;
+import org.liuwww.db.update.DefaultUpdateBean;
+import org.liuwww.db.update.DeleteBean;
+import org.liuwww.db.update.UpdateBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -876,6 +880,18 @@ public class DataTemplate implements IDataTemplate
         }
 
         return idGenerator;
+    }
+
+    @Override
+    public UpdateBean createUpdateBean(String tableName)
+    {
+        return new DefaultUpdateBean(tableName, this);
+    }
+
+    @Override
+    public DeleteBean createDeleteBean(String tableName)
+    {
+        return new DefaultDeleteBean(tableName, this);
     }
 
 }

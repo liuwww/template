@@ -100,6 +100,14 @@ public class DeleteTest extends AbstractTest
         Assert.assertNull(user);
     }
 
+    public void testDeleteBean()
+    {
+        TestUser user = queryTestUser();
+        dataTemplate.createDeleteBean("test_user").addCondition("userId", user.getUserId()).delete();
+        user = queryTemplate.getBean("test_user", user.getUserId(), TestUser.class);
+        Assert.assertNull(user);
+    }
+
     public void testDeleteMapList()
     {
         List<Map<String, Object>> list = queryTestUserMapList(10);
