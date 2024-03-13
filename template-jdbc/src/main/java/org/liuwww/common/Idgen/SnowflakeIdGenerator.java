@@ -123,9 +123,10 @@ public class SnowflakeIdGenerator implements IdGenerator
         return System.currentTimeMillis();
     }
 
-    public IdInfo getIdInfo(Long id)
+    public IdInfo getIdInfo(long id)
     {
-        Long seq = (id + idShift) & 0xfff;
+        id += idShift;
+        Long seq = id & 0xfff;
         Long workId = (id >> 12) & 0x1f;
         Long dataId = (id >> 17) & 0x1f;
         Long timestamp = (id >> 22) + twepoch;
