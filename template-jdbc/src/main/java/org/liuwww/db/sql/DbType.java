@@ -1,5 +1,7 @@
 package org.liuwww.db.sql;
 
+import org.apache.commons.lang.StringUtils;
+
 public enum DbType {
     ORACLE {
         @Override
@@ -60,14 +62,14 @@ public enum DbType {
 
     public static DbType getByName(String dbType)
     {
-        try
+        for (DbType v : values())
         {
-            return DbType.valueOf(dbType);
+            if (StringUtils.equalsIgnoreCase(v.toString(), dbType))
+            {
+                return v;
+            }
         }
-        catch (Exception e)
-        {
-            return OTHER;
-        }
+        return DbType.OTHER;
     }
 
 }

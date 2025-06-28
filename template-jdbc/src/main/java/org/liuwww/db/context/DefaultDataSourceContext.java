@@ -119,8 +119,13 @@ public class DefaultDataSourceContext implements DataSourceContext
             DatabaseMetaData md = conn.getMetaData();
             String catalog = conn.getCatalog();
             String dbName = md.getDatabaseProductName();
-            this.dbType = DbType.getByName(dbName.toUpperCase());
-            String schema = getDbCatalog(md.getUserName(), dbName);
+            this.dbType = DbType.getByName(dbName);
+            // String schema = getDbCatalog(md.getUserName(), dbName);
+            String schema = conn.getSchema();
+            if (schema == null || schema.isEmpty())
+            {
+                schema = getDbCatalog(md.getUserName(), dbName);
+            }
             if (DbType.MYSQL.equals(dbType))
             {
                 new MysqlTableMataInit(conn, catalog).init();
