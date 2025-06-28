@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.liuwww.common.execption.DbException;
+import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.dao.IDataDao;
 import org.liuwww.db.sql.SqlBean;
 import org.slf4j.Logger;
@@ -25,7 +27,6 @@ import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.KeyHolder;
-import org.liuwww.common.execption.DbException;
 
 public class DataDao implements IDataDao
 {
@@ -79,7 +80,13 @@ public class DataDao implements IDataDao
                     return ps;
                 }
             }, keyHolder);
-            return keyHolder.getKey().toString();
+			Map<String, Object> keys = keyHolder.getKeys();
+			if (keys.size() == 0) {
+				return keyHolder.getKey().toString();
+			} else {
+				TableMetaData metaData = bean.getTableMetaData();
+				return keys.get(metaData.getIdColumn().getColumnName()).toString();
+			}
         }
         catch (Exception e)
         {
@@ -94,6 +101,13 @@ public class DataDao implements IDataDao
     @Override
     public String[] insert4AutoInc(final String sql, final List<Object[]> batchArgs, JdbcTemplate jdbcTemplate)
             throws DbException
+	{
+		return insert4AutoInc(sql, batchArgs, jdbcTemplate, null);
+	}
+
+	@Override
+	public String[] insert4AutoInc(final String sql, final List<Object[]> batchArgs, JdbcTemplate jdbcTemplate,
+			final TableMetaData tmd) throws DbException
     {
         try
         {
@@ -132,11 +146,21 @@ public class DataDao implements IDataDao
                             for (int i = 0; i < keyArr.length; i++)
                             {
                                 Map<String, Object> km = list.get(i);
-                                Iterator<Object> keyIter = km.values().iterator();
-                                if (keyIter.hasNext())
+								if (km.size() == 1)
                                 {
-                                    keyArr[i] = ((Number) keyIter.next()).toString();
+									Iterator<Object> keyIter = km.values().iterator();
+									if (keyIter.hasNext()) {
+										keyArr[i] = ((Number) keyIter.next()).toString();
+									}
                                 }
+								else {
+									if (tmd == null) {
+										throw new DbException("GeneratedKeys 返回多个值，无法确定id值");
+									}
+									else {
+										keyArr[i] = km.get(tmd.getIdColumn().getColumnName()).toString();
+									}
+								}
                             }
                             return keyArr;
                         }

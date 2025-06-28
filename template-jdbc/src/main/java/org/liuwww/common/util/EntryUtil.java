@@ -385,7 +385,7 @@ public class EntryUtil
                     BeanUtils.setProperty(entry, field, val);
                     return;
                 }
-                else if (converter != null)
+                else
                 {
                     val = converter.convert(entryprops.type, val);
                 }

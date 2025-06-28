@@ -2,10 +2,10 @@ package org.liuwww.db.dao;
 
 import java.util.List;
 
+import org.liuwww.common.execption.DbException;
+import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.sql.SqlBean;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import org.liuwww.common.execption.DbException;
 
 public interface IDataDao
 {
@@ -38,5 +38,19 @@ public interface IDataDao
      */
     public String[] insert4AutoInc(final String sql, final List<Object[]> batchArgs, JdbcTemplate jdbcTemplate)
             throws DbException;
+
+	/**
+	 * @desc:返回主键数组
+	 * @Date:2019年8月8日下午8:47:09
+	 * @author liuwww
+	 * @param sql
+	 * @param batchArgs
+	 * @param jdbcTemplate
+	 * @param tableMetaData
+	 * @return
+	 * @throws DbException
+	 */
+	public String[] insert4AutoInc(final String sql, final List<Object[]> batchArgs, JdbcTemplate jdbcTemplate,
+			TableMetaData tableMetaData) throws DbException;
 
 }

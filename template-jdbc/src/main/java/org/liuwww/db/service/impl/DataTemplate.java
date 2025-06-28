@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.liuwww.common.Idgen.IdGenerator;
+import org.liuwww.common.Idgen.SnowflakeIdGeneratorUtil;
+import org.liuwww.common.entity.TableEntity;
+import org.liuwww.common.execption.DbException;
+import org.liuwww.common.util.EntryUtil;
+import org.liuwww.common.util.StringUtil;
 import org.liuwww.db.context.DbContext;
 import org.liuwww.db.context.TableMetaData;
 import org.liuwww.db.dao.IDataDao;
@@ -25,14 +31,8 @@ import org.liuwww.db.update.UpdateBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import com.alibaba.fastjson.JSON;
 
-import org.liuwww.common.Idgen.IdGenerator;
-import org.liuwww.common.Idgen.SnowflakeIdGeneratorUtil;
-import org.liuwww.common.entity.TableEntity;
-import org.liuwww.common.execption.DbException;
-import org.liuwww.common.util.EntryUtil;
-import org.liuwww.common.util.StringUtil;
+import com.alibaba.fastjson.JSON;
 
 public class DataTemplate implements IDataTemplate
 {
@@ -383,6 +383,8 @@ public class DataTemplate implements IDataTemplate
         checkRow(row);
         SqlBean bean = SqlBeanUtil.getInsertSqlBean(row);
         SqlBeanUtil.checkSqlBeanJdbcTemplate(tableName, jdbcTemplate, bean);
+		bean.setTableMetaData(tmd);
+		bean.setTables(new String[] { tableName });
         if (needCreateId && isCreatedByDs)
         {
             id = dataDao.insert4AutoInc(bean);
@@ -446,7 +448,7 @@ public class DataTemplate implements IDataTemplate
             List<Object[]> ps = insertData.psNotWithIdList;
             if (sql != null && ps != null && !ps.isEmpty())
             {
-                String[] ids = dataDao.insert4AutoInc(sql, ps, jdbcTemplate);
+				String[] ids = dataDao.insert4AutoInc(sql, ps, jdbcTemplate, tmd);
                 Column idColumn = tmd.getIdColumn();
                 List<Object> elist = insertData.notWithIdEntityList;
                 if (idColumn != null)
