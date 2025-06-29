@@ -34,7 +34,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springframework.version>4.2.9.RELEASE</springframework.version>
 		<fastjson.version>1.2.83</fastjson.version>
-		<common.beanutils.version>1.9.4</common.beanutils.version>
+		<common.beanutils.version>1.11.0</common.beanutils.version>
 		<commons-configuration.verion>1.9</commons-configuration.verion>
 		<commons-io.version>2.7</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
