@@ -95,35 +95,26 @@ public class RowUtil
             if (Types.TIMESTAMP == column.getDataType() || Types.DATE == column.getDataType())
             {
                 Object val = entry.getValue();
-                Timestamp tt = null;
-                if (!(val instanceof Timestamp))
+                if (val instanceof java.util.Date)
                 {
-
-                    if (val instanceof java.util.Date)
+                    val = new Timestamp(((Date) val).getTime());
+                }
+                else if (val instanceof String)
+                {
+                    if (StringUtils.isBlank(val.toString()))
                     {
-                        tt = new Timestamp(((Date) val).getTime());
+                        val = null;
                     }
-                    else if (val instanceof String)
+                    else
                     {
-                        if (StringUtils.isBlank(val.toString()))
-                        {
-                            tt = null;
-                        }
-                        else
-                        {
-                            tt = new Timestamp(DateUtil.parse(val.toString()).getTime());
-                        }
-                    }
-                    else if (val instanceof Long)
-                    {
-                        tt = new Timestamp((Long) val);
+                        val = new Timestamp(DateUtil.parse(val.toString()).getTime());
                     }
                 }
-                else
+                else if (val instanceof Long)
                 {
-                    tt = (Timestamp) val;
+                    val = new Timestamp((Long) val);
                 }
-                valueVal.put(key, tt);
+                valueVal.put(key, val);
             }
         }
     }
