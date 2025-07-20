@@ -14,13 +14,11 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
-import org.liuwww.common.execption.BusinessExecption;
 import org.liuwww.common.execption.DbException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EntryUtil
-{
+public class EntryUtil {
     private static volatile EntryUtil instance = new EntryUtil();
 
     private static Logger logger = LoggerFactory.getLogger(EntryUtil.class);
@@ -29,26 +27,21 @@ public class EntryUtil
             long.class, byte.class, float.class, double.class, boolean.class, Short.class, Character.class,
             Integer.class, Long.class, Byte.class, Float.class, Boolean.class, String.class, CharSequence.class));
 
-    public static class EntryProps
-    {
-        protected EntryProps(Field field)
-        {
+    public static class EntryProps {
+        protected EntryProps(Field field) {
             this.field = field;
             this.name = field.getName();
             this.type = field.getType();
 
             String _mName = DbNameConverter.setUpperCaseForFirstLetter(name);
-            if (StringUtil.equals(name, "getSerialVersionUID"))
-            {
+            if (StringUtil.equals(name, "getSerialVersionUID")) {
                 return;
             }
             String getMethodName = "get" + _mName;
-            try
-            {
+            try {
                 this.getMethod = field.getDeclaringClass().getDeclaredMethod(getMethodName, new Class[0]);
 
-                if (this.getMethod != null)
-                {
+                if (this.getMethod != null) {
                     // if (this.getMethod.getAnnotation(Transient.class) !=
                     // null)
                     {
@@ -56,22 +49,17 @@ public class EntryUtil
                     }
                 }
             }
-            catch (Exception e)
-            {
-                if (logger.isDebugEnabled())
-                {
+            catch (Exception e) {
+                if (logger.isDebugEnabled()) {
                     logger.debug("class：{},not have mehtod：{}", field.getClass(), getMethodName);
                 }
             }
             String setMethodName = "set" + _mName;
-            try
-            {
+            try {
                 this.setMethod = field.getDeclaringClass().getDeclaredMethod(setMethodName, this.type);
             }
-            catch (Exception e)
-            {
-                if (logger.isDebugEnabled())
-                {
+            catch (Exception e) {
+                if (logger.isDebugEnabled()) {
                     logger.debug("class：{},not have mehtod：{}", field.getClass(), getMethodName);
                 }
             }
@@ -90,33 +78,27 @@ public class EntryUtil
 
         private boolean isTransient = false;
 
-        public boolean isTransient()
-        {
+        public boolean isTransient() {
             return isTransient;
         }
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public Field getField()
-        {
+        public Field getField() {
             return field;
         }
 
-        public Method getGetMethod()
-        {
+        public Method getGetMethod() {
             return getMethod;
         }
 
-        public Method getSetMethod()
-        {
+        public Method getSetMethod() {
             return setMethod;
         }
 
-        public Class<?> getType()
-        {
+        public Class<?> getType() {
             return type;
         }
     }
@@ -125,36 +107,27 @@ public class EntryUtil
 
     private Map<Class<?>, Map<String, List<Method>>> methodMap = new HashMap<Class<?>, Map<String, List<Method>>>();
 
-    private EntryUtil()
-    {
+    private EntryUtil() {
     }
 
-    private static Map<Class<?>, Map<String, EntryProps>> getEntryMap()
-    {
+    private static Map<Class<?>, Map<String, EntryProps>> getEntryMap() {
         return instance.entryMap;
     }
 
-    public void setEntryMap(Map<Class<?>, Map<String, EntryProps>> entryMap)
-    {
+    public void setEntryMap(Map<Class<?>, Map<String, EntryProps>> entryMap) {
         this.entryMap = entryMap;
     }
 
-    public static Map<String, EntryProps> getEntryProps(Class<?> clazz)
-    {
+    public static Map<String, EntryProps> getEntryProps(Class<?> clazz) {
         Map<String, EntryProps> props = getEntryMap().get(clazz);
-        if (props == null)
-        {
-            synchronized (clazz)
-            {
+        if (props == null) {
+            synchronized (clazz) {
                 props = getEntryMap().get(clazz);
-                if (props == null)
-                {
+                if (props == null) {
                     props = new HashMap<String, EntryProps>();
                     for (Class<?> supperClazz = clazz; supperClazz != Object.class; supperClazz = supperClazz
-                            .getSuperclass())
-                    {
-                        for (Field field : supperClazz.getDeclaredFields())
-                        {
+                            .getSuperclass()) {
+                        for (Field field : supperClazz.getDeclaredFields()) {
                             EntryProps ep = new EntryProps(field);
                             props.put(ep.name, ep);
                         }
@@ -166,80 +139,64 @@ public class EntryUtil
         return props;
     }
 
-    public static Field getField(Class<?> clazz, String field)
-    {
+    public static Field getField(Class<?> clazz, String field) {
         EntryProps entryprops = getEntryProps(clazz).get(field);
-        if (entryprops != null)
-        {
+        if (entryprops != null) {
             return entryprops.field;
         }
         return null;
     }
 
-    public static Object getFieldValue(Object entry, String field)
-    {
-        if (entry instanceof Map)
-        {
+    public static Object getFieldValue(Object entry, String field) {
+        if (entry instanceof Map) {
             return getMapValue(entry, field);
         }
         checkField(entry.getClass(), field);
         EntryProps entryprops = getEntryProps(entry.getClass()).get(field);
         Method getter = entryprops.getMethod;
-        if (getter != null)
-        {
+        if (getter != null) {
             return getValue(getter, entry);
         }
         entryprops.field.setAccessible(true);
-        try
-        {
+        try {
             return entryprops.field.get(entry);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new DbException("get field value throuth field self error", e);
         }
     }
 
-    private static Object getMapValue(Object obj, Object key)
-    {
+    private static Object getMapValue(Object obj, Object key) {
         Map<?, ?> map = (Map<?, ?>) obj;
         return map.get(key);
     }
 
-    private static Object getValue(Method method, Object entry)
-    {
-        try
-        {
+    private static Object getValue(Method method, Object entry) {
+        try {
             return method.invoke(entry, new Object[0]);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new DbException("get field value throuth Getter error", e);
         }
     }
 
-    public static Class<?> getFieldType(Class<?> clazz, String field)
-    {
+    public static Class<?> getFieldType(Class<?> clazz, String field) {
         checkField(clazz, field);
         EntryProps entryprops = getEntryProps(clazz).get(field);
         return entryprops.type;
     }
 
-    private static void checkField(Class<?> clazz, String field)
-    {
+    private static void checkField(Class<?> clazz, String field) {
         EntryProps entryprops = getEntryProps(clazz).get(field);
-        if (entryprops == null)
-        {
+        if (entryprops == null) {
             throw new DbException("there is no field:" + field + " in Class:" + clazz);
         }
     }
 
-    public static List<String> getFieldList(Class<?> clazz)
-    {
+    public static List<String> getFieldList(Class<?> clazz) {
         Map<String, EntryProps> map = getEntryProps(clazz);
         List<String> list = new ArrayList<String>(map.size());
-        for (String field : map.keySet())
-        {
+        for (String field : map.keySet()) {
             list.add(field);
         }
         return list;
@@ -253,14 +210,11 @@ public class EntryUtil
      * @param keepNull false时 value 为null时值被丢弃
      * @return
      */
-    public static Map<String, Object> getMap(Object obj, boolean keepNull)
-    {
+    public static Map<String, Object> getMap(Object obj, boolean keepNull) {
         Map<String, Object> map = new HashMap<String, Object>();
-        for (String field : getEntryProps(obj.getClass()).keySet())
-        {
+        for (String field : getEntryProps(obj.getClass()).keySet()) {
             Object val = getFieldValue(obj, field);
-            if (keepNull || val != null)
-            {
+            if (keepNull || val != null) {
                 map.put(field, val);
             }
         }
@@ -273,19 +227,15 @@ public class EntryUtil
      * @param keepNull
      * @return
      */
-    public static Map<String, Object> getSimpleValMap(Object obj, boolean keepNull)
-    {
+    public static Map<String, Object> getSimpleValMap(Object obj, boolean keepNull) {
         Map<String, Object> map = new HashMap<String, Object>();
         Map<String, EntryProps> ep = getEntryProps(obj.getClass());
 
-        for (String field : ep.keySet())
-        {
+        for (String field : ep.keySet()) {
             Class<?> type = ep.get(field).field.getType();
-            if (isSimpleType(type))
-            {
+            if (isSimpleType(type)) {
                 Object val = getFieldValue(obj, field);
-                if (keepNull || val != null)
-                {
+                if (keepNull || val != null) {
                     map.put(field, val);
                 }
             }
@@ -293,20 +243,16 @@ public class EntryUtil
         return map;
     }
 
-    private static boolean isSimpleType(Class<?> type)
-    {
+    private static boolean isSimpleType(Class<?> type) {
         return simpleClasses.contains(type) || CharSequence.class.isAssignableFrom(type)
                 || Date.class.isAssignableFrom(type);
     }
 
-    public static Map<String, Object> getNotBlankValueMap(Object obj)
-    {
+    public static Map<String, Object> getNotBlankValueMap(Object obj) {
         Map<String, Object> map = new HashMap<String, Object>();
-        for (String field : getEntryProps(obj.getClass()).keySet())
-        {
+        for (String field : getEntryProps(obj.getClass()).keySet()) {
             Object val = getFieldValue(obj, field);
-            if (val != null && StringUtil.isNotBlank(val.toString()))
-            {
+            if (val != null && StringUtil.isNotBlank(val.toString())) {
                 map.put(field, val);
             }
         }
@@ -314,16 +260,12 @@ public class EntryUtil
 
     }
 
-    public static Method getMethod(Class<?> clazz, String methodName, Class<?>[] classes)
-    {
+    public static Method getMethod(Class<?> clazz, String methodName, Class<?>[] classes) {
         Map<String, List<Method>> map = getMehtod(clazz);
         List<Method> list = map.get(methodName);
-        if (list != null)
-        {
-            for (Method method : list)
-            {
-                if (Arrays.equals(method.getParameterTypes(), classes))
-                {
+        if (list != null) {
+            for (Method method : list) {
+                if (Arrays.equals(method.getParameterTypes(), classes)) {
                     return method;
                 }
             }
@@ -331,27 +273,20 @@ public class EntryUtil
         return null;
     }
 
-    private static Map<String, List<Method>> getMehtod(Class<?> clazz)
-    {
+    private static Map<String, List<Method>> getMehtod(Class<?> clazz) {
         Map<String, List<Method>> map = instance.methodMap.get(clazz);
-        if (map == null)
-        {
-            synchronized (EntryUtil.class)
-            {
+        if (map == null) {
+            synchronized (EntryUtil.class) {
                 map = instance.methodMap.get(clazz);
-                if (map == null)
-                {
+                if (map == null) {
                     map = new HashMap<String, List<Method>>();
                     for (Class<?> supperClazz = clazz; supperClazz != Object.class; supperClazz = supperClazz
-                            .getSuperclass())
-                    {
+                            .getSuperclass()) {
                         Method[] methods = clazz.getMethods();
-                        for (Method method : methods)
-                        {
+                        for (Method method : methods) {
                             String name = method.getName();
                             List<Method> list = map.get(name);
-                            if (list == null)
-                            {
+                            if (list == null) {
                                 list = new ArrayList<Method>();
                                 map.put(name, list);
                             }
@@ -365,46 +300,36 @@ public class EntryUtil
         return map;
     }
 
-    public static void setFieldValue(Object entry, String field, Object val)
-    {
-        if (entry instanceof Map)
-        {
+    public static void setFieldValue(Object entry, String field, Object val) {
+        if (entry instanceof Map) {
             setMapValue(entry, field, val);
         }
-        else
-        {
+        else {
             checkField(entry.getClass(), field);
             EntryProps entryprops = getEntryProps(entry.getClass()).get(field);
             Method setter = entryprops.setMethod;
-            if (val != null)
-            {
+            if (val != null) {
                 Converter converter = null;
                 converter = ConvertUtils.lookup(entryprops.type);
-                if (converter == null && entryprops.type != Object.class)
-                {
+                if (converter == null && entryprops.type != Object.class) {
                     BeanUtils.setProperty(entry, field, val);
                     return;
                 }
-                else
-                {
+                else {
                     val = converter.convert(entryprops.type, val);
                 }
             }
-            if (setter != null)
-            {
+            if (setter != null) {
                 setValue(setter, entry, val);
             }
-            else
-            {
+            else {
                 boolean accessible = entryprops.field.isAccessible();
                 entryprops.field.setAccessible(true);
-                try
-                {
+                try {
                     entryprops.field.set(entry, val);
                     entryprops.field.setAccessible(accessible);
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     throw new DbException("set field value throuth field self error", e);
                 }
             }
@@ -412,15 +337,12 @@ public class EntryUtil
         }
     }
 
-    private static void setValue(Method setter, Object entry, Object val)
-    {
-        try
-        {
-            setter.invoke(entry, new Object[]
-            { val });
+    private static void setValue(Method setter, Object entry, Object val) {
+        try {
+            setter.invoke(entry, new Object[] { val
+            });
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new DbException("set field value throuth Getter error", e);
         }
 
@@ -431,45 +353,36 @@ public class EntryUtil
      * @param isSimple 是否忽略复杂字段 true:忽略
      * @return
      */
-    public static List<Map<String, Object>> getMapListFromEntity(List<?> rlist, boolean isSimple)
-    {
-        if (rlist == null)
-        {
+    public static List<Map<String, Object>> getMapListFromEntity(List<?> rlist, boolean isSimple) {
+        if (rlist == null) {
             return null;
         }
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(rlist.size());
-        if (isSimple)
-        {
-            for (Object o : rlist)
-            {
+        if (isSimple) {
+            for (Object o : rlist) {
                 list.add(getSimpleValMap(o, true));
             }
         }
-        else
-        {
-            for (Object o : rlist)
-            {
+        else {
+            for (Object o : rlist) {
                 list.add(getMap(o, true));
             }
         }
         return list;
     }
 
-    @SuppressWarnings(
-    { "unchecked", "rawtypes" })
-    private static void setMapValue(Object obj, Object key, Object val)
-    {
+    @SuppressWarnings({ "unchecked", "rawtypes"
+    })
+    private static void setMapValue(Object obj, Object key, Object val) {
         Map map = (Map) obj;
         map.put(obj, val);
     }
 
-    public static boolean hasField(Object obj, String field)
-    {
+    public static boolean hasField(Object obj, String field) {
         return getEntryProps(obj.getClass()).containsKey(field);
     }
 
-    public static boolean hasField(Class<?> clazz, String field)
-    {
+    public static boolean hasField(Class<?> clazz, String field) {
         return getEntryProps(clazz).containsKey(field);
     }
 
@@ -480,57 +393,44 @@ public class EntryUtil
      * @param dest 不可是Map
      * @param orig
      */
-    public static void copyProperties(Object dest, Object orig)
-    {
-        if (dest instanceof Map)
-        {
-            throw new BusinessExecption("dest can not be a map");
+    public static void copyProperties(Object dest, Object orig) {
+        if (dest instanceof Map) {
+            throw new RuntimeException("dest can not be a map");
         }
-        if (orig instanceof Map)
-        {
+        if (orig instanceof Map) {
             Map<String, EntryProps> dMap = getEntryProps(dest.getClass());
             Map<?, ?> map = (Map<?, ?>) orig;
-            for (Object key : map.keySet())
-            {
+            for (Object key : map.keySet()) {
                 Object val = getMapValue(orig, key);
-                if (val != null && dMap.get(key.toString()) != null)
-                {
+                if (val != null && dMap.get(key.toString()) != null) {
                     setFieldValue(dest, key.toString(), val);
                 }
             }
         }
-        else
-        {
+        else {
             Map<String, EntryProps> dMap = null;
-            if (dest instanceof Map)
-            {
+            if (dest instanceof Map) {
                 dMap = getEntryProps(dest.getClass());
             }
             Map<String, EntryProps> fMap = getEntryProps(orig.getClass());
 
-            for (String key : getFieldList(dest.getClass()))
-            {
+            for (String key : getFieldList(dest.getClass())) {
 
                 EntryProps entryprops = fMap.get(key);
-                if (entryprops == null || (dMap != null && dMap.get(key) == null))
-                {
+                if (entryprops == null || (dMap != null && dMap.get(key) == null)) {
                     continue;
                 }
                 Method getter = entryprops.getMethod;
                 Object val = null;
-                if (getter != null)
-                {
+                if (getter != null) {
                     val = getValue(getter, orig);
                 }
-                else
-                {
+                else {
                     entryprops.field.setAccessible(true);
-                    try
-                    {
+                    try {
                         val = entryprops.field.get(orig);
                     }
-                    catch (Exception e)
-                    {
+                    catch (Exception e) {
                         throw new DbException("get field value throuth field self error", e);
                     }
                 }

@@ -5,8 +5,6 @@ package org.liuwww.common.util;
 
 import java.math.BigDecimal;
 
-import org.liuwww.common.execption.BusinessExecption;
-
 /**
  * Title: NumberUtils <br/>
  * Description: <br/>
@@ -14,8 +12,7 @@ import org.liuwww.common.execption.BusinessExecption;
  * @author liuwww
  * @date 2015年12月19日下午1:56:04
  */
-public class NumberUtils extends org.apache.commons.lang.math.NumberUtils
-{
+public class NumberUtils extends org.apache.commons.lang.math.NumberUtils {
 
     /**
      * @Desc:格式化double
@@ -26,8 +23,7 @@ public class NumberUtils extends org.apache.commons.lang.math.NumberUtils
      *            保留小数位
      * @return
      */
-    public static String formatDouble(Double d, int scale)
-    {
+    public static String formatDouble(Double d, int scale) {
         BigDecimal bigDecimal = new BigDecimal(d);
         Double r = bigDecimal.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
         return r.toString();
@@ -40,36 +36,28 @@ public class NumberUtils extends org.apache.commons.lang.math.NumberUtils
      * @param param
      * @return
      */
-    public static int getInt(Object param)
-    {
-        if (param == null)
-        {
+    public static int getInt(Object param) {
+        if (param == null) {
             return 0;
         }
-        else if (param instanceof String && "".equals(param.toString()))
-        {
+        else if (param instanceof String && "".equals(param.toString())) {
             return 0;
         }
-        if (param instanceof Number)
-        {
+        if (param instanceof Number) {
             return ((Number) param).intValue();
         }
-        else if (param instanceof String && isDigits(param.toString()))
-        {
+        else if (param instanceof String && isDigits(param.toString())) {
             return Integer.parseInt(param.toString());
         }
-        throw new BusinessExecption("该类型无法转换：" + param.toString());
+        throw new RuntimeException("该类型无法转换：" + param.toString());
     }
 
-    public static String getIntString(Object param)
-    {
+    public static String getIntString(Object param) {
         return String.valueOf(getInt(param));
     }
 
-    public static String getNumberStr(Object param)
-    {
-        if (param == null)
-        {
+    public static String getNumberStr(Object param) {
+        if (param == null) {
             return null;
         }
         return param.toString();
