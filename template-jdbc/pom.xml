@@ -1,14 +1,22 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.github.liuwww</groupId>
-	<version>1.0.10</version>
+	<groupId>io.github.liuwww</groupId>
+	<version>2.0.0</version>
 	<artifactId>template-jdbc</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<name>template-jdbc</name>
 	<description>template-jdbc,based on spring JdbcTemplate</description>
 	<url>https://github.com/liuwww/template</url>
-	<licenses> 
+
+	<modules>
+		<module>template-jdbc-core</module>
+		<module>template-jdbc-spring</module>
+	</modules>
+
+	<!-- 保留 licenses, scm, developers 部分 -->
+	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
@@ -26,12 +34,13 @@
 			<email>liuweiwei6880@163.com</email>
 		</developer>
 	</developers>
+
+	<!-- 属性部分移到这里，供子模块使用 -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springframework.version>4.2.9.RELEASE</springframework.version>
 		<mysql.version>8.0.28</mysql.version>
 		<oracle.version>10.2.0.2</oracle.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<fastjson.version>1.2.83</fastjson.version>
 		<common.beanutils.version>1.11.0</common.beanutils.version>
 		<commons-configuration.verion>1.9</commons-configuration.verion>
@@ -40,132 +49,13 @@
 		<alibaba.druid>1.2.15</alibaba.druid>
 		<slf4j.version>2.0.0-alpha2</slf4j.version>
 		<log4j.servion>2.17.1</log4j.servion>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-framework-bom</artifactId>
-				<type>pom</type>
-				<scope>import</scope>
-				<version>${springframework.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>${fastjson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>${common.beanutils.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
-			<version>${commons-configuration.verion}</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>${commons-io.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure</artifactId>
-			<version>1.5.4.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j.servion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>${log4j.servion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j18-impl</artifactId>
-			<version>${log4j.servion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>${alibaba.druid}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.1</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>2.2.220</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-	<!-- <distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-		</repository>
-		<repository>
-	        <id>central</id>
-	        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-	    </repository>
-	    <snapshotRepository>
-	        <id>snapshots</id>
-	        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-	    </snapshotRepository>
-	</distributionManagement> -->
+	<!-- 构建配置保留在父POM中 -->
 	<build>
 		<plugins>
-			<!-- 源码打包插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -180,7 +70,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Javadoc 生成插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -190,7 +79,6 @@
 					<charset>UTF-8</charset>
 					<encoding>UTF-8</encoding>
 					<docencoding>UTF-8</docencoding>
-					<!-- <additionalparam>-Xdoclint:none</additionalparam> -->
 					<doclint>none</doclint>
 				</configuration>
 				<executions>
@@ -218,71 +106,22 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.8.1</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
-			<!-- <plugin>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.8.2</version>
-				<executions>
-					<execution>
-						<id>default-deploy</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
-			<!-- <plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
+			<plugin>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.8.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<publishingServerId>central</publishingServerId>
+					<autoPublish>false</autoPublish>
 				</configuration>
-			</plugin> -->
-			<!-- <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-scm-plugin</artifactId>
-				<version>1.8.1</version>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
-				<configuration>
-					<mavenExecutorId>forked-path</mavenExecutorId>
-					<useReleaseProfile>false</useReleaseProfile>
-					<arguments>-Psonatype-oss-release</arguments>
-					<pushChanges>false</pushChanges>
-					<localCheckout>false</localCheckout>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-scm-plugin</artifactId>
-						<version>1.8.1</version>
-					</dependency>
-				</dependencies>
-			</plugin> -->
-			<plugin>
-	          <groupId>org.sonatype.central</groupId>
-	          <artifactId>central-publishing-maven-plugin</artifactId>
-	          <version>0.8.0</version>
-	          <extensions>true</extensions>
-	          <configuration>
-	            <publishingServerId>central</publishingServerId>
-	            <autoPublish>false</autoPublish>
-	          </configuration>
-	        </plugin>
 		</plugins>
 	</build>
 </project>

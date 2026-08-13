@@ -1,0 +1,28 @@
+{
+  "tables": [
+    {
+      "tableName": "t_test_user",
+      "dbType": "mysql",
+      "tableType": "TABLE",
+      "comment": "测试用户表",
+      "idColumnName": "id",
+      "columns": [
+        {"columnName": "id", "dataTypeName": "BIGINT", "columnSize": 20, "nullable": false, "remarks": "主键"},
+        {"columnName": "user_name", "dataTypeName": "VARCHAR", "columnSize": 100, "nullable": false, "remarks": "用户名"},
+        {"columnName": "age", "dataTypeName": "INT", "columnSize": 11, "nullable": true, "remarks": "年龄"}
+      ]
+    },
+    {
+      "tableName": "t_test_order",
+      "dbType": "postgresql",
+      "tableType": "TABLE",
+      "comment": "订单表",
+      "idColumnName": "order_id,tenant_id",
+      "columns": [
+        {"columnName": "order_id", "dataTypeName": "BIGINT", "nullable": false},
+        {"columnName": "tenant_id", "dataTypeName": "VARCHAR", "columnSize": 50, "nullable": false},
+        {"columnName": "amount", "dataTypeName": "DECIMAL", "columnSize": 10, "nullable": true}
+      ]
+    }
+  ]
+}
